@@ -24,3 +24,8 @@ MonoBehaviour:
   isCookable: 0
   cookTime: 5
   cookedPrefab: {fileID: 0}
+  combinations:
+  - partnerIngredient: {fileID: 11400000, guid: 45d86bcded9cdae418d51d930a0d836e, type: 2}
+    resultPrefab: {fileID: 8059979155723304973, guid: 80e8c8318e0aa2c4586e1072eea4083f, type: 3}
+    cookTime: 5
+    spawnOnPartnerTile: 0

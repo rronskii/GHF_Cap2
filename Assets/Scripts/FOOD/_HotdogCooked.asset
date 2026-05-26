@@ -16,9 +16,10 @@ MonoBehaviour:
   displayName: CookedHotdog
   shapeOffsets:
   - {x: 0, y: 0}
-  - {x: 0, y: 1}
-  worldPrefab: {fileID: 721933441287932742, guid: 969c3f3317cf244489ae3e5bb4aa3f70, type: 3}
+  - {x: 1, y: 0}
+  worldPrefab: {fileID: 8059979155723304973, guid: 3679e378a27dc19418239cd5d4b99148, type: 3}
   validStations: 010000000200000003000000
-  isCookable: 1
+  isCookable: 0
   cookTime: 5
   cookedPrefab: {fileID: 0}
+  combinations: []

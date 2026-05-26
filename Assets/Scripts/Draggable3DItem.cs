@@ -7,6 +7,9 @@ public class Draggable3DItem : MonoBehaviour
     [Header("Data Reference")]
     public IngredientData myData;
 
+    [Header("Visual Prefabs")]
+    [SerializeField] private GameObject timerUIPrefab; // Drag 'CookingTimer_Prefab' here in Unity
+
     [Header("Placement Memory")]
     public BaseStation currentStation;
     public Vector2Int currentCoordinate;
@@ -23,6 +26,8 @@ public class Draggable3DItem : MonoBehaviour
         itemCollider = GetComponent<Collider>();
     }
 
+    // --- COOKING LOGIC (With Timer Link) ---
+
     public void StartCookingLock(float cookTime)
     {
         StartCoroutine(CookingLockRoutine(cookTime));
@@ -31,9 +36,35 @@ public class Draggable3DItem : MonoBehaviour
     private IEnumerator CookingLockRoutine(float cookTime)
     {
         isLocked = true;
+
+        // NEW: Spawn and initialize the timer bar
+        SpawnCookingTimer(cookTime);
+
         yield return new WaitForSeconds(cookTime);
         isLocked = false;
     }
+
+    // NEW Helper function to spawn the UI
+    private void SpawnCookingTimer(float duration)
+    {
+        if (timerUIPrefab == null)
+        {
+            Debug.LogWarning($"[Draggable3DItem] Timer UI Prefab missing on {gameObject.name}!");
+            return;
+        }
+
+        // Spawn it slightly above the food item's pivot
+        Vector3 spawnOffset = new Vector3(1.5f, 0.5f, 0);
+        GameObject timerObj = Instantiate(timerUIPrefab, transform.position + spawnOffset, Quaternion.identity, this.transform);
+
+        CookingTimerUI timerScript = timerObj.GetComponent<CookingTimerUI>();
+        if (timerScript != null)
+        {
+            timerScript.StartTimer(duration);
+        }
+    }
+
+    // --- DRAG MECHANICS (Unchanged) ---
 
     private void OnMouseDown()
     {
@@ -130,10 +161,10 @@ public class Draggable3DItem : MonoBehaviour
 
         currentStation = tile.parentStation;
         currentCoordinate = tile.gridCoordinate;
-        currentStation.SetOccupancy(currentCoordinate, myData.shapeOffsets, this); // Send "this" script reference
+        currentStation.SetOccupancy(currentCoordinate, myData.shapeOffsets, this);
 
         itemCollider.enabled = true;
-        CheckForCombinations(); // NEW: Check neighbors after landing
+        CheckForCombinations();
     }
 
     private void CookItem(GridTileVisual tile)
@@ -146,8 +177,9 @@ public class Draggable3DItem : MonoBehaviour
         cookedScript.currentCoordinate = tile.gridCoordinate;
         tile.parentStation.SetOccupancy(tile.gridCoordinate, cookedScript.myData.shapeOffsets, cookedScript);
 
+        // This call automatically triggers the timer spawn via CookingLockRoutine
         cookedScript.StartCookingLock(myData.cookTime);
-        cookedScript.CheckForCombinations(); // Check if cooking it instantly created a combo
+        cookedScript.CheckForCombinations();
 
         Destroy(gameObject);
     }
@@ -163,10 +195,11 @@ public class Draggable3DItem : MonoBehaviour
         }
     }
 
-    // NEW: Adjacency Crafting Logic
+    // --- ADJACENCY CRAFTING (Unchanged) ---
+
     public void CheckForCombinations()
     {
-        if (currentStation.stationType != StationType.Stove) return;
+        if (currentStation == null || currentStation.stationType != StationType.Stove) return;
 
         Vector2Int[] directions = { Vector2Int.up, Vector2Int.down, Vector2Int.left, Vector2Int.right };
 
@@ -177,7 +210,6 @@ public class Draggable3DItem : MonoBehaviour
 
             if (adjacentItem != null && adjacentItem != this)
             {
-                // 1. Check if WE have a recipe that requires THEM
                 if (myData.combinations != null)
                 {
                     foreach (RecipeCombo combo in myData.combinations)
@@ -190,7 +222,6 @@ public class Draggable3DItem : MonoBehaviour
                     }
                 }
 
-                // 2. Check if THEY have a recipe that requires US
                 if (adjacentItem.myData.combinations != null)
                 {
                     foreach (RecipeCombo combo in adjacentItem.myData.combinations)
@@ -208,18 +239,15 @@ public class Draggable3DItem : MonoBehaviour
 
     private void ExecuteCombination(Draggable3DItem initiator, Draggable3DItem partner, RecipeCombo combo)
     {
-        // Decide which tile the final food spawns on
         GridTileVisual spawnTile = combo.spawnOnPartnerTile ?
             partner.currentStation.tileVisuals[partner.currentCoordinate.x, partner.currentCoordinate.y] :
             initiator.currentStation.tileVisuals[initiator.currentCoordinate.x, initiator.currentCoordinate.y];
 
         BaseStation station = initiator.currentStation;
 
-        // Free up the original grid spaces
         station.SetOccupancy(initiator.currentCoordinate, initiator.myData.shapeOffsets, null);
         station.SetOccupancy(partner.currentCoordinate, partner.myData.shapeOffsets, null);
 
-        // Spawn result
         Vector3 spawnPos = spawnTile.transform.position + new Vector3(0, 0.1f, 0);
         GameObject resultObj = Instantiate(combo.resultPrefab, spawnPos, Quaternion.identity);
         Draggable3DItem resultItem = resultObj.GetComponent<Draggable3DItem>();
@@ -228,9 +256,9 @@ public class Draggable3DItem : MonoBehaviour
         resultItem.currentCoordinate = spawnTile.gridCoordinate;
         station.SetOccupancy(resultItem.currentCoordinate, resultItem.myData.shapeOffsets, resultItem);
 
+        // This call automatically triggers the timer spawn via CookingLockRoutine
         resultItem.StartCookingLock(combo.cookTime);
 
-        // Clean up the raw ingredients
         Destroy(initiator.gameObject);
         Destroy(partner.gameObject);
     }

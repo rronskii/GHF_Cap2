@@ -235,5 +235,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   myData: {fileID: 11400000, guid: 1aea1f9e6f11d404ca2671d7f2c0d3e5, type: 2}
+  timerUIPrefab: {fileID: 6962704026674162974, guid: fa5adf27f1494f941a4311327c94d000, type: 3}
   currentStation: {fileID: 0}
   currentCoordinate: {x: 0, y: 0}
