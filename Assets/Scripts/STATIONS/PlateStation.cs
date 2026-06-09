@@ -50,38 +50,72 @@ public class PlateStation : BaseStation
 
     private IEnumerator ServeRoutine()
     {
-        isServing = true;
+        // Create our tracking collections
+        List<IngredientData> ingredientsOnPlate = new List<IngredientData>();
+        HashSet<Draggable3DItem> foodScripts = new HashSet<Draggable3DItem>();
 
-        // 1. Gather all food currently on the plate
-        HashSet<Draggable3DItem> foodOnPlate = new HashSet<Draggable3DItem>();
+        // 1. Gather all UNIQUE food item scripts from the grid layout matrix first
         for (int x = 0; x < gridWidth; x++)
         {
             for (int y = 0; y < gridHeight; y++)
             {
                 if (occupantMatrix[x, y] != null)
                 {
-                    foodOnPlate.Add(occupantMatrix[x, y]);
-
-                    occupantMatrix[x, y] = null;
-                    gridMatrix[x, y].isOccupied = false;
+                    foodScripts.Add(occupantMatrix[x, y]); // HashSets automatically ignore duplicates
                 }
             }
         }
 
-        // 2. Lock the food and parent it to the physical plate model
-        foreach (Draggable3DItem food in foodOnPlate)
+        // 2. Extract the actual ingredient data from our clean, unique list of items
+        foreach (Draggable3DItem uniqueFood in foodScripts)
+        {
+            ingredientsOnPlate.Add(uniqueFood.myData);
+        }
+
+        // NEW LOGIC: Ask OrderManager if this mixture forms a real menu item
+        DishData validatedDish = OrderManager.Instance.ValidateRecipe(ingredientsOnPlate);
+
+        if (validatedDish == null)
+        {
+            Debug.Log("[Plate Station] This configuration does not form a valid menu item. Bell ring rejected!");
+            yield break; // Abort completely. The food stays put on plate!
+        }
+
+        // NEW LOGIC: Check if there is an available counter window slot to take it
+        bool sentToWindowSuccess = OrderManager.Instance.TrySpawnDishToWindow(validatedDish);
+        if (!sentToWindowSuccess)
+        {
+            Debug.Log("[Plate Station] Counter window display slots are full!");
+            yield break; // Abort out. Food remains preserved on plate until room is cleared.
+        }
+
+        // Proceed with clearing plate since validation succeeded!
+        isServing = true;
+
+        // Clear the logical grid occupancy matrices
+        for (int x = 0; x < gridWidth; x++)
+        {
+            for (int y = 0; y < gridHeight; y++)
+            {
+                occupantMatrix[x, y] = null;
+                gridMatrix[x, y].isOccupied = false;
+            }
+        }
+
+        // Lock the food objects and parent them to the physical plate model to slide away
+        foreach (Draggable3DItem food in foodScripts)
         {
             food.GetComponent<Collider>().enabled = false;
             food.transform.SetParent(plateModel);
         }
 
-        // 3. Hide the interactive grid visuals
+        // Hide interactive grid visuals
         foreach (GridTileVisual tile in tileVisuals)
         {
             if (tile != null) tile.gameObject.SetActive(false);
         }
 
-        // 4. Slide the plate away along the Z-axis
+        // Slide physical plate + food structures away along Z axis
         Vector3 targetPosition = plateModel.position + new Vector3(0, 0, serveDistance);
         while (Vector3.Distance(plateModel.position, targetPosition) > 0.05f)
         {
@@ -89,20 +123,15 @@ public class PlateStation : BaseStation
             yield return null;
         }
 
-        // 5. Delete the old plate and the food attached to it
+        // Cleanup and delete old instances
         Destroy(plateModel.gameObject);
-
         yield return new WaitForSeconds(0.5f);
 
-        // 6. Spawn the replacement plate
+        // Reconstruct and pop in replacement clean plate
         GameObject newPlate = Instantiate(plateModelPrefab, transform);
-
-        // UPDATED: Use the memorized local position instead of Vector3.zero
         newPlate.transform.localPosition = initialPlateLocalPos;
-
         plateModel = newPlate.transform;
 
-        // 7. Pop-up Animation for the new plate
         Vector3 finalScale = newPlate.transform.localScale;
         newPlate.transform.localScale = Vector3.zero;
 
@@ -114,7 +143,7 @@ public class PlateStation : BaseStation
             yield return null;
         }
 
-        // 8. Turn the grid back on 
+        // Re-enable grid visuals
         for (int x = 0; x < gridWidth; x++)
         {
             for (int y = 0; y < gridHeight; y++)

@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 8580533962116672822}
   - component: {fileID: 974273628477570493}
   m_Layer: 5
-  m_Name: Card_Egg
+  m_Name: Card_Garlic
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -67,7 +67,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: f94ec64c59dadf3479bf9b22f5bd0d3c, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 73382c857ae45ee44acf2dc9632b5b28, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -89,7 +89,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 361d34a1a8ea80e4ba65feb1a263acab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ingredientData: {fileID: 11400000, guid: c9e33be1a39fe934487df0aaa52c216a, type: 2}
+  ingredientData: {fileID: 11400000, guid: 45d86bcded9cdae418d51d930a0d836e, type: 2}
   hoverGlideAmount: 50
   transitionSpeed: 10
   isInteractable: 1

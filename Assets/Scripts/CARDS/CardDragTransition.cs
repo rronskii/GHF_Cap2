@@ -8,10 +8,13 @@ public class CardDragTransition : MonoBehaviour, IPointerEnterHandler, IPointerE
     public float hoverGlideAmount = 50f;
     public float transitionSpeed = 10f;
 
+    [HideInInspector] public bool isInteractable = true; // Controlled by HandManager
+
     private Camera mainCamera;
     private RectTransform rectTransform;
     private CanvasGroup canvasGroup;
-    private Vector2 originalPosition;
+
+    private Vector2 handPosition; // Replaced 'originalPosition'
     private Vector2 targetPosition;
 
     private bool isHovering = false;
@@ -23,8 +26,16 @@ public class CardDragTransition : MonoBehaviour, IPointerEnterHandler, IPointerE
         rectTransform = GetComponent<RectTransform>();
         canvasGroup = GetComponent<CanvasGroup>();
         mainCamera = Camera.main;
-        originalPosition = rectTransform.anchoredPosition;
-        targetPosition = originalPosition;
+    }
+
+    // Called by HandManager to update its slot in the hand
+    public void SetHandPosition(Vector2 newPosition)
+    {
+        handPosition = newPosition;
+        if (!isDragging && !isHovering)
+        {
+            targetPosition = handPosition;
+        }
     }
 
     private void Update()
@@ -34,45 +45,66 @@ public class CardDragTransition : MonoBehaviour, IPointerEnterHandler, IPointerE
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        if (isDragging) return;
+        if (isDragging || !isInteractable) return;
         isHovering = true;
-        targetPosition = originalPosition + new Vector2(0, hoverGlideAmount);
+        targetPosition = handPosition + new Vector2(0, hoverGlideAmount);
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        if (isDragging) return;
+        if (isDragging || !isInteractable) return;
         isHovering = false;
-        targetPosition = originalPosition;
+        targetPosition = handPosition;
     }
 
     public void OnPointerDown(PointerEventData eventData)
     {
+        if (!isInteractable) return;
         isDragging = true;
         canvasGroup.alpha = 0.5f;
     }
 
     public void OnDrag(PointerEventData eventData)
     {
+        if (!isInteractable) return;
+
+        // 1. Move the UI card with the mouse drag
         rectTransform.position += (Vector3)eventData.delta;
 
-        Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
-        if (Physics.Raycast(ray, out RaycastHit hit) && hit.collider.GetComponent<GridTileVisual>() != null)
+        // 2. Shoot a ray from the mouse screen position into the 3D world
+        Ray mouseRay = mainCamera.ScreenPointToRay(Input.mousePosition);
+
+        if (Physics.Raycast(mouseRay, out RaycastHit hit) && hit.collider.GetComponent<GridTileVisual>() != null)
         {
             GridTileVisual tile = hit.collider.GetComponent<GridTileVisual>();
 
-            if (lastHoveredStation != null && lastHoveredStation != tile.parentStation) lastHoveredStation.ClearAllHighlights();
+            // If we move from one station directly onto another, clear the old one first
+            if (lastHoveredStation != null && lastHoveredStation != tile.parentStation)
+            {
+                lastHoveredStation.ClearAllHighlights();
+            }
             lastHoveredStation = tile.parentStation;
 
-            bool isAllowedStation = ingredientData.validStations.Contains(tile.parentStation.stationType);
+            // 3. Figure out the shape size we are trying to preview
             bool willCook = ingredientData.isCookable && tile.parentStation.stationType == StationType.Stove;
-            Vector2Int[] offsetsToCheck = (willCook && ingredientData.cookedPrefab != null) ? ingredientData.cookedPrefab.GetComponent<Draggable3DItem>().myData.shapeOffsets : ingredientData.shapeOffsets;
+            Vector2Int[] offsetsToPreview = ingredientData.shapeOffsets;
 
-            bool fitsInGrid = tile.parentStation.CanPlaceItem(tile.gridCoordinate, offsetsToCheck);
-            tile.parentStation.HighlightTiles(tile.gridCoordinate, offsetsToCheck, isAllowedStation && fitsInGrid);
+            if (willCook && ingredientData.cookedPrefab != null)
+            {
+                Draggable3DItem cookedScript = ingredientData.cookedPrefab.GetComponent<Draggable3DItem>();
+                if (cookedScript != null) offsetsToPreview = cookedScript.myData.shapeOffsets;
+            }
+
+            // 4. Run the validity checks
+            bool isAllowedStation = ingredientData.validStations.Contains(tile.parentStation.stationType);
+            bool fitsInGrid = tile.parentStation.CanPlaceItem(tile.gridCoordinate, offsetsToPreview);
+
+            // 5. Tell the station to color the tiles (Green if both true, Red if either false)
+            tile.parentStation.HighlightTiles(tile.gridCoordinate, offsetsToPreview, isAllowedStation && fitsInGrid);
         }
         else if (lastHoveredStation != null)
         {
+            // If the mouse leaves the grid area entirely, turn off the highlights
             lastHoveredStation.ClearAllHighlights();
             lastHoveredStation = null;
         }
@@ -80,6 +112,7 @@ public class CardDragTransition : MonoBehaviour, IPointerEnterHandler, IPointerE
 
     public void OnPointerUp(PointerEventData eventData)
     {
+        if (!isInteractable) return;
         isDragging = false;
         if (lastHoveredStation != null) lastHoveredStation.ClearAllHighlights();
 
@@ -106,24 +139,23 @@ public class CardDragTransition : MonoBehaviour, IPointerEnterHandler, IPointerE
                     itemScript.currentStation = tile.parentStation;
                     itemScript.currentCoordinate = tile.gridCoordinate;
 
-                    // UPDATED: Pass the actual item, not 'true'
                     tile.parentStation.SetOccupancy(tile.gridCoordinate, itemScript.myData.shapeOffsets, itemScript);
 
                     if (willCook) itemScript.StartCookingLock(ingredientData.cookTime);
+                    itemScript.CheckForCombinations();
 
-                    itemScript.CheckForCombinations(); // NEW: Trigger combo check immediately
-
-                    ResetCardToHand();
+                    // NEW: Success! Remove from hand and destroy the UI card
+                    HandManager.Instance.RemoveCard(this);
+                    Destroy(gameObject);
                 }
             }
         }
 
-        if (!droppedSuccessfully) ResetCardToHand();
-    }
-
-    private void ResetCardToHand()
-    {
-        canvasGroup.alpha = 1f;
-        targetPosition = isHovering ? originalPosition + new Vector2(0, hoverGlideAmount) : originalPosition;
+        // If we missed the grid, snap back to the hand
+        if (!droppedSuccessfully)
+        {
+            canvasGroup.alpha = 1f;
+            targetPosition = handPosition; // Fall back into the calculated slot
+        }
     }
 }
