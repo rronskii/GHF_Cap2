@@ -1,8 +1,11 @@
 using System.Collections;
 using UnityEngine;
+using System;
 
 public class StationCameraController : MonoBehaviour
 {
+    public static event Action<int> OnStationChanged;
+
     [Header("Station Views (Transforms)")]
     [Tooltip("0 = Cooking, 1 = Inventory, 2 = Order")]
     public Transform[] stationViews;
@@ -32,17 +35,20 @@ public class StationCameraController : MonoBehaviour
     {
         if (isTransitioning || stationViews.Length == 0) return;
 
+        // NEW: If the dialogue manager exists AND is currently showing text, lock the camera!
+        if (DialogueManager.Instance != null && DialogueManager.Instance.IsDialogueActive) return;
+
         HandleKeyboardInput();
         HandleMouseEdgeInput();
     }
 
     private void HandleKeyboardInput()
     {
-        if (Input.GetKeyDown(KeyCode.LeftArrow))
+        if (Input.GetKeyDown(KeyCode.A))
         {
             ChangeStation(1);
         }
-        else if (Input.GetKeyDown(KeyCode.RightArrow))
+        else if (Input.GetKeyDown(KeyCode.D))
         {
             ChangeStation(-1);
         }
@@ -82,12 +88,13 @@ public class StationCameraController : MonoBehaviour
     private void ChangeStation(int direction)
     {
         currentStationIndex += direction;
-
         if (currentStationIndex < 0) currentStationIndex = stationViews.Length - 1;
         else if (currentStationIndex >= stationViews.Length) currentStationIndex = 0;
 
-        // NEW: Tell the HandManager we moved!
         if (HandManager.Instance != null) HandManager.Instance.UpdateStationState(currentStationIndex);
+
+        // NEW: Broadcast the change!
+        OnStationChanged?.Invoke(currentStationIndex);
 
         StartCoroutine(TransitionCameraRoutine(stationViews[currentStationIndex]));
     }

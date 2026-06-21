@@ -19,6 +19,8 @@ public class OrderTicketUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     private Canvas localCanvas;
     private Vector3 targetScale = Vector3.one;
     private RectTransform rectTransform;
+    // Add this variable to track where the ticket should slide to
+    private Vector2 targetAnchoredPosition;
 
     private void Awake()
     {
@@ -38,20 +40,27 @@ public class OrderTicketUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         }
     }
 
-    // NEW: Method for the OrderManager to smoothly move the ticket up the stack
+    // Update this method
     public void SetTargetPosition(Vector2 targetPos, int index)
     {
-        // Lower index (older tickets) get a HIGHER base sorting order so they render on top
         baseSortingOrder = 100 - index;
         localCanvas.sortingOrder = baseSortingOrder;
 
-        // You could use a coroutine to smooth lerp this position later if you want them to slide up!
-        rectTransform.anchoredPosition = targetPos;
+        // REPLACED: Instead of snapping instantly, we set the target for the Update loop
+        targetAnchoredPosition = targetPos;
     }
 
+    // Update your Update() loop
     private void Update()
     {
+        // Smoothly handle the hover scaling
         transform.localScale = Vector3.Lerp(transform.localScale, targetScale, Time.deltaTime * smoothSpeed);
+
+        // NEW: Smoothly slide the ticket up or down the UI layout if its index changes
+        if (Vector2.Distance(rectTransform.anchoredPosition, targetAnchoredPosition) > 0.1f)
+        {
+            rectTransform.anchoredPosition = Vector2.Lerp(rectTransform.anchoredPosition, targetAnchoredPosition, Time.deltaTime * smoothSpeed);
+        }
     }
 
     public void OnPointerEnter(PointerEventData eventData)

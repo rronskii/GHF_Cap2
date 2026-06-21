@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 1371634016759131695}
   - component: {fileID: 38968331449689033}
   - component: {fileID: 3385384378718658699}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: CookedHotdog
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -70,8 +70,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   myData: {fileID: 11400000, guid: 5c14b116e3dfde0478c0bed8a9517535, type: 2}
   timerUIPrefab: {fileID: 6962704026674162974, guid: fa5adf27f1494f941a4311327c94d000, type: 3}
+  gridLayerMask:
+    serializedVersion: 2
+    m_Bits: 128
   currentStation: {fileID: 0}
   currentCoordinate: {x: 0, y: 0}
+  isLocked: 0
 --- !u!1001 &6890728062396073403
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -139,6 +143,14 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 4572ffa731c3eb44983dab2729781f6c, type: 3}
       propertyPath: m_Name
       value: hotdog cooked (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 4572ffa731c3eb44983dab2729781f6c, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 1869004960016252962, guid: 4572ffa731c3eb44983dab2729781f6c, type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 3681652847580564254, guid: 4572ffa731c3eb44983dab2729781f6c, type: 3}
       propertyPath: m_LocalPosition.z
@@ -221,6 +233,14 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 4572ffa731c3eb44983dab2729781f6c, type: 3}
       propertyPath: m_Name
       value: hotdog cooked
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 4572ffa731c3eb44983dab2729781f6c, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 1869004960016252962, guid: 4572ffa731c3eb44983dab2729781f6c, type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 3681652847580564254, guid: 4572ffa731c3eb44983dab2729781f6c, type: 3}
       propertyPath: m_LocalPosition.z

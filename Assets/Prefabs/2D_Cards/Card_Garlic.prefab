@@ -89,10 +89,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 361d34a1a8ea80e4ba65feb1a263acab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ingredientData: {fileID: 11400000, guid: 45d86bcded9cdae418d51d930a0d836e, type: 2}
+  ingredientData: {fileID: 11400000, guid: 9eca1ff648a21a94fb0065ed79a45f61, type: 2}
   hoverGlideAmount: 50
   transitionSpeed: 10
   isInteractable: 1
+  gridLayerMask:
+    serializedVersion: 2
+    m_Bits: 128
 --- !u!225 &974273628477570493
 CanvasGroup:
   m_ObjectHideFlags: 0

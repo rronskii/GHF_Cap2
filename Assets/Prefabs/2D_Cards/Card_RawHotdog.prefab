@@ -93,6 +93,9 @@ MonoBehaviour:
   hoverGlideAmount: 50
   transitionSpeed: 10
   isInteractable: 1
+  gridLayerMask:
+    serializedVersion: 2
+    m_Bits: 128
 --- !u!225 &974273628477570493
 CanvasGroup:
   m_ObjectHideFlags: 0

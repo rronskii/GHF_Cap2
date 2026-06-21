@@ -67,5 +67,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   myData: {fileID: 11400000, guid: c9e33be1a39fe934487df0aaa52c216a, type: 2}
+  timerUIPrefab: {fileID: 0}
+  gridLayerMask:
+    serializedVersion: 2
+    m_Bits: 128
   currentStation: {fileID: 0}
   currentCoordinate: {x: 0, y: 0}

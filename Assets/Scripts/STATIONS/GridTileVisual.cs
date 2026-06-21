@@ -14,7 +14,8 @@ public class GridTileVisual : MonoBehaviour
 
     private void Awake()
     {
-        meshRenderer = GetComponent<MeshRenderer>();
+        // UPDATED: Now looks for the renderer on itself OR its children
+        meshRenderer = GetComponentInChildren<MeshRenderer>();
         originalColor = meshRenderer.material.color;
         parentStation = GetComponentInParent<BaseStation>();
     }

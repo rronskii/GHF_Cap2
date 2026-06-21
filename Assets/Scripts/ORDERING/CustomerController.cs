@@ -1,82 +1,86 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
 public class CustomerController : MonoBehaviour
 {
+    public static event Action OnTutorialOrderTaken;
+
     public DishData orderedDish;
+    public int currentLineIndex;
+    public bool isWalkingAway = false;
+    private bool isClaiming = false;
 
-    private float moveSpeed = 10f;
-    private int currentLineIndex = -1;
+    // Public getter so the OrderManager knows if they are still shifting in line
+    public bool isMoving { get; private set; } = true;
+
     private Vector3 targetWorldPosition;
-    private bool isWalkingAway = false;
+    public float moveSpeed = 5f;
 
-    private Renderer[] myRenderers;
-
-    private void Awake()
+    private void Start()
     {
-        myRenderers = GetComponentsInChildren<Renderer>();
+        targetWorldPosition = transform.position;
     }
 
     private void Update()
     {
-        // Smoothly slide towards whatever line position the OrderManager assigns us
-        if (currentLineIndex != -1 || isWalkingAway)
+        // Smoothly glide towards the target position
+        if (Vector3.Distance(transform.position, targetWorldPosition) > 0.05f)
         {
             transform.position = Vector3.MoveTowards(transform.position, targetWorldPosition, moveSpeed * Time.deltaTime);
+            isMoving = true;
+        }
+        else
+        {
+            isMoving = false;
+
+            // NEW: If they are walking away and have successfully reached the exit point vector, delete them
+            if (isWalkingAway)
+            {
+                Destroy(gameObject);
+            }
         }
     }
 
     public void UpdateLinePosition(Vector3 newPosition, int index)
     {
+        // Guard Clause: Prevent redundant assignments from overwriting their active walk state every frame
+        if (currentLineIndex == index && targetWorldPosition == newPosition) return;
+
         currentLineIndex = index;
         targetWorldPosition = newPosition;
+        isMoving = true;
+    }
+
+    public void MoveToClaimLine(Vector3 newPosition, int index)
+    {
+        if (currentLineIndex == index && targetWorldPosition == newPosition) return;
+
+        isClaiming = true;
+        currentLineIndex = index;
+        targetWorldPosition = newPosition;
+        isMoving = true;
     }
 
     private void OnMouseDown()
     {
-        // Only accept clicks if they are standing at the front of the line (Index 0)
-        if (currentLineIndex == 0 && !isWalkingAway)
+        if (DialogueManager.Instance != null && DialogueManager.Instance.IsDialogueActive) return;
+
+        // Prevent clicking to take an order if the customer hasn't fully stepped up yet
+        if (isMoving) return;
+
+        if (currentLineIndex == 0 && !isWalkingAway && !isClaiming)
         {
             OrderManager.Instance.TakeFrontCustomerOrder(this);
+            OnTutorialOrderTaken?.Invoke();
         }
     }
 
-    public void LeaveCounterAndDestroy()
+    // NEW: Accepts the exit point vector passed down from the OrderManager
+    public void LeaveCounterAndDestroy(Vector3 exitWorldPosition)
     {
         isWalkingAway = true;
-        currentLineIndex = -1;
-
-        // Walk right off-screen
-        targetWorldPosition = transform.position + new Vector3(30f, 0, 0);
-
-        StartCoroutine(FadeOutRoutine());
-    }
-
-    private IEnumerator FadeOutRoutine()
-    {
-        yield return new WaitForSeconds(0.5f); // Let them walk a bit before starting fade
-
-        float duration = 1f;
-        float elapsed = 0f;
-
-        // Change materials to Transparent mode if needed, or simply fade standard properties
-        while (elapsed < duration)
-        {
-            elapsed += Time.deltaTime;
-            float alpha = Mathf.Lerp(1f, 0f, elapsed / duration);
-
-            foreach (Renderer ren in myRenderers)
-            {
-                if (ren.material.HasProperty("_Color"))
-                {
-                    Color c = ren.material.color;
-                    c.a = alpha;
-                    ren.material.color = c;
-                }
-            }
-            yield return null;
-        }
-
-        Destroy(gameObject);
+        targetWorldPosition = exitWorldPosition; 
+        isMoving = true;
     }
 }

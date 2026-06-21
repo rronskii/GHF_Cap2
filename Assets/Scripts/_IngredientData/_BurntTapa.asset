@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9bb50e5e47da741438d10ed09a235ed3, type: 3}
+  m_Name: _BurntTapa
+  m_EditorClassIdentifier: 
+  ingredientID: 12
+  displayName: Burnt Tapa
+  shapeOffsets:
+  - {x: 0, y: 0}
+  - {x: 1, y: 0}
+  worldPrefab: {fileID: 547354671745231521, guid: 732f9ff121d748d4ab77ff2f1b9cb7d0, type: 3}
+  basePoints: 50
+  validStations: 00000000010000000300000002000000
+  isCookable: 0
+  cookTime: 5
+  cookedPrefab: {fileID: 8059979155723304973, guid: 3679e378a27dc19418239cd5d4b99148, type: 3}
+  instantCookOnStove: 0
+  isChoppable: 0
+  choppedPrefab: {fileID: 0}
+  canBurn: 0
+  burnTime: 5
+  burntPrefab: {fileID: 0}
+  combinations: []

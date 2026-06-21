@@ -6,7 +6,9 @@ public class DishData : ScriptableObject
 {
     public string dishName;
     public List<IngredientData> requiredIngredients; // The exact ingredients needed
-    public GameObject windowPrefab;                 // The 3D model spawned on the counter window
+    public GameObject windowPrefab;                 // The 3D model spawned on the counter window\
+    [Header("Economy")]
+    public int basePrice = 0; // e.g., 50 for Silog, 100 for Tapsilog
 
     // Helper method to check if a plate's contents match this recipe perfectly
     public bool MatchesIngredients(List<IngredientData> plateIngredients)

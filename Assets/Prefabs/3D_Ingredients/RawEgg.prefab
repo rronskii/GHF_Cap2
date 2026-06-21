@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 1324916982093240158}
   - component: {fileID: 8740067215438509746}
   - component: {fileID: 6030669168047240871}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Egg
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -96,7 +96,7 @@ GameObject:
   - component: {fileID: 1371634016759131695}
   - component: {fileID: 38968331449689033}
   - component: {fileID: 3385384378718658699}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: RawEgg
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -153,5 +153,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   myData: {fileID: 11400000, guid: c9e33be1a39fe934487df0aaa52c216a, type: 2}
+  timerUIPrefab: {fileID: 0}
+  gridLayerMask:
+    serializedVersion: 2
+    m_Bits: 128
   currentStation: {fileID: 0}
   currentCoordinate: {x: 0, y: 0}

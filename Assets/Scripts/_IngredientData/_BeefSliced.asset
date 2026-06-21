@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9bb50e5e47da741438d10ed09a235ed3, type: 3}
+  m_Name: _BeefSliced
+  m_EditorClassIdentifier: 
+  ingredientID: 11
+  displayName: Sliced Beef
+  shapeOffsets:
+  - {x: 0, y: 0}
+  - {x: 1, y: 0}
+  worldPrefab: {fileID: 547354671745231521, guid: ebd439125537c014e808b8120eb3e01d, type: 3}
+  basePoints: 0
+  validStations: 000000000100000003000000
+  isCookable: 1
+  cookTime: 3
+  cookedPrefab: {fileID: 547354671745231521, guid: 0704dd3973cabff4d908382fa929bac3, type: 3}
+  instantCookOnStove: 0
+  isChoppable: 0
+  choppedPrefab: {fileID: 0}
+  combinations: []

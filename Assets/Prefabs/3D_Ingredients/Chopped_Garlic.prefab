@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 1371634016759131695}
   - component: {fileID: 38968331449689033}
   - component: {fileID: 3385384378718658699}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Chopped_Garlic
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -68,6 +68,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   myData: {fileID: 11400000, guid: 45d86bcded9cdae418d51d930a0d836e, type: 2}
+  timerUIPrefab: {fileID: 6962704026674162974, guid: fa5adf27f1494f941a4311327c94d000, type: 3}
+  gridLayerMask:
+    serializedVersion: 2
+    m_Bits: 128
   currentStation: {fileID: 0}
   currentCoordinate: {x: 0, y: 0}
 --- !u!1001 &8460955408812090225
@@ -121,6 +125,10 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: e67868419ac6ec444a9d3dd74e156640, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -4386572125101676502, guid: e67868419ac6ec444a9d3dd74e156640, type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: -4072548755889853709, guid: e67868419ac6ec444a9d3dd74e156640, type: 3}
       propertyPath: m_LocalScale.x
@@ -177,6 +185,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: e67868419ac6ec444a9d3dd74e156640, type: 3}
       propertyPath: m_Name
       value: garlic cloves
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: e67868419ac6ec444a9d3dd74e156640, type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 2834455701579547633, guid: e67868419ac6ec444a9d3dd74e156640, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'

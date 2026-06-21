@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 1371634016759131695}
   - component: {fileID: 38968331449689033}
   - component: {fileID: 3385384378718658699}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: RawHotdog
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -69,6 +69,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   myData: {fileID: 11400000, guid: 5c7073438232fbd4098eea4cb7f0e95a, type: 2}
+  timerUIPrefab: {fileID: 6962704026674162974, guid: fa5adf27f1494f941a4311327c94d000, type: 3}
+  gridLayerMask:
+    serializedVersion: 2
+    m_Bits: 128
   currentStation: {fileID: 0}
   currentCoordinate: {x: 0, y: 0}
 --- !u!1001 &110324943356815641
@@ -138,6 +142,14 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 6b7a8a0965f940d408a88e875b7d7824, type: 3}
       propertyPath: m_Name
       value: hotdog (2)
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 6b7a8a0965f940d408a88e875b7d7824, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 1869004960016252962, guid: 6b7a8a0965f940d408a88e875b7d7824, type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -216,6 +228,14 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 6b7a8a0965f940d408a88e875b7d7824, type: 3}
       propertyPath: m_Name
       value: hotdog (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 6b7a8a0965f940d408a88e875b7d7824, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 1869004960016252962, guid: 6b7a8a0965f940d408a88e875b7d7824, type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

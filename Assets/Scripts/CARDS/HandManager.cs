@@ -18,27 +18,46 @@ public class HandManager : MonoBehaviour
     private List<CardDragTransition> currentCards = new List<CardDragTransition>();
     private CanvasGroup canvasGroup;
 
+    private int currentStationIndex = 0;
+
     private void Awake()
     {
         Instance = this;
         canvasGroup = GetComponent<CanvasGroup>();
     }
 
-    // UPDATED: Now accepts a specific pool of cards passed directly from the clicked station
-    public void DrawCardFromPool(GameObject[] cardPool)
+    private void Update()
     {
-        if (currentCards.Count >= maxCards) return; // Hand is full
-        if (cardPool == null || cardPool.Length == 0) return; // Guard clause for empty station arrays
+        // NEW: Smoothly handle visibility based on Dialogue AND Station views
+        bool hideForDialogue = DialogueManager.Instance != null && DialogueManager.Instance.IsDialogueActive;
+        bool hideForStation = (currentStationIndex == 2); // Hide at Order Window
 
-        // 1. Pick a random card prefab from the provided pool
-        int randomIndex = Random.Range(0, cardPool.Length);
-        GameObject newCardObj = Instantiate(cardPool[randomIndex], handContainer);
+        float targetAlpha = (hideForDialogue || hideForStation) ? 0f : 1f;
 
+        // Smooth fade in/out
+        canvasGroup.alpha = Mathf.MoveTowards(canvasGroup.alpha, targetAlpha, Time.deltaTime * 10f);
+        canvasGroup.blocksRaycasts = (targetAlpha > 0.5f);
+    }
+
+    // UPDATED: Now accepts a specific pool of cards passed directly from the clicked station
+    // NEW: Replaces the old array-based DrawCardFromPool method
+    public bool TryDrawCard(GameObject cardPrefab)
+    {
+        if (currentCards.Count >= maxCards)
+        {
+            Debug.Log("[HandManager] Hand is full! Cannot draw card.");
+            return false;
+        }
+
+        if (cardPrefab == null) return false;
+
+        GameObject newCardObj = Instantiate(cardPrefab, handContainer);
         CardDragTransition newCardScript = newCardObj.GetComponent<CardDragTransition>();
         currentCards.Add(newCardScript);
 
-        // 2. Recalculate target positions for EVERY card so they slide to make room
         UpdateCardPositions(newCardScript);
+
+        return true; // Successfully added to hand
     }
 
     private void UpdateCardPositions(CardDragTransition freshlyDrawnCard = null)
@@ -70,24 +89,13 @@ public class HandManager : MonoBehaviour
     }
 
     // Called by the Camera Controller when shifting stations
+    // Called by the Camera Controller when shifting stations
     public void UpdateStationState(int stationIndex)
     {
-        // 0 = Cooking, 1 = Inventory, 2 = Order
+        currentStationIndex = stationIndex;
 
-        // Handle Visibility
-        if (stationIndex == 2)
-        {
-            canvasGroup.alpha = 0f;
-            canvasGroup.blocksRaycasts = false;
-        }
-        else
-        {
-            canvasGroup.alpha = 1f;
-            canvasGroup.blocksRaycasts = true;
-        }
-
-        // Handle Interactability
-        bool canDrag = (stationIndex == 0); // Only interactable at Cooking Station
+        // NEW: Cards should be interactable at the Stove (0) AND the Inventory (1) so we can return them!
+        bool canDrag = (stationIndex == 0 || stationIndex == 1);
         foreach (CardDragTransition card in currentCards)
         {
             card.isInteractable = canDrag;
