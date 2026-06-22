@@ -28,15 +28,38 @@ public class HandManager : MonoBehaviour
 
     private void Update()
     {
-        // NEW: Smoothly handle visibility based on Dialogue AND Station views
+        // Smoothly handle visibility based on Dialogue AND Station views
         bool hideForDialogue = DialogueManager.Instance != null && DialogueManager.Instance.IsDialogueActive;
         bool hideForStation = (currentStationIndex == 2); // Hide at Order Window
 
         float targetAlpha = (hideForDialogue || hideForStation) ? 0f : 1f;
 
-        // Smooth fade in/out
         canvasGroup.alpha = Mathf.MoveTowards(canvasGroup.alpha, targetAlpha, Time.deltaTime * 10f);
         canvasGroup.blocksRaycasts = (targetAlpha > 0.5f);
+
+        // --- NEW: HOTKEY DRAGGING ---
+        // Do not allow hotkeys if the UI is currently hidden or fading out
+        if (hideForDialogue || targetAlpha < 0.5f) return;
+
+        for (int i = 0; i < currentCards.Count; i++)
+        {
+            // Maps Index 0 to Key 1, Index 1 to Key 2, etc. (Safely caps at 9)
+            if (i > 8) break;
+            KeyCode key = KeyCode.Alpha1 + i;
+
+            if (Input.GetKeyDown(key))
+            {
+                currentCards[i].SimulateKeyDown();
+            }
+            else if (Input.GetKey(key))
+            {
+                currentCards[i].SimulateKeyHold();
+            }
+            else if (Input.GetKeyUp(key))
+            {
+                currentCards[i].SimulateKeyUp();
+            }
+        }
     }
 
     // UPDATED: Now accepts a specific pool of cards passed directly from the clicked station

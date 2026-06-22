@@ -15,7 +15,7 @@ public class WindowDishInteractable : MonoBehaviour
         if (isServing) return;
 
         // Note: Make sure the method name matches what we just added to OrderManager
-        OrderManager.Instance.TryServeDishToTopTicket(this, associatedDishData);
+        OrderManager.Instance.TryServeDishToOldestMatchingTicket(this, associatedDishData);
     }
 
     // --- NEW: RIGHT CLICK TO TRASH ---

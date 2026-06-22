@@ -1,81 +1,142 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using TMPro;
 
-[RequireComponent(typeof(Canvas))]
-public class OrderTicketUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+public class OrderTicketUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
 {
-    [Header("UI Text References")]
-    [SerializeField] private TextMeshProUGUI dishNameText;
-    [SerializeField] private TextMeshProUGUI ingredientsListText;
+    [Header("UI References")]
+    public TextMeshProUGUI ordersText;
 
-    [Header("Hover Settings")]
-    [SerializeField] private float hoverScaleFactor = 1.15f;
-    [SerializeField] private float smoothSpeed = 10f;
+    [Header("Hover Settings (Window Station)")]
+    public float windowHoverScale = 1.15f; // Tweak this in Inspector to change how big it gets!
 
-    [HideInInspector] public DishData assignedDish;
-    [HideInInspector] public int baseSortingOrder = 0; // NEW: Remembers where it belongs in the visual stack
+    [Header("Hide Settings (Other Stations)")]
+    public Vector2 hiddenBaseOffset = new Vector2(0, 150f);   // Shifts it up to hide
+    public Vector2 hiddenHoverOffset = new Vector2(0, -120f); // Shifts it down when hovered
 
-    private Canvas localCanvas;
-    private Vector3 targetScale = Vector3.one;
+    [HideInInspector] public CustomerController assignedCustomer;
+
+    public List<DishData> pendingDishes = new List<DishData>();
+    private List<DishData> completedDishes = new List<DishData>();
+
     private RectTransform rectTransform;
-    // Add this variable to track where the ticket should slide to
-    private Vector2 targetAnchoredPosition;
+    private Vector2 targetPosition;
+    private Vector3 targetScale = Vector3.one;
+    private Vector2 basePosition;
+
+    private bool isHovered = false;
+    private bool isWindowStation = true;
 
     private void Awake()
     {
-        localCanvas = GetComponent<Canvas>();
         rectTransform = GetComponent<RectTransform>();
     }
 
-    public void SetupTicket(DishData dish)
+    private void OnEnable()
     {
-        assignedDish = dish;
-        dishNameText.text = dish.dishName;
+        StationCameraController.OnStationChanged += HandleStationChange;
+    }
 
-        ingredientsListText.text = "";
-        foreach (IngredientData ingredient in dish.requiredIngredients)
+    private void OnDisable()
+    {
+        StationCameraController.OnStationChanged -= HandleStationChange;
+    }
+
+    private void HandleStationChange(int stationIndex)
+    {
+        // Station 2 is the Order Window
+        isWindowStation = (stationIndex == 2);
+        UpdateTargetTransforms();
+    }
+
+    public void SetupTicket(List<DishData> orderedDishes)
+    {
+        pendingDishes = new List<DishData>(orderedDishes);
+        UpdateTicketText();
+    }
+
+    public void MarkDishServed(DishData dish)
+    {
+        if (pendingDishes.Contains(dish))
         {
-            ingredientsListText.text += $"- {ingredient.displayName}\n";
+            pendingDishes.Remove(dish);
+            completedDishes.Add(dish);
+            UpdateTicketText();
         }
     }
 
-    // Update this method
-    public void SetTargetPosition(Vector2 targetPos, int index)
+    public bool IsFullyServed()
     {
-        baseSortingOrder = 100 - index;
-        localCanvas.sortingOrder = baseSortingOrder;
-
-        // REPLACED: Instead of snapping instantly, we set the target for the Update loop
-        targetAnchoredPosition = targetPos;
+        return pendingDishes.Count == 0;
     }
 
-    // Update your Update() loop
+    private void UpdateTicketText()
+    {
+        string displayText = "";
+
+        foreach (DishData d in completedDishes)
+        {
+            displayText += $"<s><color=#555555>{d.dishName}</color></s>\n";
+        }
+
+        foreach (DishData d in pendingDishes)
+        {
+            displayText += $"{d.dishName}\n";
+        }
+
+        ordersText.text = displayText;
+    }
+
+    public void SetTargetPosition(Vector2 newPos, int index)
+    {
+        basePosition = newPos;
+        UpdateTargetTransforms();
+    }
+
+    // UPDATED: Now handles both Position and Scale based on the current station!
+    private void UpdateTargetTransforms()
+    {
+        if (isWindowStation)
+        {
+            targetPosition = basePosition; // Stays exactly in place
+            targetScale = isHovered ? new Vector3(windowHoverScale, windowHoverScale, 1f) : Vector3.one;
+        }
+        else
+        {
+            targetPosition = basePosition + hiddenBaseOffset + (isHovered ? hiddenHoverOffset : Vector2.zero);
+            targetScale = Vector3.one; // Keep normal scale
+        }
+    }
+
     private void Update()
     {
-        // Smoothly handle the hover scaling
-        transform.localScale = Vector3.Lerp(transform.localScale, targetScale, Time.deltaTime * smoothSpeed);
-
-        // NEW: Smoothly slide the ticket up or down the UI layout if its index changes
-        if (Vector2.Distance(rectTransform.anchoredPosition, targetAnchoredPosition) > 0.1f)
-        {
-            rectTransform.anchoredPosition = Vector2.Lerp(rectTransform.anchoredPosition, targetAnchoredPosition, Time.deltaTime * smoothSpeed);
-        }
+        // Smoothly glide position and scale every frame
+        rectTransform.anchoredPosition = Vector2.Lerp(rectTransform.anchoredPosition, targetPosition, Time.deltaTime * 15f);
+        rectTransform.localScale = Vector3.Lerp(rectTransform.localScale, targetScale, Time.deltaTime * 15f);
     }
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        targetScale = Vector3.one * hoverScaleFactor;
-
-        localCanvas.overrideSorting = true;
-        localCanvas.sortingOrder = 999; // Pop to very front on hover
+        if (DialogueManager.Instance != null && DialogueManager.Instance.IsDialogueActive) return;
+        isHovered = true;
+        transform.SetAsLastSibling();
+        UpdateTargetTransforms();
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        targetScale = Vector3.one;
+        isHovered = false;
+        UpdateTargetTransforms();
+    }
 
-        localCanvas.overrideSorting = true;
-        localCanvas.sortingOrder = baseSortingOrder; // Return to its proper place in the stack
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        if (DialogueManager.Instance != null && DialogueManager.Instance.IsDialogueActive) return;
+
+        if (OrderManager.Instance != null)
+        {
+            OrderManager.Instance.TryServeOldestDishToTicket(this);
+        }
     }
 }

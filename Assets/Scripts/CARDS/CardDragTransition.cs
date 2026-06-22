@@ -68,48 +68,23 @@ public class CardDragTransition : MonoBehaviour, IPointerEnterHandler, IPointerE
         canvasGroup.alpha = 0.5f;
     }
 
+    public void OnPointerUp(PointerEventData eventData)
+    {
+        if (DialogueManager.Instance != null && DialogueManager.Instance.IsDialogueActive) return;
+        AttemptDrop();
+    }
+
     public void OnDrag(PointerEventData eventData)
     {
         if (DialogueManager.Instance != null && DialogueManager.Instance.IsDialogueActive) return;
-
         if (!isInteractable) return;
 
         rectTransform.position += (Vector3)eventData.delta;
 
-        Ray mouseRay = mainCamera.ScreenPointToRay(Input.mousePosition);
-
-        if (Physics.Raycast(mouseRay, out RaycastHit hit, Mathf.Infinity, gridLayerMask))
-        {
-            GridTileVisual tile = hit.collider.GetComponent<GridTileVisual>();
-
-            if (lastHoveredStation != null && lastHoveredStation != tile.parentStation)
-            {
-                lastHoveredStation.ClearAllHighlights();
-            }
-            lastHoveredStation = tile.parentStation;
-
-            bool willCook = ingredientData.isCookable && tile.parentStation.stationType == StationType.Stove;
-            Vector2Int[] offsetsToPreview = ingredientData.shapeOffsets;
-
-            if (willCook && ingredientData.cookedPrefab != null)
-            {
-                Draggable3DItem cookedScript = ingredientData.cookedPrefab.GetComponent<Draggable3DItem>();
-                if (cookedScript != null) offsetsToPreview = cookedScript.myData.shapeOffsets;
-            }
-
-            bool isAllowedStation = ingredientData.validStations.Contains(tile.parentStation.stationType);
-            bool fitsInGrid = tile.parentStation.CanPlaceItem(tile.gridCoordinate, offsetsToPreview);
-
-            tile.parentStation.HighlightTiles(tile.gridCoordinate, offsetsToPreview, isAllowedStation && fitsInGrid);
-        }
-        else if (lastHoveredStation != null)
-        {
-            lastHoveredStation.ClearAllHighlights();
-            lastHoveredStation = null;
-        }
+        UpdateGridHighlighting();
     }
 
-    public void OnPointerUp(PointerEventData eventData)
+    public void AttemptDrop()
     {
         if (!isInteractable) return;
         isDragging = false;
@@ -162,6 +137,65 @@ public class CardDragTransition : MonoBehaviour, IPointerEnterHandler, IPointerE
             canvasGroup.alpha = 1f;
             targetPosition = handPosition;
         }
+    }
+
+    private void UpdateGridHighlighting()
+    {
+        Ray mouseRay = mainCamera.ScreenPointToRay(Input.mousePosition);
+
+        if (Physics.Raycast(mouseRay, out RaycastHit hit, Mathf.Infinity, gridLayerMask))
+        {
+            GridTileVisual tile = hit.collider.GetComponent<GridTileVisual>();
+
+            if (lastHoveredStation != null && lastHoveredStation != tile.parentStation)
+            {
+                lastHoveredStation.ClearAllHighlights();
+            }
+            lastHoveredStation = tile.parentStation;
+
+            bool willCook = ingredientData.isCookable && tile.parentStation.stationType == StationType.Stove;
+            Vector2Int[] offsetsToPreview = ingredientData.shapeOffsets;
+
+            if (willCook && ingredientData.cookedPrefab != null)
+            {
+                Draggable3DItem cookedScript = ingredientData.cookedPrefab.GetComponent<Draggable3DItem>();
+                if (cookedScript != null) offsetsToPreview = cookedScript.myData.shapeOffsets;
+            }
+
+            bool isAllowedStation = ingredientData.validStations.Contains(tile.parentStation.stationType);
+            bool fitsInGrid = tile.parentStation.CanPlaceItem(tile.gridCoordinate, offsetsToPreview);
+
+            tile.parentStation.HighlightTiles(tile.gridCoordinate, offsetsToPreview, isAllowedStation && fitsInGrid);
+        }
+        else if (lastHoveredStation != null)
+        {
+            lastHoveredStation.ClearAllHighlights();
+            lastHoveredStation = null;
+        }
+    }
+
+    // --- NEW: HOTKEY SIMULATION ---
+    public void SimulateKeyDown()
+    {
+        if (!isInteractable) return;
+        isDragging = true;
+        canvasGroup.alpha = 0.5f;
+    }
+
+    public void SimulateKeyHold()
+    {
+        if (!isInteractable || !isDragging) return;
+
+        // Instantly snaps the card to wherever the mouse cursor currently is
+        rectTransform.position = Input.mousePosition;
+
+        UpdateGridHighlighting();
+    }
+
+    public void SimulateKeyUp()
+    {
+        if (!isInteractable || !isDragging) return;
+        AttemptDrop();
     }
 
     private void OnEnable()

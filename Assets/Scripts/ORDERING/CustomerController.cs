@@ -1,12 +1,14 @@
 using System;
 using System.Collections;
+
+using System.Collections.Generic;
 using UnityEngine;
 
 public class CustomerController : MonoBehaviour
 {
     public static event Action OnTutorialOrderTaken;
 
-    public DishData orderedDish;
+    public List<DishData> orderedDishes = new List<DishData>();
     public int currentLineIndex;
     public bool isWalkingAway = false;
     private bool isClaiming = false;
@@ -76,11 +78,31 @@ public class CustomerController : MonoBehaviour
         }
     }
 
-    // NEW: Accepts the exit point vector passed down from the OrderManager
     public void LeaveCounterAndDestroy(Vector3 exitWorldPosition)
     {
+        StartCoroutine(LeaveRoutine(exitWorldPosition));
+    }
+
+    private IEnumerator LeaveRoutine(Vector3 exitWorldPosition)
+    {
+        // Wait 0.5s for the final dish to reach their hands
+        yield return new WaitForSeconds(0.5f);
+
         isWalkingAway = true;
-        targetWorldPosition = exitWorldPosition; 
+
+        // PHASE 1: Walk straight forward to align with the Exit's Z coordinate
+        Vector3 stepOutPos = new Vector3(transform.position.x, transform.position.y, exitWorldPosition.z);
+        targetWorldPosition = stepOutPos;
+        isMoving = true;
+
+        // Wait until they reach the step-out position
+        while (Vector3.Distance(transform.position, stepOutPos) > 0.05f)
+        {
+            yield return null;
+        }
+
+        // PHASE 2: Turn and walk to the actual Exit point
+        targetWorldPosition = exitWorldPosition;
         isMoving = true;
     }
 }

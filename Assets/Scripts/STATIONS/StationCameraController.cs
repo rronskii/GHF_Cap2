@@ -39,7 +39,6 @@ public class StationCameraController : MonoBehaviour
         if (DialogueManager.Instance != null && DialogueManager.Instance.IsDialogueActive) return;
 
         HandleKeyboardInput();
-        HandleMouseEdgeInput();
     }
 
     private void HandleKeyboardInput()
@@ -51,37 +50,6 @@ public class StationCameraController : MonoBehaviour
         else if (Input.GetKeyDown(KeyCode.D))
         {
             ChangeStation(-1);
-        }
-    }
-
-    private void HandleMouseEdgeInput()
-    {
-        // Check if the mouse is at the extreme left or right of the screen
-        bool isAtLeftEdge = Input.mousePosition.x <= edgeThresholdPixels;
-        bool isAtRightEdge = Input.mousePosition.x >= Screen.width - edgeThresholdPixels;
-
-        // Are we holding down the mouse button? (For carrying items across screens)
-        bool isDragging = requireMouseDrag;
-
-        // Reset the trigger lock ONLY if the mouse leaves the edge areas
-        if (!isAtLeftEdge && !isAtRightEdge)
-        {
-            canTriggerEdgePan = true;
-        }
-
-        // Trigger transition if conditions are met
-        if (canTriggerEdgePan && isDragging)
-        {
-            if (isAtLeftEdge)
-            {
-                canTriggerEdgePan = false; // Lock until mouse leaves edge
-                ChangeStation(1);
-            }
-            else if (isAtRightEdge)
-            {
-                canTriggerEdgePan = false; // Lock until mouse leaves edge
-                ChangeStation(-1);
-            }
         }
     }
 
