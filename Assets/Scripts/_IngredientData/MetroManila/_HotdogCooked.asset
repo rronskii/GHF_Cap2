@@ -10,23 +10,23 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9bb50e5e47da741438d10ed09a235ed3, type: 3}
-  m_Name: _CookedTapa
+  m_Name: _HotdogCooked
   m_EditorClassIdentifier: 
-  ingredientID: 12
-  displayName: Cooked Tapa
+  ingredientID: 2
+  displayName: CookedHotdog
   shapeOffsets:
   - {x: 0, y: 0}
   - {x: 1, y: 0}
-  worldPrefab: {fileID: 547354671745231521, guid: 0704dd3973cabff4d908382fa929bac3, type: 3}
-  basePoints: 50
-  validStations: 00000000010000000300000002000000
+  worldPrefab: {fileID: 8059979155723304973, guid: 3679e378a27dc19418239cd5d4b99148, type: 3}
+  basePoints: 35
+  validStations: 00000000010000000200000003000000
   isCookable: 0
-  cookTime: 5
-  cookedPrefab: {fileID: 8059979155723304973, guid: 3679e378a27dc19418239cd5d4b99148, type: 3}
+  cookTime: 4
+  cookedPrefab: {fileID: 0}
   instantCookOnStove: 0
   isChoppable: 0
   choppedPrefab: {fileID: 0}
   canBurn: 1
   burnTime: 10
-  burntPrefab: {fileID: 547354671745231521, guid: 732f9ff121d748d4ab77ff2f1b9cb7d0, type: 3}
+  burntPrefab: {fileID: 8059979155723304973, guid: ce06bcff08d8ad5478cb86150805e88d, type: 3}
   combinations: []

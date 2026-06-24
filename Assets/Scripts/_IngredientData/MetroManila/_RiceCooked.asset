@@ -29,7 +29,7 @@ MonoBehaviour:
   isChoppable: 0
   choppedPrefab: {fileID: 0}
   canBurn: 1
-  burnTime: 10
+  burnTime: 15
   burntPrefab: {fileID: 8059979155723304973, guid: 5e6d86adc9ed89e4d9e6a52e46822621, type: 3}
   combinations:
   - partnerIngredient: {fileID: 11400000, guid: b8dbbc89b27cf1247b0d3029c6308f04, type: 2}

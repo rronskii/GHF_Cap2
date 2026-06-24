@@ -198,6 +198,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 4c370ffe5dc517f4b9945d7db8298a47, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2693997423528400909}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 4c370ffe5dc517f4b9945d7db8298a47, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6617706191421335202}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 4c370ffe5dc517f4b9945d7db8298a47, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: -6528041055363659126}
   m_SourcePrefab: {fileID: 100100000, guid: 4c370ffe5dc517f4b9945d7db8298a47, type: 3}
 --- !u!4 &94296382084551164 stripped
 Transform:
@@ -243,9 +249,35 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   myData: {fileID: 11400000, guid: 1aea1f9e6f11d404ca2671d7f2c0d3e5, type: 2}
-  timerUIPrefab: {fileID: 6962704026674162974, guid: fa5adf27f1494f941a4311327c94d000, type: 3}
   gridLayerMask:
     serializedVersion: 2
     m_Bits: 128
   currentStation: {fileID: 0}
   currentCoordinate: {x: 0, y: 0}
+  currentRotationSteps: 0
+  isLocked: 0
+--- !u!114 &6617706191421335202
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 721933441287932742}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4ac854f7d327eb43b1221e125595856, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &-6528041055363659126
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 721933441287932742}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 35d0342ec07f8194baf300ecbba084a9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  timerUIPrefab: {fileID: 6962704026674162974, guid: fa5adf27f1494f941a4311327c94d000, type: 3}

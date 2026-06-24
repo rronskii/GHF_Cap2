@@ -13,6 +13,8 @@ GameObject:
   - component: {fileID: 8847186167957913777}
   - component: {fileID: 8580533962116672822}
   - component: {fileID: 974273628477570493}
+  - component: {fileID: 758709651240332420}
+  - component: {fileID: -8229898230465284249}
   m_Layer: 5
   m_Name: Card_RawBeef
   m_TagString: Untagged
@@ -89,13 +91,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 361d34a1a8ea80e4ba65feb1a263acab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ingredientData: {fileID: 11400000, guid: d3d68cae5b3a55f4482339ee07f2fc67, type: 2}
-  hoverGlideAmount: 50
-  transitionSpeed: 10
+  hoverGlideAmount: 135
+  smoothTime: 0.05
+  inventoryStationIndex: 0
   isInteractable: 1
-  gridLayerMask:
-    serializedVersion: 2
-    m_Bits: 128
+  isDragging: 0
+  currentStationIndex: 0
 --- !u!225 &974273628477570493
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -108,3 +109,38 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
+--- !u!114 &758709651240332420
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7663734427134479993}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 88d9baa6a00b38a44af451fb4f48144e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ingredientData: {fileID: 11400000, guid: d3d68cae5b3a55f4482339ee07f2fc67, type: 2}
+  gridLayerMask:
+    serializedVersion: 2
+    m_Bits: 128
+  rotationSteps: 0
+--- !u!114 &-8229898230465284249
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7663734427134479993}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 361d34a1a8ea80e4ba65feb1a263acab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hoverGlideAmount: 1
+  smoothTime: 1
+  inventoryStationIndex: 1
+  isInteractable: 1
+  isDragging: 0
+  currentStationIndex: 0

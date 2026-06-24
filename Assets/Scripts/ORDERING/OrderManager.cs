@@ -8,6 +8,12 @@ public class OrderManager : MonoBehaviour
 {
     public static OrderManager Instance;
 
+    [Header("Level Flow Settings")]
+    public float shiftDuration = 360f; // 6 Minutes in seconds
+    public int dailyQuota = 600;
+    public TMP_Text orderLineSignText;
+    public GameObject closeEarlyButton;
+
     [Header("Recipe Configuration Pool")]
     public List<DishData> masterRecipeList;
 
@@ -20,28 +26,27 @@ public class OrderManager : MonoBehaviour
     [Header("Ticket UI Settings")]
     public GameObject ticketPrefab;
     public Transform ticketContainerParent;
-
-    [Header("Ticket Horizontal Layout Settings")]
     public float ticketWidth = 250f;
     public float spacingAmount = 20f;
 
     [Header("Counter Window Settings")]
     public Transform[] windowDishSpawnPoints;
 
+    [Header("Window Trash Settings")]
+    public Transform windowTrashPoint;
+
     [Header("Win State UI")]
     public GameObject levelClearPanel;
 
     [Header("Economy UI - HUD")]
     public TextMeshProUGUI hudCashText;
-    public TextMeshProUGUI hudPointsText;
+    public TextMeshProUGUI hudQuotaText; // CHANGED from points to quota
+    public TextMeshProUGUI clockText;    // NEW: The digital clock
 
     [Header("Economy UI - Win Screen")]
     public TextMeshProUGUI winPointsText;
     public TextMeshProUGUI winCashText;
     public TextMeshProUGUI winTotalText;
-
-    [Header("Window Trash Settings")]
-    public Transform windowTrashPoint;
 
     [Header("Claim Line Settings")]
     public Transform[] claimLinePositions;
@@ -50,15 +55,15 @@ public class OrderManager : MonoBehaviour
     [Header("Exit Configuration")]
     public Transform customerExitPoint;
 
+    [HideInInspector] public bool isLevelCleared = false;
+
     private List<CustomerController> physicalLine = new List<CustomerController>();
     public List<OrderTicketUI> activeTickets = new List<OrderTicketUI>();
     [HideInInspector] public GameObject[] windowDishSlots;
-
-    // NEW: Fixed Array for Claim Slots so they don't slide forward
     private CustomerController[] claimSlots;
 
-    private int totalCustomersSpawned = 0;
-    private const int MAX_TOTAL_CUSTOMERS = 10;
+    private float currentShiftTime = 0f;
+    private bool isStoreClosed = false;
     private const int MAX_SIMULTANEOUS_CUSTOMERS = 3;
 
     private void Awake()
@@ -70,6 +75,9 @@ public class OrderManager : MonoBehaviour
     {
         claimSlots = new CustomerController[claimLinePositions.Length];
         windowDishSlots = new GameObject[windowDishSpawnPoints.Length];
+
+        if (closeEarlyButton != null) closeEarlyButton.SetActive(false);
+
         StartCoroutine(CustomerSpawningRoutine());
 
         if (PlayerEconomyManager.Instance != null)
@@ -81,11 +89,68 @@ public class OrderManager : MonoBehaviour
     private void Update()
     {
         UpdateLineQueueFlow();
+        UpdateDigitalClock(); // Continually format and update the time
+
+        if (!isStoreClosed)
+        {
+            currentShiftTime += Time.deltaTime;
+
+            if (PlayerEconomyManager.Instance != null && PlayerEconomyManager.Instance.shiftCash >= dailyQuota)
+            {
+                if (closeEarlyButton != null) closeEarlyButton.SetActive(true);
+            }
+
+            if (currentShiftTime >= shiftDuration)
+            {
+                CloseStore();
+            }
+        }
+        else
+        {
+            // Even if the store is closed, keep time ticking for overtime!
+            currentShiftTime += Time.deltaTime;
+        }
+    }
+
+    // NEW: Calculates the exact time. 1 IRL Second = 1 In-Game Minute.
+    private void UpdateDigitalClock()
+    {
+        if (clockText == null) return;
+
+        // Start at 12:00 PM (which is 12 hours * 60 minutes = 720 minutes)
+        int startingMinutes = 12 * 60;
+        int currentTotalMinutes = startingMinutes + Mathf.FloorToInt(currentShiftTime);
+
+        int displayHour = (currentTotalMinutes / 60) % 24;
+        int displayMinute = currentTotalMinutes % 60;
+        string amPm = displayHour >= 12 ? "PM" : "AM";
+
+        displayHour = displayHour % 12;
+        if (displayHour == 0) displayHour = 12; // Formats 0 to 12
+
+        clockText.text = $"{displayHour:00}:{displayMinute:00} {amPm}";
+    }
+
+    public void CloseStore()
+    {
+        if (isStoreClosed) return;
+        isStoreClosed = true;
+
+        if (closeEarlyButton != null) closeEarlyButton.SetActive(false);
+        if (orderLineSignText != null) orderLineSignText.text = "Closed";
+
+        for (int i = physicalLine.Count - 1; i >= 0; i--)
+        {
+            physicalLine[i].LeaveCounterAndDestroy(customerSpawnPoint.position);
+        }
+        physicalLine.Clear();
+
+        CheckWinCondition();
     }
 
     private IEnumerator CustomerSpawningRoutine()
     {
-        while (totalCustomersSpawned < MAX_TOTAL_CUSTOMERS)
+        while (!isStoreClosed)
         {
             if (physicalLine.Count < MAX_SIMULTANEOUS_CUSTOMERS)
                 SpawnCustomer();
@@ -106,7 +171,6 @@ public class OrderManager : MonoBehaviour
         }
 
         physicalLine.Add(script);
-        totalCustomersSpawned++;
     }
 
     private void UpdateLineQueueFlow()
@@ -116,27 +180,15 @@ public class OrderManager : MonoBehaviour
             if (i >= linePositions.Length) break;
             Vector3 targetPositionSlot = linePositions[i].position;
 
-            if (i == 0)
-            {
-                physicalLine[i].UpdateLinePosition(targetPositionSlot, i);
-            }
-            else
-            {
-                if (!physicalLine[i - 1].isMoving)
-                    physicalLine[i].UpdateLinePosition(targetPositionSlot, i);
-            }
+            if (i == 0) physicalLine[i].UpdateLinePosition(targetPositionSlot, i);
+            else if (!physicalLine[i - 1].isMoving) physicalLine[i].UpdateLinePosition(targetPositionSlot, i);
         }
     }
 
     public void TakeFrontCustomerOrder(CustomerController customer)
     {
-        if (activeTickets.Count >= maxActiveTickets)
-        {
-            Debug.Log("[OrderManager] Ticket queue full! Serve some dishes first.");
-            return;
-        }
+        if (activeTickets.Count >= maxActiveTickets) return;
 
-        // Find the first empty claim slot
         int availableSlot = -1;
         for (int i = 0; i < claimSlots.Length; i++)
         {
@@ -147,7 +199,7 @@ public class OrderManager : MonoBehaviour
             }
         }
 
-        if (availableSlot == -1) return; // Should not trigger due to maxActiveTickets
+        if (availableSlot == -1) return;
 
         physicalLine.Remove(customer);
         claimSlots[availableSlot] = customer;
@@ -174,7 +226,6 @@ public class OrderManager : MonoBehaviour
 
     public bool TrySpawnDishToWindow(DishData dish)
     {
-        // 1. Find the first empty slot
         int openSlotIndex = -1;
         for (int i = 0; i < windowDishSlots.Length; i++)
         {
@@ -185,10 +236,8 @@ public class OrderManager : MonoBehaviour
             }
         }
 
-        // 2. If it's -1, the window is completely full
         if (openSlotIndex == -1) return false;
 
-        // 3. Spawn directly into that specific slot
         Transform targetSpawn = windowDishSpawnPoints[openSlotIndex];
         GameObject windowFood = Instantiate(dish.windowPrefab, targetSpawn.position, Quaternion.identity);
 
@@ -199,9 +248,6 @@ public class OrderManager : MonoBehaviour
         return true;
     }
 
-    // --- NEW: DUAL SERVING LOGIC ---
-
-    // Option A: Click a Dish on the window -> Finds the oldest ticket that wants it
     public void TryServeDishToOldestMatchingTicket(WindowDishInteractable cleanWindowDish, DishData data)
     {
         foreach (OrderTicketUI ticket in activeTickets)
@@ -209,48 +255,25 @@ public class OrderManager : MonoBehaviour
             if (ticket.pendingDishes.Contains(data))
             {
                 ExecuteServe(ticket, cleanWindowDish, data);
-                return; // Served successfully, stop checking
-            }
-        }
-        Debug.Log($"[OrderManager] No tickets currently require: {data.dishName}");
-    }
-
-    // Option B: Click a Ticket -> Finds the oldest dish on the window that it wants
-    public void TryServeOldestDishToTicket(OrderTicketUI ticket)
-    {
-        // Loop through the fixed array instead of a list
-        for (int i = 0; i < windowDishSlots.Length; i++)
-        {
-            GameObject dishObj = windowDishSlots[i];
-            if (dishObj == null) continue; // Skip empty slots!
-
-            WindowDishInteractable dishInteractable = dishObj.GetComponent<WindowDishInteractable>();
-            if (dishInteractable != null && ticket.pendingDishes.Contains(dishInteractable.associatedDishData))
-            {
-                ExecuteServe(ticket, dishInteractable, dishInteractable.associatedDishData);
                 return;
             }
         }
-        Debug.Log("[OrderManager] No dishes on the window match this ticket's pending orders.");
     }
 
-    // Shared execution logic for both methods
     private void ExecuteServe(OrderTicketUI ticket, WindowDishInteractable dishInteractable, DishData dishData)
     {
         CustomerController customer = ticket.assignedCustomer;
 
-        if (customer.isMoving && !customer.isWalkingAway)
-        {
-            Debug.Log("[OrderManager] Customer is still walking to their claim spot! Please wait.");
-            return;
-        }
+        if (customer.isMoving && !customer.isWalkingAway) return;
 
-        // Economy Logic
         int earnedPoints = 0;
         foreach (IngredientData ingredient in dishData.requiredIngredients)
         {
             earnedPoints += ingredient.basePoints;
         }
+
+        float patiencePercentage = ticket.currentPatience / ticket.maxPatience;
+        earnedPoints += Mathf.RoundToInt(100f * patiencePercentage);
 
         if (PlayerEconomyManager.Instance != null)
         {
@@ -258,7 +281,6 @@ public class OrderManager : MonoBehaviour
             UpdateEconomyHUD();
         }
 
-        // Remove dish and animate
         for (int i = 0; i < windowDishSlots.Length; i++)
         {
             if (windowDishSlots[i] == dishInteractable.gameObject)
@@ -267,9 +289,8 @@ public class OrderManager : MonoBehaviour
                 break;
             }
         }
-        dishInteractable.AnimateSuccessDelivery(customer.transform);
 
-        // Update Ticket
+        dishInteractable.AnimateSuccessDelivery(customer.transform);
         ticket.MarkDishServed(dishData);
 
         if (ticket.IsFullyServed())
@@ -278,7 +299,6 @@ public class OrderManager : MonoBehaviour
             Destroy(ticket.gameObject);
             UpdateTicketLayout();
 
-            // Clear their claim slot so someone else can use it
             for (int i = 0; i < claimSlots.Length; i++)
             {
                 if (claimSlots[i] == customer)
@@ -290,22 +310,32 @@ public class OrderManager : MonoBehaviour
 
             Vector3 exitPos = customerExitPoint != null ? customerExitPoint.position : transform.position + new Vector3(15f, 0, 0);
             customer.LeaveCounterAndDestroy(exitPos);
-
             CheckWinCondition();
         }
     }
-    // -------------------------------
 
-    private void UpdateTicketLayout()
+    public void HandleTicketTimeout(OrderTicketUI ticket)
     {
-        float effectiveSpacing = ticketWidth + spacingAmount;
+        CustomerController customer = ticket.assignedCustomer;
 
-        for (int i = 0; i < activeTickets.Count; i++)
+        // UPDATED: Tell the ticket to animate itself instead of instant Destroy
+        activeTickets.Remove(ticket);
+        ticket.TriggerTimeoutAnimation();
+
+        UpdateTicketLayout();
+
+        for (int i = 0; i < claimSlots.Length; i++)
         {
-            float targetX = i * effectiveSpacing;
-            Vector2 newPosition = new Vector2(targetX, 0);
-            activeTickets[i].SetTargetPosition(newPosition, i);
+            if (claimSlots[i] == customer)
+            {
+                claimSlots[i] = null;
+                break;
+            }
         }
+
+        Vector3 exitPos = customerExitPoint != null ? customerExitPoint.position : transform.position + new Vector3(15f, 0, 0);
+        customer.LeaveCounterAndDestroy(exitPos);
+        CheckWinCondition();
     }
 
     public void RemoveDishFromCounter(GameObject dishObj)
@@ -320,6 +350,17 @@ public class OrderManager : MonoBehaviour
         }
     }
 
+    private void UpdateTicketLayout()
+    {
+        float effectiveSpacing = ticketWidth + spacingAmount;
+        for (int i = 0; i < activeTickets.Count; i++)
+        {
+            float targetX = i * effectiveSpacing;
+            Vector2 newPosition = new Vector2(targetX, 0);
+            activeTickets[i].SetTargetPosition(newPosition, i);
+        }
+    }
+
     private void CheckWinCondition()
     {
         bool isClaimLineEmpty = true;
@@ -328,9 +369,16 @@ public class OrderManager : MonoBehaviour
             if (slot != null) isClaimLineEmpty = false;
         }
 
-        if (totalCustomersSpawned >= MAX_TOTAL_CUSTOMERS && physicalLine.Count == 0 && activeTickets.Count == 0 && isClaimLineEmpty)
+        if (isStoreClosed && physicalLine.Count == 0 && activeTickets.Count == 0 && isClaimLineEmpty)
         {
-            Debug.Log("[OrderManager] Stage Cleared!");
+            isLevelCleared = true;
+
+            if (levelClearPanel != null) levelClearPanel.SetActive(true);
+
+            // NEW: Hide the HUD elements when the level clears
+            if (hudCashText != null) hudCashText.gameObject.SetActive(false);
+            if (hudQuotaText != null) hudQuotaText.gameObject.SetActive(false);
+            if (clockText != null) clockText.gameObject.SetActive(false);
 
             if (PlayerEconomyManager.Instance != null)
             {
@@ -343,11 +391,6 @@ public class OrderManager : MonoBehaviour
 
                 PlayerEconomyManager.Instance.DepositShiftEarnings();
             }
-
-            if (levelClearPanel != null)
-            {
-                levelClearPanel.SetActive(true);
-            }
         }
     }
 
@@ -355,8 +398,10 @@ public class OrderManager : MonoBehaviour
     {
         if (PlayerEconomyManager.Instance == null) return;
 
-        if (hudCashText != null) hudCashText.text = $"{PlayerEconomyManager.Instance.shiftCash} P";
-        if (hudPointsText != null) hudPointsText.text = $"{PlayerEconomyManager.Instance.shiftPoints} pts";
+        if (hudCashText != null) hudCashText.text = $"Cash: {PlayerEconomyManager.Instance.shiftCash} P";
+
+        // UPDATED: Now displays Quota instead of Points
+        if (hudQuotaText != null) hudQuotaText.text = $"Quota: {dailyQuota} P";
     }
 
     public void RestartLevel()

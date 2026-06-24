@@ -11,6 +11,8 @@ GameObject:
   - component: {fileID: 1371634016759131695}
   - component: {fileID: 38968331449689033}
   - component: {fileID: 3385384378718658699}
+  - component: {fileID: -8205566258171828542}
+  - component: {fileID: 2768110847737503446}
   m_Layer: 6
   m_Name: FriedRice
   m_TagString: Untagged
@@ -68,12 +70,38 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   myData: {fileID: 11400000, guid: d6d2a9997f4909449be27dd6133bfb34, type: 2}
-  timerUIPrefab: {fileID: 6962704026674162974, guid: fa5adf27f1494f941a4311327c94d000, type: 3}
   gridLayerMask:
     serializedVersion: 2
     m_Bits: 128
   currentStation: {fileID: 0}
   currentCoordinate: {x: 0, y: 0}
+  currentRotationSteps: 0
+  isLocked: 0
+--- !u!114 &-8205566258171828542
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8059979155723304973}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4ac854f7d327eb43b1221e125595856, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &2768110847737503446
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8059979155723304973}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 35d0342ec07f8194baf300ecbba084a9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  timerUIPrefab: {fileID: 6962704026674162974, guid: fa5adf27f1494f941a4311327c94d000, type: 3}
 --- !u!1001 &7420332901043541161
 PrefabInstance:
   m_ObjectHideFlags: 0

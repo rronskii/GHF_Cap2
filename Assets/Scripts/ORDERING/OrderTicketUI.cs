@@ -1,19 +1,23 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 using TMPro;
 
-public class OrderTicketUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
+public class OrderTicketUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     [Header("UI References")]
     public TextMeshProUGUI ordersText;
-
-    [Header("Hover Settings (Window Station)")]
-    public float windowHoverScale = 1.15f; // Tweak this in Inspector to change how big it gets!
+    public Image patienceFillBar;
 
     [Header("Hide Settings (Other Stations)")]
-    public Vector2 hiddenBaseOffset = new Vector2(0, 150f);   // Shifts it up to hide
-    public Vector2 hiddenHoverOffset = new Vector2(0, -120f); // Shifts it down when hovered
+    public Vector2 hiddenBaseOffset = new Vector2(0, 150f);
+    public Vector2 hiddenHoverOffset = new Vector2(0, -120f);
+
+    [Header("Patience Settings")]
+    public float maxPatience = 25f;
+    [HideInInspector] public float currentPatience;
 
     [HideInInspector] public CustomerController assignedCustomer;
 
@@ -21,16 +25,20 @@ public class OrderTicketUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     private List<DishData> completedDishes = new List<DishData>();
 
     private RectTransform rectTransform;
+    private CanvasGroup canvasGroup;
     private Vector2 targetPosition;
-    private Vector3 targetScale = Vector3.one;
     private Vector2 basePosition;
 
     private bool isHovered = false;
     private bool isWindowStation = true;
+    private bool isFailed = false;
+    private bool isDead = false; // NEW: Stops standard updates during the death animation
 
     private void Awake()
     {
         rectTransform = GetComponent<RectTransform>();
+        canvasGroup = GetComponent<CanvasGroup>();
+        if (canvasGroup == null) canvasGroup = gameObject.AddComponent<CanvasGroup>();
     }
 
     private void OnEnable()
@@ -45,7 +53,6 @@ public class OrderTicketUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 
     private void HandleStationChange(int stationIndex)
     {
-        // Station 2 is the Order Window
         isWindowStation = (stationIndex == 2);
         UpdateTargetTransforms();
     }
@@ -53,6 +60,7 @@ public class OrderTicketUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     public void SetupTicket(List<DishData> orderedDishes)
     {
         pendingDishes = new List<DishData>(orderedDishes);
+        currentPatience = maxPatience;
         UpdateTicketText();
     }
 
@@ -94,26 +102,34 @@ public class OrderTicketUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         UpdateTargetTransforms();
     }
 
-    // UPDATED: Now handles both Position and Scale based on the current station!
     private void UpdateTargetTransforms()
     {
-        if (isWindowStation)
-        {
-            targetPosition = basePosition; // Stays exactly in place
-            targetScale = isHovered ? new Vector3(windowHoverScale, windowHoverScale, 1f) : Vector3.one;
-        }
-        else
-        {
-            targetPosition = basePosition + hiddenBaseOffset + (isHovered ? hiddenHoverOffset : Vector2.zero);
-            targetScale = Vector3.one; // Keep normal scale
-        }
+        if (isWindowStation) targetPosition = basePosition;
+        else targetPosition = basePosition + hiddenBaseOffset + (isHovered ? hiddenHoverOffset : Vector2.zero);
     }
 
     private void Update()
     {
-        // Smoothly glide position and scale every frame
+        if (isDead) return; // Prevent fighting the death animation!
+
         rectTransform.anchoredPosition = Vector2.Lerp(rectTransform.anchoredPosition, targetPosition, Time.deltaTime * 15f);
-        rectTransform.localScale = Vector3.Lerp(rectTransform.localScale, targetScale, Time.deltaTime * 15f);
+
+        if (!isFailed && currentPatience > 0)
+        {
+            currentPatience -= Time.deltaTime;
+
+            if (patienceFillBar != null)
+                patienceFillBar.fillAmount = currentPatience / maxPatience;
+
+            if (currentPatience <= 0)
+            {
+                isFailed = true;
+                if (OrderManager.Instance != null)
+                {
+                    OrderManager.Instance.HandleTicketTimeout(this);
+                }
+            }
+        }
     }
 
     public void OnPointerEnter(PointerEventData eventData)
@@ -130,13 +146,31 @@ public class OrderTicketUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         UpdateTargetTransforms();
     }
 
-    public void OnPointerClick(PointerEventData eventData)
+    // NEW: Animation triggered by the Order Manager when patience runs out
+    public void TriggerTimeoutAnimation()
     {
-        if (DialogueManager.Instance != null && DialogueManager.Instance.IsDialogueActive) return;
+        isDead = true;
+        StartCoroutine(TimeoutRoutine());
+    }
 
-        if (OrderManager.Instance != null)
+    private IEnumerator TimeoutRoutine()
+    {
+        float duration = 0.5f;
+        float elapsed = 0f;
+        Vector2 startPos = rectTransform.anchoredPosition;
+        Vector2 upPos = startPos + new Vector2(0, 150f); // Glide straight UP
+
+        while (elapsed < duration)
         {
-            OrderManager.Instance.TryServeOldestDishToTicket(this);
+            elapsed += Time.deltaTime;
+            float t = elapsed / duration;
+
+            rectTransform.anchoredPosition = Vector2.Lerp(startPos, upPos, t);
+            if (canvasGroup != null) canvasGroup.alpha = Mathf.Lerp(1f, 0f, t);
+
+            yield return null;
         }
+
+        Destroy(gameObject);
     }
 }

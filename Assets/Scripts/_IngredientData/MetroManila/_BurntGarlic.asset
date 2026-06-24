@@ -10,25 +10,22 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9bb50e5e47da741438d10ed09a235ed3, type: 3}
-  m_Name: _SunnySideUp
+  m_Name: _BurntGarlic
   m_EditorClassIdentifier: 
-  ingredientID: 9
-  displayName: SunnySideUp
+  ingredientID: 12
+  displayName: Burnt Garlic
   shapeOffsets:
   - {x: 0, y: 0}
-  - {x: 0, y: 1}
-  - {x: 1, y: 0}
-  - {x: 1, y: 1}
-  worldPrefab: {fileID: 721933441287932742, guid: 969c3f3317cf244489ae3e5bb4aa3f70, type: 3}
-  basePoints: 25
-  validStations: 010000000200000003000000
+  worldPrefab: {fileID: 8059979155723304973, guid: 4dadfd079ef0390469491e0de47a1e93, type: 3}
+  basePoints: 0
+  validStations: 0000000001000000
   isCookable: 0
   cookTime: 5
-  cookedPrefab: {fileID: 0}
+  cookedPrefab: {fileID: 8059979155723304973, guid: 3679e378a27dc19418239cd5d4b99148, type: 3}
   instantCookOnStove: 0
   isChoppable: 0
   choppedPrefab: {fileID: 0}
-  canBurn: 1
-  burnTime: 10
-  burntPrefab: {fileID: 721933441287932742, guid: c8abeb103bb9d424193cf1aa937d3e59, type: 3}
+  canBurn: 0
+  burnTime: 5
+  burntPrefab: {fileID: 0}
   combinations: []

@@ -16,7 +16,7 @@ public class InventoryStation : MonoBehaviour
     {
         if (stationCardPrefab != null)
         {
-            CardDragTransition cardScript = stationCardPrefab.GetComponent<CardDragTransition>();
+            CardGridPlacer cardScript = stationCardPrefab.GetComponent<CardGridPlacer>();
             if (cardScript != null)
             {
                 myIngredientData = cardScript.ingredientData;
@@ -26,6 +26,8 @@ public class InventoryStation : MonoBehaviour
 
     private void OnMouseDown()
     {
+        if (Time.timeScale == 0f) return;
+
         // NEW BUGFIX: Block all clicks if the tutorial dialogue is currently active!
         if (DialogueManager.Instance != null && DialogueManager.Instance.IsDialogueActive) return;
 

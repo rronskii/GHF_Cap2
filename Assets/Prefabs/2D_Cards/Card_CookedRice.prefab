@@ -14,6 +14,8 @@ GameObject:
   - component: {fileID: 8580533962116672822}
   - component: {fileID: 974273628477570493}
   - component: {fileID: -5909603711874727128}
+  - component: {fileID: 758709651240332420}
+  - component: {fileID: 3823942356881744797}
   m_Layer: 5
   m_Name: Card_CookedRice
   m_TagString: Untagged
@@ -90,13 +92,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 361d34a1a8ea80e4ba65feb1a263acab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ingredientData: {fileID: 11400000, guid: 095c95641d0fc554fb547d94c8c40c7a, type: 2}
-  hoverGlideAmount: 50
-  transitionSpeed: 10
+  hoverGlideAmount: 135
+  smoothTime: 0.05
+  inventoryStationIndex: 0
   isInteractable: 1
-  gridLayerMask:
-    serializedVersion: 2
-    m_Bits: 128
+  isDragging: 0
+  currentStationIndex: 0
 --- !u!225 &974273628477570493
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -124,3 +125,38 @@ MonoBehaviour:
   parentStation: {fileID: 0}
   gridCoordinate: {x: 0, y: 0}
   hoverColor: {r: 0.8, g: 0.8, b: 0.8, a: 0.5}
+--- !u!114 &758709651240332420
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7663734427134479993}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 88d9baa6a00b38a44af451fb4f48144e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ingredientData: {fileID: 11400000, guid: 095c95641d0fc554fb547d94c8c40c7a, type: 2}
+  gridLayerMask:
+    serializedVersion: 2
+    m_Bits: 128
+  rotationSteps: 0
+--- !u!114 &3823942356881744797
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7663734427134479993}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 361d34a1a8ea80e4ba65feb1a263acab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hoverGlideAmount: 1
+  smoothTime: 1
+  inventoryStationIndex: 1
+  isInteractable: 1
+  isDragging: 0
+  currentStationIndex: 0

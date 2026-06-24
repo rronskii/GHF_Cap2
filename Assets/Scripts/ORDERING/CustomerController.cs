@@ -66,6 +66,7 @@ public class CustomerController : MonoBehaviour
 
     private void OnMouseDown()
     {
+        if (Time.timeScale == 0f) return;
         if (DialogueManager.Instance != null && DialogueManager.Instance.IsDialogueActive) return;
 
         // Prevent clicking to take an order if the customer hasn't fully stepped up yet

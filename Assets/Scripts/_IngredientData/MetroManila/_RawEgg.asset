@@ -10,22 +10,22 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9bb50e5e47da741438d10ed09a235ed3, type: 3}
-  m_Name: _SauteedGarlic
+  m_Name: _RawEgg
   m_EditorClassIdentifier: 
-  ingredientID: 8
-  displayName: SauteedGarlic
+  ingredientID: 4
+  displayName: RawEgg
   shapeOffsets:
   - {x: 0, y: 0}
-  worldPrefab: {fileID: 8059979155723304973, guid: d973bfe2b9a30284f97907dce023e4bc, type: 3}
-  basePoints: 5
+  worldPrefab: {fileID: 8059979155723304973, guid: 3ae6161b6950be743a4eba28616e4eb7, type: 3}
+  basePoints: 0
   validStations: 000000000100000003000000
-  isCookable: 0
-  cookTime: 5
-  cookedPrefab: {fileID: 0}
-  instantCookOnStove: 0
+  isCookable: 1
+  cookTime: 1.5
+  cookedPrefab: {fileID: 721933441287932742, guid: 969c3f3317cf244489ae3e5bb4aa3f70, type: 3}
+  instantCookOnStove: 1
   isChoppable: 0
   choppedPrefab: {fileID: 0}
-  canBurn: 1
-  burnTime: 10
-  burntPrefab: {fileID: 8059979155723304973, guid: 4dadfd079ef0390469491e0de47a1e93, type: 3}
+  canBurn: 0
+  burnTime: 5
+  burntPrefab: {fileID: 0}
   combinations: []

@@ -36,6 +36,7 @@ public class KnifeTool : MonoBehaviour
 
     private void OnMouseDown()
     {
+        if (Time.timeScale == 0f) return;
         if (isChopping) return;
 
         StopAllCoroutines();
@@ -48,6 +49,7 @@ public class KnifeTool : MonoBehaviour
 
     private void OnMouseDrag()
     {
+        if (Time.timeScale == 0f) return;
         if (!isDragging) return;
 
         Plane dragPlane = new Plane(Vector3.up, new Vector3(0, startPosition.y + dragHeight, 0));
@@ -86,7 +88,8 @@ public class KnifeTool : MonoBehaviour
                 {
                     ClearHoverState(); // Shrink the old one
                     currentlyHoveredFood = foodItem;
-                    currentlyHoveredFood.SetHoverGrowth(true); // Grow the new one
+                    IngredientVisuals visuals = currentlyHoveredFood.GetComponent<IngredientVisuals>();
+                    if (visuals != null) visuals.SetHoverGrowth(true);
                 }
             }
             else
@@ -112,8 +115,11 @@ public class KnifeTool : MonoBehaviour
             Draggable3DItem foodItem = hit.collider.GetComponent<Draggable3DItem>();
             if (foodItem != null)
             {
-                // Capture whether the food was actually valid and successfully chopped
-                successfullyChopped = foodItem.TryChop();
+                IngredientProcessor processor = foodItem.GetComponent<IngredientProcessor>();
+                if (processor != null)
+                {
+                    successfullyChopped = processor.TryChop();
+                }
             }
         }
 
@@ -141,7 +147,8 @@ public class KnifeTool : MonoBehaviour
     {
         if (currentlyHoveredFood != null)
         {
-            currentlyHoveredFood.SetHoverGrowth(false);
+            IngredientVisuals visuals = currentlyHoveredFood.GetComponent<IngredientVisuals>();
+            if (visuals != null) visuals.SetHoverGrowth(false);
             currentlyHoveredFood = null;
         }
     }
@@ -150,13 +157,11 @@ public class KnifeTool : MonoBehaviour
     {
         while (Vector3.Distance(transform.position, startPosition) > 0.01f || Quaternion.Angle(transform.rotation, startRotation) > 0.1f)
         {
-            transform.position = Vector3.Lerp(transform.position, startPosition, Time.deltaTime * returnSpeed);
-            transform.rotation = Quaternion.Lerp(transform.rotation, startRotation, Time.deltaTime * returnSpeed);
+            transform.SetPositionAndRotation(Vector3.Lerp(transform.position, startPosition, Time.deltaTime * returnSpeed), Quaternion.Lerp(transform.rotation, startRotation, Time.deltaTime * returnSpeed));
             yield return null;
         }
 
-        transform.position = startPosition;
-        transform.rotation = startRotation;
+        transform.SetPositionAndRotation(startPosition, startRotation);
     }
 
     // --- NEW: Link to Camera Events ---

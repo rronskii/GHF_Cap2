@@ -13,26 +13,22 @@ public class StationCameraController : MonoBehaviour
     [Header("Transition Settings")]
     public float transitionSpeed = 5f;
 
-    [Header("Mouse Edge Drag Settings")]
-    public float edgeThresholdPixels = 50f; // How close to the edge (in pixels) triggers the transition
-    public bool requireMouseDrag = true;    // If true, player must be holding left-click to edge-pan
-
     private int currentStationIndex = 0;
     private bool isTransitioning = false;
-    private bool canTriggerEdgePan = true; // Prevents rapid-fire transitions
 
     private void Start()
     {
         // Snap camera to the starting station immediately
         if (stationViews != null && stationViews.Length > 0)
         {
-            transform.position = stationViews[0].position;
-            transform.rotation = stationViews[0].rotation;
+            transform.SetPositionAndRotation(stationViews[0].position, stationViews[0].rotation);
         }
     }
 
     private void Update()
     {
+        if (Time.timeScale == 0f) return;
+
         if (isTransitioning || stationViews.Length == 0) return;
 
         // NEW: If the dialogue manager exists AND is currently showing text, lock the camera!
@@ -75,14 +71,12 @@ public class StationCameraController : MonoBehaviour
         while (Vector3.Distance(transform.position, targetView.position) > 0.01f ||
                Quaternion.Angle(transform.rotation, targetView.rotation) > 0.1f)
         {
-            transform.position = Vector3.Lerp(transform.position, targetView.position, transitionSpeed * Time.deltaTime);
-            transform.rotation = Quaternion.Lerp(transform.rotation, targetView.rotation, transitionSpeed * Time.deltaTime);
+            transform.SetPositionAndRotation(Vector3.Lerp(transform.position, targetView.position, transitionSpeed * Time.deltaTime), Quaternion.Lerp(transform.rotation, targetView.rotation, transitionSpeed * Time.deltaTime));
             yield return null;
         }
 
         // Snap to perfect precision at the end
-        transform.position = targetView.position;
-        transform.rotation = targetView.rotation;
+        transform.SetPositionAndRotation(targetView.position, targetView.rotation);
 
         isTransitioning = false;
     }

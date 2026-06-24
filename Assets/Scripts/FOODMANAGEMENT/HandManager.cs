@@ -15,10 +15,10 @@ public class HandManager : MonoBehaviour
     public float defaultYPosition = -65f;
     public Vector2 spawnOffset = new Vector2(50f, 100f); // Spawns slightly right and higher
 
-    private List<CardDragTransition> currentCards = new List<CardDragTransition>();
+    private List<CardDragUI> currentCards = new List<CardDragUI>();
     private CanvasGroup canvasGroup;
 
-    private int currentStationIndex = 0;
+    public int currentStationIndex = 0;
 
     private void Awake()
     {
@@ -40,6 +40,8 @@ public class HandManager : MonoBehaviour
         // --- NEW: HOTKEY DRAGGING ---
         // Do not allow hotkeys if the UI is currently hidden or fading out
         if (hideForDialogue || targetAlpha < 0.5f) return;
+
+        if (Time.timeScale == 0f) return;
 
         for (int i = 0; i < currentCards.Count; i++)
         {
@@ -75,7 +77,7 @@ public class HandManager : MonoBehaviour
         if (cardPrefab == null) return false;
 
         GameObject newCardObj = Instantiate(cardPrefab, handContainer);
-        CardDragTransition newCardScript = newCardObj.GetComponent<CardDragTransition>();
+        CardDragUI newCardScript = newCardObj.GetComponent<CardDragUI>();
         currentCards.Add(newCardScript);
 
         UpdateCardPositions(newCardScript);
@@ -83,7 +85,7 @@ public class HandManager : MonoBehaviour
         return true; // Successfully added to hand
     }
 
-    private void UpdateCardPositions(CardDragTransition freshlyDrawnCard = null)
+    private void UpdateCardPositions(CardDragUI freshlyDrawnCard = null)
     {
         int cardCount = currentCards.Count;
         float totalWidth = (cardCount - 1) * cardSpacing;
@@ -91,7 +93,7 @@ public class HandManager : MonoBehaviour
 
         for (int i = 0; i < cardCount; i++)
         {
-            CardDragTransition card = currentCards[i];
+            CardDragUI card = currentCards[i];
             float targetX = startX + (i * cardSpacing);
             Vector2 finalTargetPos = new Vector2(targetX, defaultYPosition);
 
@@ -105,7 +107,7 @@ public class HandManager : MonoBehaviour
         }
     }
 
-    public void RemoveCard(CardDragTransition cardToRemove)
+    public void RemoveCard(CardDragUI cardToRemove)
     {
         currentCards.Remove(cardToRemove);
         UpdateCardPositions(); // Recalculate so the remaining cards slide together to close the gap
@@ -117,11 +119,16 @@ public class HandManager : MonoBehaviour
     {
         currentStationIndex = stationIndex;
 
-        // NEW: Cards should be interactable at the Stove (0) AND the Inventory (1) so we can return them!
         bool canDrag = (stationIndex == 0 || stationIndex == 1);
-        foreach (CardDragTransition card in currentCards)
+        foreach (CardDragUI card in currentCards)
         {
             card.isInteractable = canDrag;
+
+            // NEW: The manager forcefully cancels any active drags when the camera shifts
+            if (card.isDragging)
+            {
+                card.CancelDrag();
+            }
         }
     }
 }
