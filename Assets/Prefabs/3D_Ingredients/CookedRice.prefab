@@ -194,7 +194,7 @@ PrefabInstance:
     - target: {fileID: -7511558181221131132, guid: d2247ee6892ca9444932876290443c00, type: 3}
       propertyPath: 'm_Materials.Array.data[1]'
       value: 
-      objectReference: {fileID: 2100000, guid: d91d8c98d1d70dd4da45527558a8fb06, type: 2}
+      objectReference: {fileID: 2100000, guid: fc98a176ea61a234fa930cfa4d1fb40e, type: 2}
     - target: {fileID: 919132149155446097, guid: d2247ee6892ca9444932876290443c00, type: 3}
       propertyPath: m_Name
       value: rice_cooked

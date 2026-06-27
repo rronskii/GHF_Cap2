@@ -164,9 +164,17 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -2682167134973850427, guid: 6b7a8a0965f940d408a88e875b7d7824, type: 3}
+      propertyPath: m_Materials.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: -2682167134973850427, guid: 6b7a8a0965f940d408a88e875b7d7824, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: 6ed04606ffc131b4ea548ffaac846025, type: 2}
+    - target: {fileID: -2682167134973850427, guid: 6b7a8a0965f940d408a88e875b7d7824, type: 3}
+      propertyPath: 'm_Materials.Array.data[1]'
+      value: 
+      objectReference: {fileID: 2100000, guid: fc98a176ea61a234fa930cfa4d1fb40e, type: 2}
     - target: {fileID: 919132149155446097, guid: 6b7a8a0965f940d408a88e875b7d7824, type: 3}
       propertyPath: m_Name
       value: hotdog (2)
@@ -250,9 +258,17 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -2682167134973850427, guid: 6b7a8a0965f940d408a88e875b7d7824, type: 3}
+      propertyPath: m_Materials.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: -2682167134973850427, guid: 6b7a8a0965f940d408a88e875b7d7824, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: 6ed04606ffc131b4ea548ffaac846025, type: 2}
+    - target: {fileID: -2682167134973850427, guid: 6b7a8a0965f940d408a88e875b7d7824, type: 3}
+      propertyPath: 'm_Materials.Array.data[1]'
+      value: 
+      objectReference: {fileID: 2100000, guid: fc98a176ea61a234fa930cfa4d1fb40e, type: 2}
     - target: {fileID: 919132149155446097, guid: 6b7a8a0965f940d408a88e875b7d7824, type: 3}
       propertyPath: m_Name
       value: hotdog (1)

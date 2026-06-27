@@ -64,6 +64,7 @@ MeshRenderer:
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 2100000, guid: 5383533c90f9dbe45b3904ce823821c7, type: 2}
+  - {fileID: 2100000, guid: 30fb0f66306194b4cb8a9e67b44a5e22, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -182,9 +183,17 @@ PrefabInstance:
       value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 2586607309129781981, guid: 4c370ffe5dc517f4b9945d7db8298a47, type: 3}
+      propertyPath: m_Materials.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2586607309129781981, guid: 4c370ffe5dc517f4b9945d7db8298a47, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: dbbd8bcd53909294a9a32049344999e1, type: 2}
+    - target: {fileID: 2586607309129781981, guid: 4c370ffe5dc517f4b9945d7db8298a47, type: 3}
+      propertyPath: 'm_Materials.Array.data[1]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 30fb0f66306194b4cb8a9e67b44a5e22, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
@@ -246,7 +255,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   myData: {fileID: 11400000, guid: 0cfd1e0421fe8ce43a04457940e72ee3, type: 2}
-  timerUIPrefab: {fileID: 6962704026674162974, guid: fa5adf27f1494f941a4311327c94d000, type: 3}
   gridLayerMask:
     serializedVersion: 2
     m_Bits: 128

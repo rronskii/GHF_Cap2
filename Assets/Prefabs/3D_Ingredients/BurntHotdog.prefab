@@ -70,7 +70,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   myData: {fileID: 11400000, guid: 9613207fc7b59d243b9fc7390e58b8e9, type: 2}
-  timerUIPrefab: {fileID: 0}
   gridLayerMask:
     serializedVersion: 2
     m_Bits: 128
@@ -151,9 +150,17 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -2682167134973850427, guid: 4572ffa731c3eb44983dab2729781f6c, type: 3}
+      propertyPath: m_Materials.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: -2682167134973850427, guid: 4572ffa731c3eb44983dab2729781f6c, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: dbbd8bcd53909294a9a32049344999e1, type: 2}
+    - target: {fileID: -2682167134973850427, guid: 4572ffa731c3eb44983dab2729781f6c, type: 3}
+      propertyPath: 'm_Materials.Array.data[1]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 30fb0f66306194b4cb8a9e67b44a5e22, type: 2}
     - target: {fileID: 919132149155446097, guid: 4572ffa731c3eb44983dab2729781f6c, type: 3}
       propertyPath: m_Name
       value: hotdog cooked (1)
@@ -241,9 +248,17 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -2682167134973850427, guid: 4572ffa731c3eb44983dab2729781f6c, type: 3}
+      propertyPath: m_Materials.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: -2682167134973850427, guid: 4572ffa731c3eb44983dab2729781f6c, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: dbbd8bcd53909294a9a32049344999e1, type: 2}
+    - target: {fileID: -2682167134973850427, guid: 4572ffa731c3eb44983dab2729781f6c, type: 3}
+      propertyPath: 'm_Materials.Array.data[1]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 30fb0f66306194b4cb8a9e67b44a5e22, type: 2}
     - target: {fileID: 919132149155446097, guid: 4572ffa731c3eb44983dab2729781f6c, type: 3}
       propertyPath: m_Name
       value: hotdog cooked
