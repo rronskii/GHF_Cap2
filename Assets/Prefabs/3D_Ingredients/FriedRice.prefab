@@ -76,6 +76,8 @@ MonoBehaviour:
   currentStation: {fileID: 0}
   currentCoordinate: {x: 0, y: 0}
   currentRotationSteps: 0
+  isBurntItem: 0
+  isPlate: 0
   isLocked: 0
 --- !u!114 &-8205566258171828542
 MonoBehaviour:
@@ -174,14 +176,26 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 6
       objectReference: {fileID: 0}
+    - target: {fileID: 2955920080631239492, guid: 5424607ec40ee284fb08c4834545d82f, type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: -364044783463932134, guid: 5424607ec40ee284fb08c4834545d82f, type: 3}
+    - target: {fileID: 4191509097384965755, guid: 5424607ec40ee284fb08c4834545d82f, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4191509097384965755, guid: 5424607ec40ee284fb08c4834545d82f, type: 3}
+      propertyPath: m_DynamicOccludee
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4191509097384965755, guid: 5424607ec40ee284fb08c4834545d82f, type: 3}
       propertyPath: m_Materials.Array.size
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4191509097384965755, guid: 5424607ec40ee284fb08c4834545d82f, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: 94491e5dd46e8f340b8f3411121a2611, type: 2}
+      objectReference: {fileID: 2100000, guid: e4f6705d3966a4c4b933b80f3356ed51, type: 2}
     - target: {fileID: 4191509097384965755, guid: 5424607ec40ee284fb08c4834545d82f, type: 3}
       propertyPath: 'm_Materials.Array.data[1]'
       value: 

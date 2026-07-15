@@ -83,7 +83,7 @@ PrefabInstance:
     - target: {fileID: 692447249871354435, guid: 722a088e706aba747b6668b98810172d, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: 8bda29a41081de7489b0e17f7967485d, type: 2}
+      objectReference: {fileID: 2100000, guid: 4633f4a57bdf7a743b60522d6bc8a233, type: 2}
     - target: {fileID: 692447249871354435, guid: 722a088e706aba747b6668b98810172d, type: 3}
       propertyPath: 'm_Materials.Array.data[1]'
       value: 
@@ -166,6 +166,8 @@ MonoBehaviour:
   currentStation: {fileID: 0}
   currentCoordinate: {x: 0, y: 0}
   currentRotationSteps: 0
+  isBurntItem: 0
+  isPlate: 0
   isLocked: 0
 --- !u!114 &-321857477294213394
 MonoBehaviour:
