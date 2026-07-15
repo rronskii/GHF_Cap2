@@ -60,6 +60,6 @@ Material:
     - _ShadowThreshold: 0.05
     m_Colors:
     - _Reduce: {r: 0.9245283, g: 0.9245283, b: 0.9245283, a: 0}
-    - _ShadowColor: {r: 0.39716086, g: 0.5707667, b: 0.7075471, a: 0}
+    - _ShadowColor: {r: 0.5, g: 0.3508508, b: 0.2570755, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
