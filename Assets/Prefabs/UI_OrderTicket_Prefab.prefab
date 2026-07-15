@@ -213,7 +213,7 @@ MonoBehaviour:
   patienceFillBar: {fileID: 5999413321677704464}
   hiddenBaseOffset: {x: 0, y: 140}
   hiddenHoverOffset: {x: 0, y: -140}
-  maxPatience: 35
+  maxPatience: 60
   currentPatience: 0
   assignedCustomer: {fileID: 0}
   pendingDishes: []

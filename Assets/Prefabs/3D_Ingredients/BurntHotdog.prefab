@@ -76,6 +76,8 @@ MonoBehaviour:
   currentStation: {fileID: 0}
   currentCoordinate: {x: 0, y: 0}
   currentRotationSteps: 0
+  isBurntItem: 1
+  isPlate: 0
   isLocked: 0
 --- !u!114 &5543096890819672088
 MonoBehaviour:
@@ -160,7 +162,7 @@ PrefabInstance:
     - target: {fileID: -2682167134973850427, guid: 4572ffa731c3eb44983dab2729781f6c, type: 3}
       propertyPath: 'm_Materials.Array.data[1]'
       value: 
-      objectReference: {fileID: 2100000, guid: 30fb0f66306194b4cb8a9e67b44a5e22, type: 2}
+      objectReference: {fileID: 2100000, guid: 965843097f8bfc049b36b090ed3f775d, type: 2}
     - target: {fileID: 919132149155446097, guid: 4572ffa731c3eb44983dab2729781f6c, type: 3}
       propertyPath: m_Name
       value: hotdog cooked (1)
@@ -258,7 +260,7 @@ PrefabInstance:
     - target: {fileID: -2682167134973850427, guid: 4572ffa731c3eb44983dab2729781f6c, type: 3}
       propertyPath: 'm_Materials.Array.data[1]'
       value: 
-      objectReference: {fileID: 2100000, guid: 30fb0f66306194b4cb8a9e67b44a5e22, type: 2}
+      objectReference: {fileID: 2100000, guid: 965843097f8bfc049b36b090ed3f775d, type: 2}
     - target: {fileID: 919132149155446097, guid: 4572ffa731c3eb44983dab2729781f6c, type: 3}
       propertyPath: m_Name
       value: hotdog cooked

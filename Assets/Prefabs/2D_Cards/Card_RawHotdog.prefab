@@ -69,7 +69,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: d771cf6c488b9bf499555db934c96bf1, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 7dbb18b0781d1164f92c96c7a2aea97f, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -96,7 +96,6 @@ MonoBehaviour:
   inventoryStationIndex: 0
   isInteractable: 1
   isDragging: 0
-  currentStationIndex: 0
 --- !u!225 &974273628477570493
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -143,4 +142,3 @@ MonoBehaviour:
   inventoryStationIndex: 1
   isInteractable: 1
   isDragging: 0
-  currentStationIndex: 0

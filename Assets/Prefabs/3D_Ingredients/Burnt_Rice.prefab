@@ -75,6 +75,8 @@ MonoBehaviour:
   currentStation: {fileID: 0}
   currentCoordinate: {x: 0, y: 0}
   currentRotationSteps: 0
+  isBurntItem: 1
+  isPlate: 0
   isLocked: 0
 --- !u!114 &2511479885787724716
 MonoBehaviour:
@@ -171,7 +173,7 @@ PrefabInstance:
     - target: {fileID: 4191509097384965755, guid: 5424607ec40ee284fb08c4834545d82f, type: 3}
       propertyPath: 'm_Materials.Array.data[1]'
       value: 
-      objectReference: {fileID: 2100000, guid: 30fb0f66306194b4cb8a9e67b44a5e22, type: 2}
+      objectReference: {fileID: 2100000, guid: 965843097f8bfc049b36b090ed3f775d, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
