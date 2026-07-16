@@ -7,6 +7,8 @@ using TMPro;
 
 public class OrderTicketUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
+    [HideInInspector] public bool isTutorialTicket = false;
+
     [Header("UI References")]
     public TextMeshProUGUI ordersText;
     public Image patienceFillBar;
@@ -61,6 +63,24 @@ public class OrderTicketUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     {
         pendingDishes = new List<DishData>(orderedDishes);
         currentPatience = maxPatience;
+
+        // Ensure it knows exactly where the camera is the moment it spawns
+        if (HandManager.Instance != null)
+        {
+            if (HandManager.Instance.currentStationIndex == 2)
+            {
+                isWindowStation = true;
+            }
+            else
+            {
+                isWindowStation = false;
+            }
+        }
+        else
+        {
+            isWindowStation = false;
+        }
+
         UpdateTicketText();
     }
 
@@ -104,29 +124,77 @@ public class OrderTicketUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 
     private void UpdateTargetTransforms()
     {
-        if (isWindowStation) targetPosition = basePosition;
-        else targetPosition = basePosition + hiddenBaseOffset + (isHovered ? hiddenHoverOffset : Vector2.zero);
+        // We revert this back to your original math so the hover offset works again!
+        if (isWindowStation)
+        {
+            targetPosition = basePosition;
+        }
+        else
+        {
+            Vector2 hoverOffset = Vector2.zero;
+            if (isHovered)
+            {
+                hoverOffset = hiddenHoverOffset;
+            }
+
+            targetPosition = basePosition + hiddenBaseOffset + hoverOffset;
+        }
     }
 
     private void Update()
     {
-        if (isDead) return; // Prevent fighting the death animation!
+        if (isDead) return;
 
-        rectTransform.anchoredPosition = Vector2.Lerp(rectTransform.anchoredPosition, targetPosition, Time.deltaTime * 15f);
-
-        if (!isFailed && currentPatience > 0)
+        // --- NEW: Dynamic Position Evaluation ---
+        bool dialogueActive = false;
+        if (DialogueManager.Instance != null)
         {
-            currentPatience -= Time.deltaTime;
-
-            if (patienceFillBar != null)
-                patienceFillBar.fillAmount = currentPatience / maxPatience;
-
-            if (currentPatience <= 0)
+            if (DialogueManager.Instance.IsDialogueActive)
             {
-                isFailed = true;
-                if (OrderManager.Instance != null)
+                dialogueActive = true;
+            }
+        }
+
+        Vector2 activeTargetPosition = basePosition;
+
+        // If at the window, OR if dialogue is currently playing, stay fully visible!
+        if (isWindowStation || dialogueActive)
+        {
+            activeTargetPosition = basePosition;
+        }
+        else
+        {
+            // Otherwise, calculate the hidden offset
+            Vector2 hoverOffset = Vector2.zero;
+            if (isHovered)
+            {
+                hoverOffset = hiddenHoverOffset;
+            }
+
+            activeTargetPosition = basePosition + hiddenBaseOffset + hoverOffset;
+        }
+
+        rectTransform.anchoredPosition = Vector2.Lerp(rectTransform.anchoredPosition, activeTargetPosition, Time.deltaTime * 15f);
+        // ----------------------------------------
+
+        if (!isTutorialTicket)
+        {
+            if (!isFailed && currentPatience > 0)
+            {
+                currentPatience -= Time.deltaTime;
+
+                if (patienceFillBar != null)
                 {
-                    OrderManager.Instance.HandleTicketTimeout(this);
+                    patienceFillBar.fillAmount = currentPatience / maxPatience;
+                }
+
+                if (currentPatience <= 0)
+                {
+                    isFailed = true;
+                    if (OrderManager.Instance != null)
+                    {
+                        OrderManager.Instance.HandleTicketTimeout(this);
+                    }
                 }
             }
         }
@@ -134,16 +202,18 @@ public class OrderTicketUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        if (DialogueManager.Instance != null && DialogueManager.Instance.IsDialogueActive) return;
+        if (DialogueManager.Instance != null)
+        {
+            if (DialogueManager.Instance.IsDialogueActive) return;
+        }
+
         isHovered = true;
         transform.SetAsLastSibling();
-        UpdateTargetTransforms();
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
         isHovered = false;
-        UpdateTargetTransforms();
     }
 
     // NEW: Animation triggered by the Order Manager when patience runs out
@@ -172,5 +242,22 @@ public class OrderTicketUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         }
 
         Destroy(gameObject);
+    }
+
+    public void HidePatienceUI()
+    {
+        isTutorialTicket = true;
+
+        if (patienceFillBar != null)
+        {
+            patienceFillBar.enabled = false;
+        }
+
+        // Search for the specific sibling object by its name
+        Transform bg = transform.Find("BarBG");
+        if (bg != null)
+        {
+            bg.gameObject.SetActive(false);
+        }
     }
 }

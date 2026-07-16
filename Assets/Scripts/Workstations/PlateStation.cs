@@ -90,7 +90,28 @@ public class PlateStation : BaseStation
             ingredientsOnPlate.Add(uniqueFood.myData);
         }
 
-        DishData validatedDish = OrderManager.Instance.ValidateRecipe(ingredientsOnPlate);
+        DishData validatedDish = null;
+
+        // --- NEW: Safe Routing for Tutorial vs Main Game ---
+        if (OrderManager.Instance != null)
+        {
+            validatedDish = OrderManager.Instance.ValidateRecipe(ingredientsOnPlate);
+        }
+        else if (TutorialOrderManager.Instance != null)
+        {
+            // Find any active ticket that matches what is on the plate
+            foreach (OrderTicketUI ticket in TutorialOrderManager.Instance.activeTickets)
+            {
+                if (ticket.pendingDishes.Count > 0)
+                {
+                    if (ticket.pendingDishes[0].MatchesIngredients(ingredientsOnPlate))
+                    {
+                        validatedDish = ticket.pendingDishes[0];
+                        break; // Found a match, stop looking
+                    }
+                }
+            }
+        }
 
         if (validatedDish == null)
         {
@@ -98,14 +119,23 @@ public class PlateStation : BaseStation
             yield break;
         }
 
-        bool sentToWindowSuccess = OrderManager.Instance.TrySpawnDishToWindow(validatedDish);
-        if (!sentToWindowSuccess)
-        {
-            Debug.Log("[Plate Station] Counter window display slots are full!");
-            yield break;
-        }
-
         isServing = true;
+
+        if (OrderManager.Instance != null)
+        {
+            bool sentToWindowSuccess = OrderManager.Instance.TrySpawnDishToWindow(validatedDish);
+            if (!sentToWindowSuccess)
+            {
+                Debug.Log("[Plate Station] Counter window display slots are full!");
+                isServing = false;
+                yield break;
+            }
+        }
+        else if (TutorialOrderManager.Instance != null)
+        {
+            TutorialOrderManager.Instance.TryServeTutorialDish(validatedDish);
+        }
+        // ----------------------------------------------------
 
         for (int x = 0; x < gridWidth; x++)
         {

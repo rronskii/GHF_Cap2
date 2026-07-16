@@ -1,0 +1,42 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9bb50e5e47da741438d10ed09a235ed3, type: 3}
+  m_Name: TUT_RiceCooked
+  m_EditorClassIdentifier: 
+  ingredientID: 6
+  displayName: CookedRice
+  allowedStorageType: 2
+  storagePrefab: {fileID: 5153288816969993613, guid: a701aab32e0ed6e43961e8ff80507286, type: 3}
+  shapeOffsets:
+  - {x: 0, y: 0}
+  - {x: 1, y: 0}
+  - {x: 0, y: 1}
+  - {x: 1, y: 1}
+  worldPrefab: {fileID: 8059979155723304973, guid: 168caafb018a2734d8625e8a2a93443a, type: 3}
+  basePoints: 5
+  purchasePrice: 3
+  cardUIPrefab: {fileID: 7663734427134479993, guid: 634117bb82161ba48b3a013ba6eb40a9, type: 3}
+  validStations: 000000000100000003000000
+  isCookable: 0
+  cookTime: 5
+  cookedPrefab: {fileID: 0}
+  instantCook: 0
+  isChoppable: 0
+  choppedPrefab: {fileID: 0}
+  canBurn: 0
+  burnTime: 15
+  burntPrefab: {fileID: 8059979155723304973, guid: 5e6d86adc9ed89e4d9e6a52e46822621, type: 3}
+  combinations:
+  - partnerIngredient: {fileID: 11400000, guid: ef89690a8cbdea7418e49eee7880770d, type: 2}
+    resultPrefab: {fileID: 8059979155723304973, guid: 7bfd138f68b381a49a597e1c39ba9bca, type: 3}
+    cookTime: 2.5
+    spawnOnPartnerTile: 0

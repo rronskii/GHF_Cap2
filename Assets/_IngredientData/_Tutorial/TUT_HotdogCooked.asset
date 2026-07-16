@@ -1,0 +1,36 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9bb50e5e47da741438d10ed09a235ed3, type: 3}
+  m_Name: TUT_HotdogCooked
+  m_EditorClassIdentifier: 
+  ingredientID: 2
+  displayName: CookedHotdog
+  allowedStorageType: 0
+  storagePrefab: {fileID: 0}
+  shapeOffsets:
+  - {x: 0, y: 0}
+  - {x: 1, y: 0}
+  worldPrefab: {fileID: 8059979155723304973, guid: d25fccc69aa03334c9df40410d16e474, type: 3}
+  basePoints: 35
+  purchasePrice: 10
+  cardUIPrefab: {fileID: 0}
+  validStations: 000000000100000003000000
+  isCookable: 0
+  cookTime: 4
+  cookedPrefab: {fileID: 0}
+  instantCook: 0
+  isChoppable: 0
+  choppedPrefab: {fileID: 0}
+  canBurn: 0
+  burnTime: 10
+  burntPrefab: {fileID: 8059979155723304973, guid: ce06bcff08d8ad5478cb86150805e88d, type: 3}
+  combinations: []

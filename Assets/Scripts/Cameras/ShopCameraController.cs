@@ -39,11 +39,11 @@ public class ShopCameraController : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.A))
         {
-            ChangeSection(1);
+            ChangeSection(-1);
         }
         else if (Input.GetKeyDown(KeyCode.D))
         {
-            ChangeSection(-1);
+            ChangeSection(1);
         }
     }
 

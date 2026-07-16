@@ -14,10 +14,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ingredientID: 5
   displayName: RawGarlic
+  allowedStorageType: 1
+  storagePrefab: {fileID: 328233261700648493, guid: 3a771899d07612d4ea43755c1c0a030f, type: 3}
   shapeOffsets:
   - {x: 0, y: 0}
   worldPrefab: {fileID: 328233261700648493, guid: 406e923dede73af42835fe9c6c1f5c8b, type: 3}
   basePoints: 0
+  purchasePrice: 2
+  cardUIPrefab: {fileID: 7663734427134479993, guid: fbd76e61d859b734fa4a738ee6fcc0d6, type: 3}
   validStations: 01000000
   isCookable: 0
   cookTime: 2

@@ -18,12 +18,20 @@ public class IngredientData : ScriptableObject
     public string ingredientID;
     public string displayName;
 
+    [Header("Inventory Setup Settings")]
+    public StorageType allowedStorageType;
+    public GameObject storagePrefab; // The 3D physical representation in the slot
+
     [Header("Grid Shape")]
     public Vector2Int[] shapeOffsets;
     public GameObject worldPrefab;
 
     [Header("Economy")]
     public int basePoints = 0; // Unprocessed items can remain 0
+
+    [Header("Shop Settings")]
+    public int purchasePrice = 10;
+    public GameObject cardUIPrefab; // Drag your 2D UI Card prefab here
 
     // --- NEW ADDITIONS FOR COMPATIBILITY & COOKING ---
     [Header("Station Compatibility")]

@@ -14,10 +14,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ingredientID: 4
   displayName: RawEgg
+  allowedStorageType: 0
+  storagePrefab: {fileID: 8059979155723304973, guid: 232c4f2f97199c34e81f0be31b5c4f58, type: 3}
   shapeOffsets:
   - {x: 0, y: 0}
   worldPrefab: {fileID: 8059979155723304973, guid: 3ae6161b6950be743a4eba28616e4eb7, type: 3}
   basePoints: 0
+  purchasePrice: 3
+  cardUIPrefab: {fileID: 7663734427134479993, guid: f825f1002011c6045a6f27c0ee968104, type: 3}
   validStations: 0100000003000000
   isCookable: 1
   cookTime: 1.5

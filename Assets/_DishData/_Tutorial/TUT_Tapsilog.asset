@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 719d5242be584a64a92ea6a3c1b4c2e1, type: 3}
+  m_Name: TUT_Tapsilog
+  m_EditorClassIdentifier: 
+  dishName: Tapsilog
+  requiredIngredients:
+  - {fileID: 11400000, guid: b38ffbf9106e7de439007c8553ad1de3, type: 2}
+  - {fileID: 11400000, guid: 943881f2119c2864d92071fd3d58c286, type: 2}
+  - {fileID: 11400000, guid: 9d59d632f7d31ed47a5c8935e210b5ce, type: 2}
+  windowPrefab: {fileID: 3552488436277148868, guid: 06370aedb8cfc0b40b3b829262838466, type: 3}
+  basePrice: 100

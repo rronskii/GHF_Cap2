@@ -14,6 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ingredientID: 6
   displayName: CookedRice
+  allowedStorageType: 2
+  storagePrefab: {fileID: 5153288816969993613, guid: a701aab32e0ed6e43961e8ff80507286, type: 3}
   shapeOffsets:
   - {x: 0, y: 0}
   - {x: 1, y: 0}
@@ -21,6 +23,8 @@ MonoBehaviour:
   - {x: 1, y: 1}
   worldPrefab: {fileID: 8059979155723304973, guid: c3307a7a3da1bda47a25d9af2e529b8c, type: 3}
   basePoints: 5
+  purchasePrice: 3
+  cardUIPrefab: {fileID: 7663734427134479993, guid: 98ef8c3f7580c2044a57562f7c6539f7, type: 3}
   validStations: 000000000100000003000000
   isCookable: 0
   cookTime: 5

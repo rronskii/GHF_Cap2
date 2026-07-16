@@ -14,11 +14,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ingredientID: 2
   displayName: CookedHotdog
+  allowedStorageType: 0
+  storagePrefab: {fileID: 0}
   shapeOffsets:
   - {x: 0, y: 0}
   - {x: 1, y: 0}
   worldPrefab: {fileID: 8059979155723304973, guid: 3679e378a27dc19418239cd5d4b99148, type: 3}
   basePoints: 35
+  purchasePrice: 10
+  cardUIPrefab: {fileID: 0}
   validStations: 000000000100000003000000
   isCookable: 0
   cookTime: 4
@@ -27,6 +31,6 @@ MonoBehaviour:
   isChoppable: 0
   choppedPrefab: {fileID: 0}
   canBurn: 1
-  burnTime: 5
+  burnTime: 10
   burntPrefab: {fileID: 8059979155723304973, guid: ce06bcff08d8ad5478cb86150805e88d, type: 3}
   combinations: []

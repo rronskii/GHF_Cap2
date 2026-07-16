@@ -14,5 +14,8 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/02_DailyShop.unity
     guid: 935f9542ccf412446bfdf7cb0b8b8daa
+  - enabled: 1
+    path: Assets/Scenes/03_Inventory.unity
+    guid: f1e5752ba5fc52e4da02e950c84f06ee
   m_configObjects: {}
   m_UseUCBPForAssetBundles: 0

@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9bb50e5e47da741438d10ed09a235ed3, type: 3}
+  m_Name: TUT_RawGarlic
+  m_EditorClassIdentifier: 
+  ingredientID: 5
+  displayName: RawGarlic
+  allowedStorageType: 1
+  storagePrefab: {fileID: 328233261700648493, guid: 3a771899d07612d4ea43755c1c0a030f, type: 3}
+  shapeOffsets:
+  - {x: 0, y: 0}
+  worldPrefab: {fileID: 328233261700648493, guid: 1adba3071093b524d85d7126675d43b1, type: 3}
+  basePoints: 0
+  purchasePrice: 2
+  cardUIPrefab: {fileID: 7663734427134479993, guid: 430c7276db4eb184a9aa1a1280fc35ad, type: 3}
+  validStations: 01000000
+  isCookable: 0
+  cookTime: 2
+  cookedPrefab: {fileID: 0}
+  instantCook: 0
+  isChoppable: 1
+  choppedPrefab: {fileID: 8059979155723304973, guid: d59a6f126c394d647a4270453a3e2287, type: 3}
+  canBurn: 0
+  burnTime: 5
+  burntPrefab: {fileID: 0}
+  combinations: []

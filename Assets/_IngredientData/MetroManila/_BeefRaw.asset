@@ -14,11 +14,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ingredientID: 10
   displayName: RawBeef
+  allowedStorageType: 0
+  storagePrefab: {fileID: 5400080113653799669, guid: 6d2bfcc38d27aaa42bfe526317de988f, type: 3}
   shapeOffsets:
   - {x: 0, y: 0}
   - {x: 1, y: 0}
   worldPrefab: {fileID: 5400080113653799669, guid: d0aab7cfdd2755e438e6c431fe77a939, type: 3}
   basePoints: 0
+  purchasePrice: 45
+  cardUIPrefab: {fileID: 7663734427134479993, guid: 9f6e4ce380bde154ba86506ced39d347, type: 3}
   validStations: 01000000
   isCookable: 0
   cookTime: 5
