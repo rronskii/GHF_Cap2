@@ -100,7 +100,6 @@ public class Draggable3DItem : MonoBehaviour
         if (Time.timeScale == 0f) return;
         if (DialogueManager.Instance != null && DialogueManager.Instance.IsDialogueActive) return;
         if (isLocked) return;
-        if (isBurntItem) return;
 
         originalRotationSteps = currentRotationSteps;
         originalRotation = transform.rotation;
@@ -137,23 +136,18 @@ public class Draggable3DItem : MonoBehaviour
         {
             Vector3 targetPosition = hit.point;
 
-            // --- THE UPGRADE: Shape-Based Sensor Array ---
             float maxPhysicalHeight = hit.point.y;
-            float tileSize = 1.0f; // Make sure this matches your Unity grid spacing
+            float tileSize = 1.0f;
 
-            // Get the footprint offsets (already correctly rotated!)
             Vector2Int[] offsets = GetCurrentRotatedOffsets();
 
             foreach (Vector2Int gridOffset in offsets)
             {
-                // Convert grid offsets to world space
                 float offsetX = gridOffset.x * tileSize;
                 float offsetZ = gridOffset.y * tileSize;
 
-                // Start ray 10 units in the air
                 Vector3 skyPosition = new Vector3(targetPosition.x + offsetX, targetPosition.y + 10f, targetPosition.z + offsetZ);
 
-                // Note: We use gridLayerMask here. Ensure your Frying Pan's Mesh Collider is on this layer!
                 if (Physics.Raycast(skyPosition, Vector3.down, out RaycastHit heightHit, 20f, gridLayerMask))
                 {
                     if (heightHit.point.y > maxPhysicalHeight)
@@ -163,10 +157,8 @@ public class Draggable3DItem : MonoBehaviour
                 }
             }
 
-            // Set the target height to the highest point detected, plus our hover offset
             targetPosition.y = maxPhysicalHeight + 0.5f;
 
-            // Move the object smoothly
             transform.position = Vector3.Lerp(transform.position, targetPosition, Time.deltaTime * 20f);
         }
 
@@ -221,6 +213,17 @@ public class Draggable3DItem : MonoBehaviour
 
         Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
 
+        // Check for the Trash Can FIRST
+        if (Physics.Raycast(ray, out RaycastHit trashHit, Mathf.Infinity))
+        {
+            if (trashHit.collider.GetComponent<TrashDropZone>() != null)
+            {
+                TrashItem();
+                return;
+            }
+        }
+
+        // Existing Grid Check
         if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, gridLayerMask))
         {
             GridTileVisual tile = hit.collider.GetComponent<GridTileVisual>();
@@ -296,14 +299,12 @@ public class Draggable3DItem : MonoBehaviour
         GameObject cookedItem = Instantiate(myData.cookedPrefab, spawnPosition, Quaternion.identity);
         Draggable3DItem cookedScript = cookedItem.GetComponent<Draggable3DItem>();
 
-        // FIX: Pass the rotation state to the newly spawned cooked item!
         cookedScript.currentRotationSteps = this.currentRotationSteps;
         cookedItem.transform.rotation = this.transform.rotation;
 
         cookedScript.currentStation = tile.parentStation;
         cookedScript.currentCoordinate = tile.gridCoordinate;
 
-        // FIX: Use the properly rotated footprint to reserve the tiles!
         tile.parentStation.SetOccupancy(tile.gridCoordinate, cookedScript.GetCurrentRotatedOffsets(), cookedScript);
 
         IngredientProcessor cookedProcessor = cookedItem.GetComponent<IngredientProcessor>();
@@ -326,8 +327,6 @@ public class Draggable3DItem : MonoBehaviour
 
         if (cookedScriptRef != null)
         {
-            // FIX: We must mathematically rotate the future cooked shape's footprint 
-            // before we reserve the grid tiles!
             offsetsToReserve = RotateOffsets(cookedScriptRef.myData.shapeOffsets, currentRotationSteps);
         }
 
@@ -350,53 +349,29 @@ public class Draggable3DItem : MonoBehaviour
         if (processor != null) processor.EvaluateBurnState();
     }
 
-    private void OnMouseOver()
+    private void TrashItem()
     {
-        if (DialogueManager.Instance != null)
-        {
-            if (DialogueManager.Instance.IsDialogueActive) return;
-        }
+        isLocked = true;
 
-        if (Input.GetMouseButtonDown(1))
-        {
-            if (isBurntItem)
-            {
-                StartCoroutine(TrashRoutine());
-            }
-            else
-            {
-                if (currentStation != null)
-                {
-                    PlateStation plateStation = currentStation.GetComponent<PlateStation>();
-                    if (plateStation != null)
-                    {
-                        plateStation.ServePlate();
-                    }
-                }
-            }
-        }
-    }
-
-    private System.Collections.IEnumerator TrashRoutine()
-    {
-        if (itemCollider != null)
-        {
-            itemCollider.enabled = false;
-        }
-
+        // Clear it from the station's grid data by setting the occupant to null
         if (currentStation != null)
         {
             currentStation.SetOccupancy(currentCoordinate, GetCurrentRotatedOffsets(), null);
         }
 
-        Vector3 startScale = transform.localScale;
-        float duration = 0.2f;
-        float elapsed = 0f;
+        StartCoroutine(TrashAnimationRoutine());
+    }
 
-        while (elapsed < duration)
+    private System.Collections.IEnumerator TrashAnimationRoutine()
+    {
+        Vector3 startScale = transform.localScale;
+        float shrinkSpeed = 10f;
+        float t = 0f;
+
+        while (t < 1f)
         {
-            elapsed += Time.deltaTime;
-            transform.localScale = Vector3.Lerp(startScale, Vector3.zero, elapsed / duration);
+            t += Time.deltaTime * shrinkSpeed;
+            transform.localScale = Vector3.Lerp(startScale, Vector3.zero, t);
             yield return null;
         }
 

@@ -3,7 +3,8 @@ using UnityEngine.EventSystems;
 
 [RequireComponent(typeof(CardGridPlacer))]
 [RequireComponent(typeof(CanvasGroup))]
-public class CardDragUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler, IDragHandler, IPointerUpHandler
+// --- NEW: Added IBeginDragHandler and IEndDragHandler ---
+public class CardDragUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerUpHandler
 {
     [Header("UI Settings")]
     public float hoverGlideAmount = 50f;
@@ -46,13 +47,10 @@ public class CardDragUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
             CancelDrag();
         }
 
-        // --- NEW: 'R' KEY TO QUICK RETURN ---
         if (Input.GetKeyDown(KeyCode.R))
         {
-            // Only trigger if our mouse is over THIS specific card, or we are holding it
             if (isHovering || isDragging)
             {
-                // Only allow the refund if we are actively looking at the inventory station
                 if (HandManager.Instance != null && HandManager.Instance.currentStationIndex == inventoryStationIndex)
                 {
                     if (isDragging) CancelDrag();
@@ -86,42 +84,61 @@ public class CardDragUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
     // --- Mouse Events ---
     public void OnPointerEnter(PointerEventData eventData)
     {
-        if (isDragging || !isInteractable) return;
+        if (!isInteractable) return;
+        if (isDragging) return;
         isHovering = true;
         targetPosition = handPosition + new Vector2(0, hoverGlideAmount);
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        if (isDragging || !isInteractable) return;
+        if (!isInteractable) return;
+        if (isDragging) return;
         isHovering = false;
         targetPosition = handPosition;
     }
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        if (eventData.button != PointerEventData.InputButton.Left) return;
-
-        if (DialogueManager.Instance != null && DialogueManager.Instance.IsDialogueActive) return;
         if (!isInteractable) return;
+        if (eventData.button != PointerEventData.InputButton.Left) return;
+        if (DialogueManager.Instance != null && DialogueManager.Instance.IsDialogueActive) return;
 
         StartDrag();
     }
 
+    // --- NEW: Engine-Level Drag Kill Switch ---
+    public void OnBeginDrag(PointerEventData eventData)
+    {
+        if (!isInteractable || !isDragging)
+        {
+            // This tells Unity's internal Event System to completely drop the drag event.
+            // Without this, Unity will force OnDrag to fire anyway!
+            eventData.pointerDrag = null;
+            return;
+        }
+    }
+
     public void OnDrag(PointerEventData eventData)
     {
+        if (!isInteractable || !isDragging) return;
         if (Time.timeScale == 0f) return;
         if (DialogueManager.Instance != null && DialogueManager.Instance.IsDialogueActive) return;
-        if (!isInteractable || !isDragging) return;
 
         rectTransform.position = Input.mousePosition;
         gridPlacer.ProcessDragUpdate();
     }
 
+    // --- NEW: Required Interface Completion ---
+    public void OnEndDrag(PointerEventData eventData)
+    {
+        // Safe to leave empty, as your drop logic relies on OnPointerUp
+    }
+
     public void OnPointerUp(PointerEventData eventData)
     {
+        if (!isInteractable) return;
         if (eventData.button != PointerEventData.InputButton.Left) return;
-
         if (DialogueManager.Instance != null && DialogueManager.Instance.IsDialogueActive) return;
 
         AttemptDrop();

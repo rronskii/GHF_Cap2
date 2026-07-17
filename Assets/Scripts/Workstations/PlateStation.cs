@@ -7,19 +7,14 @@ public class PlateStation : BaseStation
     [Header("Serving Mechanics")]
     public Transform plateModel;
     public GameObject plateModelPrefab;
-
-    [Tooltip("The empty GameObject representing the top of your plate stack")]
     public Transform stackSpawnPoint;
 
     public float serveSpeed = 20f;
     public float serveDistance = 10f;
-
-    [Tooltip("How long to wait before the new empty plate appears")]
     public float respawnDelay = 0.2f;
-    [Tooltip("How fast the new plate slides in from the stack")]
     public float popInSpeed = 10f;
 
-    private bool isServing = false;
+    [HideInInspector] public bool isServing = false;
     private Vector3 initialPlateLocalPos;
 
     protected override void InitializeGrid()
@@ -50,30 +45,22 @@ public class PlateStation : BaseStation
         }
     }
 
-    private void OnMouseOver()
+    // --- NEW: Helper method for the Bell ---
+    public List<IngredientData> GetIngredientsOnPlate()
     {
-        if (DialogueManager.Instance != null)
-        {
-            if (DialogueManager.Instance.IsDialogueActive) return;
-        }
+        List<IngredientData> ingredients = new List<IngredientData>();
+        HashSet<Draggable3DItem> uniqueItems = GetUniqueFoodItems();
 
-        if (Input.GetMouseButtonDown(1))
+        foreach (Draggable3DItem item in uniqueItems)
         {
-            ServePlate();
+            ingredients.Add(item.myData);
         }
+        return ingredients;
     }
 
-    public void ServePlate()
+    private HashSet<Draggable3DItem> GetUniqueFoodItems()
     {
-        if (isServing) return;
-        StartCoroutine(ServeRoutine());
-    }
-
-    private IEnumerator ServeRoutine()
-    {
-        List<IngredientData> ingredientsOnPlate = new List<IngredientData>();
         HashSet<Draggable3DItem> foodScripts = new HashSet<Draggable3DItem>();
-
         for (int x = 0; x < gridWidth; x++)
         {
             for (int y = 0; y < gridHeight; y++)
@@ -84,59 +71,21 @@ public class PlateStation : BaseStation
                 }
             }
         }
+        return foodScripts;
+    }
 
-        foreach (Draggable3DItem uniqueFood in foodScripts)
-        {
-            ingredientsOnPlate.Add(uniqueFood.myData);
-        }
+    public void ServePlate()
+    {
+        if (isServing) return;
+        StartCoroutine(ServeRoutine());
+    }
 
-        DishData validatedDish = null;
-
-        // --- NEW: Safe Routing for Tutorial vs Main Game ---
-        if (OrderManager.Instance != null)
-        {
-            validatedDish = OrderManager.Instance.ValidateRecipe(ingredientsOnPlate);
-        }
-        else if (TutorialOrderManager.Instance != null)
-        {
-            // Find any active ticket that matches what is on the plate
-            foreach (OrderTicketUI ticket in TutorialOrderManager.Instance.activeTickets)
-            {
-                if (ticket.pendingDishes.Count > 0)
-                {
-                    if (ticket.pendingDishes[0].MatchesIngredients(ingredientsOnPlate))
-                    {
-                        validatedDish = ticket.pendingDishes[0];
-                        break; // Found a match, stop looking
-                    }
-                }
-            }
-        }
-
-        if (validatedDish == null)
-        {
-            Debug.Log("[Plate Station] This configuration does not form a valid menu item. Bell ring rejected!");
-            yield break;
-        }
-
+    private IEnumerator ServeRoutine()
+    {
         isServing = true;
+        HashSet<Draggable3DItem> foodScripts = GetUniqueFoodItems();
 
-        if (OrderManager.Instance != null)
-        {
-            bool sentToWindowSuccess = OrderManager.Instance.TrySpawnDishToWindow(validatedDish);
-            if (!sentToWindowSuccess)
-            {
-                Debug.Log("[Plate Station] Counter window display slots are full!");
-                isServing = false;
-                yield break;
-            }
-        }
-        else if (TutorialOrderManager.Instance != null)
-        {
-            TutorialOrderManager.Instance.TryServeTutorialDish(validatedDish);
-        }
-        // ----------------------------------------------------
-
+        // Clear the internal grid
         for (int x = 0; x < gridWidth; x++)
         {
             for (int y = 0; y < gridHeight; y++)
@@ -146,18 +95,23 @@ public class PlateStation : BaseStation
             }
         }
 
+        // Attach food to the plate
         foreach (Draggable3DItem food in foodScripts)
         {
-            food.GetComponent<Collider>().enabled = false;
+            if (food.GetComponent<Collider>() != null)
+            {
+                food.GetComponent<Collider>().enabled = false;
+            }
             food.transform.SetParent(plateModel);
         }
 
+        // Hide visuals
         foreach (GridTileVisual tile in tileVisuals)
         {
             if (tile != null) tile.gameObject.SetActive(false);
         }
 
-        // Slides away using the serveSpeed
+        // Slide away
         Vector3 targetPosition = plateModel.position + new Vector3(0, 0, serveDistance);
         while (Vector3.Distance(plateModel.position, targetPosition) > 0.05f)
         {
@@ -166,19 +120,15 @@ public class PlateStation : BaseStation
         }
 
         Destroy(plateModel.gameObject);
-
         yield return new WaitForSeconds(respawnDelay);
 
-        // --- NEW SLIDE-IN ANIMATION ---
+        // Slide in new plate
         GameObject newPlate = Instantiate(plateModelPrefab, transform);
         plateModel = newPlate.transform;
 
         if (stackSpawnPoint != null)
         {
-            // Start at the stack's position
             newPlate.transform.position = stackSpawnPoint.position;
-
-            // The target is where the plate normally sits (local offset)
             Vector3 startLocalPos = newPlate.transform.localPosition;
             Vector3 targetLocalPos = initialPlateLocalPos;
 
@@ -189,17 +139,14 @@ public class PlateStation : BaseStation
                 newPlate.transform.localPosition = Vector3.Lerp(startLocalPos, targetLocalPos, t);
                 yield return null;
             }
-
-            // Snap perfectly into place
             newPlate.transform.localPosition = targetLocalPos;
         }
         else
         {
-            // Fallback just in case you forget to assign the point in the inspector!
             newPlate.transform.localPosition = initialPlateLocalPos;
         }
-        // ------------------------------
 
+        // Restore visuals
         for (int x = 0; x < gridWidth; x++)
         {
             for (int y = 0; y < gridHeight; y++)
@@ -218,4 +165,4 @@ public class PlateStation : BaseStation
 
         isServing = false;
     }
-}   
+}

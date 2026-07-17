@@ -118,9 +118,8 @@ public class OrderManager : MonoBehaviour
     {
         if (clockText == null) return;
 
-        // 1. Calculate how many in-game minutes have passed. 
-        // Dividing by 2f means it takes 2 real seconds to make 1 in-game minute!
-        int elapsedInGameMinutes = Mathf.FloorToInt(currentShiftTime / 2f);
+        // 1. Calculate how many in-game minutes have passed.
+        int elapsedInGameMinutes = Mathf.FloorToInt(currentShiftTime / 1f);
 
         // Start at 12:00 PM (720 minutes)
         int startingMinutes = 720;

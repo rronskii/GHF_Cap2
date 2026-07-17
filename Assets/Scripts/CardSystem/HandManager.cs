@@ -4,20 +4,23 @@ using UnityEngine;
 [RequireComponent(typeof(CanvasGroup))]
 public class HandManager : MonoBehaviour
 {
-    public static HandManager Instance; // Singleton so storage stations and camera can find it
+    public static HandManager Instance;
 
     [Header("Hand References")]
-    public RectTransform handContainer; // Drag the parent UI panel holding the cards here
+    public RectTransform handContainer;
 
     [Header("Hand Settings")]
     public int maxCards = 5;
-    public float cardSpacing = 220f; // Width of card (200) + 20px gap
+    public float cardSpacing = 220f;
     public float defaultYPosition = -65f;
-    public Vector2 spawnOffset = new Vector2(50f, 100f); // Spawns slightly right and higher
+    public Vector2 spawnOffset = new Vector2(50f, 100f);
+
+    [Header("Tutorial Settings")]
+    public bool enforceSingleIngredientLimit = false;
+    public bool ignoreStationUnlocks = false; // --- NEW: Protects tutorial locks from the camera! ---
 
     private List<CardDragUI> currentCards = new List<CardDragUI>();
     private CanvasGroup canvasGroup;
-
     public int currentStationIndex = 0;
 
     private void Awake()
@@ -28,68 +31,104 @@ public class HandManager : MonoBehaviour
 
     private void Update()
     {
-        // Smoothly handle visibility based on Dialogue AND Station views
         bool hideForDialogue = DialogueManager.Instance != null && DialogueManager.Instance.IsDialogueActive;
-        bool hideForStation = (currentStationIndex == 2); // Hide at Order Window
+        bool hideForStation = (currentStationIndex == 2);
 
         float targetAlpha = (hideForDialogue || hideForStation) ? 0f : 1f;
 
         canvasGroup.alpha = Mathf.MoveTowards(canvasGroup.alpha, targetAlpha, Time.deltaTime * 10f);
         canvasGroup.blocksRaycasts = (targetAlpha > 0.5f);
 
-        // --- NEW: HOTKEY DRAGGING ---
-        // Do not allow hotkeys if the UI is currently hidden or fading out
         if (hideForDialogue || targetAlpha < 0.5f) return;
-
         if (Time.timeScale == 0f) return;
 
         for (int i = 0; i < currentCards.Count; i++)
         {
-            // Maps Index 0 to Key 1, Index 1 to Key 2, etc. (Safely caps at 9)
             if (i > 8) break;
+
+            if (!currentCards[i].isInteractable) continue;
+
             KeyCode key = KeyCode.Alpha1 + i;
 
-            if (Input.GetKeyDown(key))
-            {
-                currentCards[i].SimulateKeyDown();
-            }
-            else if (Input.GetKey(key))
-            {
-                currentCards[i].SimulateKeyHold();
-            }
-            else if (Input.GetKeyUp(key))
-            {
-                currentCards[i].SimulateKeyUp();
-            }
+            if (Input.GetKeyDown(key)) currentCards[i].SimulateKeyDown();
+            else if (Input.GetKey(key)) currentCards[i].SimulateKeyHold();
+            else if (Input.GetKeyUp(key)) currentCards[i].SimulateKeyUp();
         }
     }
 
-    // UPDATED: Now accepts a specific pool of cards passed directly from the clicked station
-    // NEW: Replaces the old array-based DrawCardFromPool method
     public bool TryDrawCard(GameObject cardPrefab)
     {
-        if (currentCards.Count >= maxCards)
-        {
-            Debug.Log("[HandManager] Hand is full! Cannot draw card.");
-            return false;
-        }
-
+        if (currentCards.Count >= maxCards) return false;
         if (cardPrefab == null) return false;
+
+        if (enforceSingleIngredientLimit)
+        {
+            CardGridPlacer placerCheck = cardPrefab.GetComponent<CardGridPlacer>();
+            if (placerCheck != null && GetCountOfIngredient(placerCheck.ingredientData) >= 1) return false;
+        }
 
         GameObject newCardObj = Instantiate(cardPrefab, handContainer);
         CardDragUI newCardScript = newCardObj.GetComponent<CardDragUI>();
         currentCards.Add(newCardScript);
 
         UpdateCardPositions(newCardScript);
-
-        return true; // Successfully added to hand
+        return true;
     }
+
+    public int GetCountOfIngredient(IngredientData data)
+    {
+        int count = 0;
+        foreach (CardDragUI card in currentCards)
+        {
+            if (card != null)
+            {
+                CardGridPlacer placer = card.GetComponent<CardGridPlacer>();
+                if (placer != null && placer.ingredientData == data) count++;
+            }
+        }
+        return count;
+    }
+
+    // --- REVERTED TO CLEAN LOCKING ---
+    public CardDragUI GetCard(IngredientData data)
+    {
+        foreach (CardDragUI card in currentCards)
+        {
+            if (card != null)
+            {
+                CardGridPlacer placer = card.GetComponent<CardGridPlacer>();
+                if (placer != null && placer.ingredientData == data) return card;
+            }
+        }
+        return null;
+    }
+
+    public void LockAllCardsExcept(IngredientData allowedData)
+    {
+        foreach (CardDragUI card in currentCards)
+        {
+            if (card != null)
+            {
+                CardGridPlacer placer = card.GetComponent<CardGridPlacer>();
+                card.isInteractable = (placer != null && placer.ingredientData == allowedData);
+            }
+        }
+    }
+
+    public void UnlockAllCards()
+    {
+        foreach (CardDragUI card in currentCards)
+        {
+            if (card != null) card.isInteractable = true;
+        }
+    }
+    // ---------------------------------
 
     private void UpdateCardPositions(CardDragUI freshlyDrawnCard = null)
     {
         int cardCount = currentCards.Count;
         float totalWidth = (cardCount - 1) * cardSpacing;
-        float startX = -totalWidth / 2f; // This centers the fanned hand perfectly
+        float startX = -totalWidth / 2f;
 
         for (int i = 0; i < cardCount; i++)
         {
@@ -97,9 +136,8 @@ public class HandManager : MonoBehaviour
             float targetX = startX + (i * cardSpacing);
             Vector2 finalTargetPos = new Vector2(targetX, defaultYPosition);
 
-            card.SetHandPosition(finalTargetPos); // Tell the card where its new home is
+            card.SetHandPosition(finalTargetPos);
 
-            // If this is the brand new card, physically move it to the offset starting point so it slides in
             if (card == freshlyDrawnCard)
             {
                 card.GetComponent<RectTransform>().anchoredPosition = finalTargetPos + spawnOffset;
@@ -110,11 +148,9 @@ public class HandManager : MonoBehaviour
     public void RemoveCard(CardDragUI cardToRemove)
     {
         currentCards.Remove(cardToRemove);
-        UpdateCardPositions(); // Recalculate so the remaining cards slide together to close the gap
+        UpdateCardPositions();
     }
 
-    // Called by the Camera Controller when shifting stations
-    // Called by the Camera Controller when shifting stations
     public void UpdateStationState(int stationIndex)
     {
         currentStationIndex = stationIndex;
@@ -122,33 +158,25 @@ public class HandManager : MonoBehaviour
         bool canDrag = (stationIndex == 0 || stationIndex == 1);
         foreach (CardDragUI card in currentCards)
         {
-            card.isInteractable = canDrag;
-
-            // NEW: The manager forcefully cancels any active drags when the camera shifts
-            if (card.isDragging)
+            // --- NEW: Only override interactability if the tutorial isn't actively locking things! ---
+            if (!ignoreStationUnlocks)
             {
-                card.CancelDrag();
+                card.isInteractable = canDrag;
             }
+
+            if (card.isDragging) card.CancelDrag();
         }
     }
 
     public void RefundAllCards()
     {
-        // 1. Create a copy of the list so we don't crash when cards remove themselves
         List<CardDragUI> cardsToRefund = new List<CardDragUI>(currentCards);
-
-        // 2. Loop through the copy and refund each one
         foreach (CardDragUI card in cardsToRefund)
         {
             if (card != null)
             {
                 CardGridPlacer placer = card.GetComponent<CardGridPlacer>();
-                if (placer != null)
-                {
-                    // This will handle the inventory refund, the UI animation, 
-                    // and safely removing it from the real currentCards list!
-                    placer.TriggerRefund();
-                }
+                if (placer != null) placer.TriggerRefund();
             }
         }
     }

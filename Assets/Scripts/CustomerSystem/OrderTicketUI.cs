@@ -145,28 +145,24 @@ public class OrderTicketUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     {
         if (isDead) return;
 
-        // --- NEW: Dynamic Position Evaluation ---
         bool dialogueActive = false;
-        if (DialogueManager.Instance != null)
+        if (DialogueManager.Instance != null && DialogueManager.Instance.IsDialogueActive)
         {
-            if (DialogueManager.Instance.IsDialogueActive)
-            {
-                dialogueActive = true;
-            }
+            dialogueActive = true;
         }
 
         Vector2 activeTargetPosition = basePosition;
 
-        // If at the window, OR if dialogue is currently playing, stay fully visible!
-        if (isWindowStation || dialogueActive)
+        // REMOVED the dialogueActive override here so it hides normally
+        if (isWindowStation)
         {
             activeTargetPosition = basePosition;
         }
         else
         {
-            // Otherwise, calculate the hidden offset
             Vector2 hoverOffset = Vector2.zero;
-            if (isHovered)
+            // Prevent it from peeking down if they accidentally hover over it during dialogue
+            if (isHovered && !dialogueActive)
             {
                 hoverOffset = hiddenHoverOffset;
             }
@@ -175,7 +171,6 @@ public class OrderTicketUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         }
 
         rectTransform.anchoredPosition = Vector2.Lerp(rectTransform.anchoredPosition, activeTargetPosition, Time.deltaTime * 15f);
-        // ----------------------------------------
 
         if (!isTutorialTicket)
         {
@@ -191,10 +186,7 @@ public class OrderTicketUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
                 if (currentPatience <= 0)
                 {
                     isFailed = true;
-                    if (OrderManager.Instance != null)
-                    {
-                        OrderManager.Instance.HandleTicketTimeout(this);
-                    }
+                    if (OrderManager.Instance != null) OrderManager.Instance.HandleTicketTimeout(this);
                 }
             }
         }

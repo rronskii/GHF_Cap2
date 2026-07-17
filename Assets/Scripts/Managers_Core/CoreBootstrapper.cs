@@ -10,6 +10,6 @@ public class CoreBootstrapper : MonoBehaviour
 
         // 2. Load the actual gameplay level 
         // (Make sure "01_FoodTruckLevel" matches your exact scene name!)
-        SceneManager.LoadScene("01_FoodTruckLevel");
+        SceneManager.LoadScene("00a_Tutorial_Basics");
     }
 }

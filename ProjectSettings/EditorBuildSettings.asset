@@ -9,6 +9,9 @@ EditorBuildSettings:
     path: Assets/Scenes/00_CoreBootstrap.unity
     guid: 5a3ca8860a10daf49877cf0a0bf08fc4
   - enabled: 1
+    path: Assets/Scenes/00a_Tutorial_Basics.unity
+    guid: a4736125783d21f4dbc96efd0588148c
+  - enabled: 1
     path: Assets/Scenes/01_FoodTruckLevel.unity
     guid: 9fc0d4010bbf28b4594072e72b8655ab
   - enabled: 1
