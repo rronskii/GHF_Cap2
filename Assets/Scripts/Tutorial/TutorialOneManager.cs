@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement; // --- NEW: Required for loading the next level
 
 public class TutorialOneManager : MonoBehaviour
 {
@@ -22,6 +23,10 @@ public class TutorialOneManager : MonoBehaviour
     [Tooltip("Increase this number to move the arrow higher up from the card")]
     public float arrowYOffset = 220f;
     public GameObject tutorialCompletePanel;
+
+    [Header("Level Transition")]
+    [Tooltip("Type the exact name of your Tutorial 2 scene here")]
+    public string nextSceneName = "00b_Tutorial_Two";
 
     private int practiceTicketsRemaining = 3;
     private bool isPracticePhase = false;
@@ -107,7 +112,6 @@ public class TutorialOneManager : MonoBehaviour
             if (StationCameraController.Instance != null) StationCameraController.Instance.maxStationIndex = 0;
             if (TutorialOrderManager.Instance != null) TutorialOrderManager.Instance.SpawnDummyTicket(tutSilogDish);
 
-            // --- MOVED: Ticket hovering instruction is now here ---
             StartCoroutine(GuidedCookingRoutine());
         }
     }
@@ -124,7 +128,6 @@ public class TutorialOneManager : MonoBehaviour
     {
         bool dialogueDone = false;
 
-        // 1. COOK EGG
         DialogueManager.Instance.StartDialogue(new string[] {
             "I just gave you a ticket for a Silog.",
             "You can hover over tickets at the top of the screen anytime to see exactly what you need to make.",
@@ -137,11 +140,8 @@ public class TutorialOneManager : MonoBehaviour
         CardDragUI eggCard = HandManager.Instance.GetCard(tutEgg);
         GameObject arrow = SpawnArrowOnCard(eggCard);
 
-        // --- NEW: Wait until the card is actually consumed (placed on the station)
-        // The arrow will move with the card and naturally destroy itself when the card is consumed!
         while (eggCard != null) yield return null;
 
-        // Wait for it to finish cooking
         while (true)
         {
             Draggable3DItem item = FindItemInScene(tutCookedEgg);
@@ -149,14 +149,12 @@ public class TutorialOneManager : MonoBehaviour
             yield return null;
         }
 
-        // 2. PLATE EGG
         dialogueDone = false;
         DialogueManager.Instance.StartDialogue(new string[] { "Great! Now drag the cooked egg onto the Plate." }, () => dialogueDone = true);
         while (!dialogueDone) yield return null;
 
         while (!IsItemOnPlate(tutCookedEgg)) yield return null;
 
-        // 3. CHOP GARLIC
         dialogueDone = false;
         DialogueManager.Instance.StartDialogue(new string[] { "Next, let's prep the garlic.", "Drag the Garlic onto the chopping board.", "Then, drag the Knife over it to slice it!" }, () => dialogueDone = true);
         while (!dialogueDone) yield return null;
@@ -165,7 +163,6 @@ public class TutorialOneManager : MonoBehaviour
         CardDragUI garlicCard = HandManager.Instance.GetCard(tutGarlic);
         arrow = SpawnArrowOnCard(garlicCard);
 
-        // Wait for the card to be placed
         while (garlicCard != null) yield return null;
 
         while (true)
@@ -175,7 +172,6 @@ public class TutorialOneManager : MonoBehaviour
             yield return null;
         }
 
-        // 4. SAUTEE GARLIC
         dialogueDone = false;
         DialogueManager.Instance.StartDialogue(new string[] { "Now drag the chopped garlic to the stove to sauté it." }, () => dialogueDone = true);
         while (!dialogueDone) yield return null;
@@ -187,7 +183,6 @@ public class TutorialOneManager : MonoBehaviour
             yield return null;
         }
 
-        // 5. COMBINE RICE
         dialogueDone = false;
         DialogueManager.Instance.StartDialogue(new string[] { "While that's hot, drag your Cooked Rice card directly onto the stove next to the garlic to combine them!" }, () => dialogueDone = true);
         while (!dialogueDone) yield return null;
@@ -196,7 +191,6 @@ public class TutorialOneManager : MonoBehaviour
         CardDragUI riceCard = HandManager.Instance.GetCard(tutRice);
         arrow = SpawnArrowOnCard(riceCard);
 
-        // Wait for the card to be placed
         while (riceCard != null) yield return null;
 
         while (true)
@@ -206,7 +200,6 @@ public class TutorialOneManager : MonoBehaviour
             yield return null;
         }
 
-        // 6. PLATE RICE & SERVE
         dialogueDone = false;
         DialogueManager.Instance.StartDialogue(new string[] { "Perfect! Drag the Fried Rice onto the plate.", "Then ring the Service Bell to serve the ticket!" }, () => dialogueDone = true);
         while (!dialogueDone) yield return null;
@@ -271,7 +264,13 @@ public class TutorialOneManager : MonoBehaviour
             if (practiceTicketsRemaining <= 0)
             {
                 ServiceBell.OnTutorialBellRung -= HandleFirstTutorialComplete;
-                // --- MOVED: Cookbook explanation is now here in the final dialogue box ---
+
+                // --- NEW: Immediately clear the hand while the dialogue plays ---
+                if (HandManager.Instance != null)
+                {
+                    HandManager.Instance.RefundAllCards();
+                }
+
                 ShowWinScreen();
             }
         }
@@ -297,6 +296,16 @@ public class TutorialOneManager : MonoBehaviour
                 "Remember, if you ever forget how to make something, you can open your Cookbook anytime by pressing Esc or P!",
                 "You are ready for the next challenge."
             }, () => { if (tutorialCompletePanel != null) tutorialCompletePanel.SetActive(true); });
+        }
+    }
+
+    // --- NEW: Triggered by your Next button ---
+    public void LoadNextTutorial()
+    {
+        Time.timeScale = 1f; // Ensure the game isn't paused before transitioning
+        if (!string.IsNullOrEmpty(nextSceneName))
+        {
+            SceneManager.LoadScene(nextSceneName);
         }
     }
 }

@@ -180,4 +180,10 @@ public class HandManager : MonoBehaviour
             }
         }
     }
+
+    // --- NEW: Helper for Tutorial 2 ---
+    public int GetTotalCardCount()
+    {
+        return currentCards.Count;
+    }
 }

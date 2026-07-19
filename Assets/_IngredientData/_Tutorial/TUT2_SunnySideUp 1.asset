@@ -10,26 +10,29 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9bb50e5e47da741438d10ed09a235ed3, type: 3}
-  m_Name: _ChoppedGarlic
+  m_Name: TUT2_SunnySideUp 1
   m_EditorClassIdentifier: 
-  ingredientID: 1
-  displayName: ChoppedGarlic
+  ingredientID: 9
+  displayName: SunnySideUp
   allowedStorageType: 0
   storagePrefab: {fileID: 0}
   shapeOffsets:
   - {x: 0, y: 0}
-  worldPrefab: {fileID: 8059979155723304973, guid: 08583dedadf3fef4eae6db4726222758, type: 3}
-  basePoints: 0
+  - {x: 0, y: 1}
+  - {x: 1, y: 0}
+  - {x: 1, y: 1}
+  worldPrefab: {fileID: 721933441287932742, guid: 969c3f3317cf244489ae3e5bb4aa3f70, type: 3}
+  basePoints: 25
   purchasePrice: 10
-  cardUIPrefab: {fileID: 0}
-  validStations: 0100000003000000
-  isCookable: 1
-  cookTime: 1
-  cookedPrefab: {fileID: 8059979155723304973, guid: d973bfe2b9a30284f97907dce023e4bc, type: 3}
+  cardUIPrefab: {fileID: 721933441287932742, guid: 8c96bcb105e29314e97db280d0903552, type: 3}
+  validStations: 000000000100000003000000
+  isCookable: 0
+  cookTime: 5
+  cookedPrefab: {fileID: 0}
   instantCook: 0
   isChoppable: 0
   choppedPrefab: {fileID: 0}
-  canBurn: 0
-  burnTime: 5
-  burntPrefab: {fileID: 0}
+  canBurn: 1
+  burnTime: 1
+  burntPrefab: {fileID: 721933441287932742, guid: c8abeb103bb9d424193cf1aa937d3e59, type: 3}
   combinations: []

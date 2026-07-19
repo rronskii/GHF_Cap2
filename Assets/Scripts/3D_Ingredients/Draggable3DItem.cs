@@ -33,7 +33,7 @@ public class Draggable3DItem : MonoBehaviour
     private Camera mainCamera;
     private Vector3 startPosition;
     private BaseStation lastHoveredStation;
-    private bool isDragging = false;
+    public bool isDragging = false;
 
     // Component References
     private IngredientVisuals visuals;

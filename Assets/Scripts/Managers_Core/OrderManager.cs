@@ -398,13 +398,6 @@ public class OrderManager : MonoBehaviour
             if (hudCashText != null) hudCashText.gameObject.SetActive(false);
             if (hudQuotaText != null) hudQuotaText.gameObject.SetActive(false);
             if (clockText != null) clockText.gameObject.SetActive(false);
-            if (PlayerEconomyManager.Instance != null)
-            {
-                if (PlayerEconomyManager.Instance.piggyBankUI != null)
-                {
-                    PlayerEconomyManager.Instance.piggyBankUI.HidePiggyBank();
-                }
-            }
 
             if (HandManager.Instance != null)
             {

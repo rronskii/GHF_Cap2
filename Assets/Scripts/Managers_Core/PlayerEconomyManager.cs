@@ -8,7 +8,7 @@ public class PlayerEconomyManager : MonoBehaviour
     public int totalBankCash = 0; // This carries over to your Meta Shop!
 
     [Header("UI References")]
-    public PiggyBankUI piggyBankUI;
+    public CashRegisterInteractable cashRegister;
 
     [Header("Current Shift Stats")]
     public int currentDailyQuota = 100; // NEW: The finish line for the piggy bank
@@ -39,9 +39,9 @@ public class PlayerEconomyManager : MonoBehaviour
         currentDailyQuota = dailyQuotaTarget;
 
         // Reset the piggy bank visual to zero at the start of the day
-        if (piggyBankUI != null)
+        if (cashRegister != null)
         {
-            piggyBankUI.UpdatePiggyBank(shiftCash, currentDailyQuota);
+            cashRegister.UpdateRegister(shiftCash, currentDailyQuota);
         }
     }
 
@@ -51,9 +51,9 @@ public class PlayerEconomyManager : MonoBehaviour
         shiftPoints += points;
 
         // NEW: Tell the piggy bank to fill up a little bit more!
-        if (piggyBankUI != null)
+        if (cashRegister != null)
         {
-            piggyBankUI.UpdatePiggyBank(shiftCash, currentDailyQuota);
+            cashRegister.UpdateRegister(shiftCash, currentDailyQuota);
         }
     }
 

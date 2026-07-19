@@ -24,7 +24,7 @@ MonoBehaviour:
   cardUIPrefab: {fileID: 7663734427134479993, guid: b532b6210f3a2ee4b88859eb7277c1ce, type: 3}
   validStations: 0100000003000000
   isCookable: 1
-  cookTime: 3
+  cookTime: 2.5
   cookedPrefab: {fileID: 721933441287932742, guid: 8c96bcb105e29314e97db280d0903552, type: 3}
   instantCook: 1
   isChoppable: 0

@@ -38,5 +38,5 @@ MonoBehaviour:
   combinations:
   - partnerIngredient: {fileID: 11400000, guid: b8dbbc89b27cf1247b0d3029c6308f04, type: 2}
     resultPrefab: {fileID: 8059979155723304973, guid: 80e8c8318e0aa2c4586e1072eea4083f, type: 3}
-    cookTime: 2.5
+    cookTime: 2
     spawnOnPartnerTile: 0

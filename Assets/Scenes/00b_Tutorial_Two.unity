@@ -1317,6 +1317,37 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 5865663635908040354, guid: a68d5358aaf9ed54ba4da14ffe10c7c6, type: 3}
   m_PrefabInstance: {fileID: 236988653}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &239896426
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 239896427}
+  m_Layer: 0
+  m_Name: EggSpawnPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &239896427
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 239896426}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -9.75, y: 5.5, z: 15.4}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &254126967
 GameObject:
   m_ObjectHideFlags: 0
@@ -2293,23 +2324,33 @@ MonoBehaviour:
   isInfiniteMode: 1
   persistAcrossScenes: 0
   initialInventory:
-  - ingredientData: {fileID: 11400000, guid: 1306ad4e2f59af34583603f5988b79eb, type: 2}
+  - ingredientData: {fileID: 11400000, guid: d3d68cae5b3a55f4482339ee07f2fc67, type: 2}
     amount: 10
-  - ingredientData: {fileID: 11400000, guid: 8e5f08be53f5c1c47ab1748274214e6c, type: 2}
+  - ingredientData: {fileID: 11400000, guid: 5c7073438232fbd4098eea4cb7f0e95a, type: 2}
     amount: 10
-  - ingredientData: {fileID: 11400000, guid: 3071a8150f96bfd44a01c668aed8fc91, type: 2}
+  - ingredientData: {fileID: 11400000, guid: c9e33be1a39fe934487df0aaa52c216a, type: 2}
+    amount: 10
+  - ingredientData: {fileID: 11400000, guid: 9eca1ff648a21a94fb0065ed79a45f61, type: 2}
+    amount: 10
+  - ingredientData: {fileID: 11400000, guid: 095c95641d0fc554fb547d94c8c40c7a, type: 2}
     amount: 10
   unlockedIngredients:
-  - {fileID: 11400000, guid: 1306ad4e2f59af34583603f5988b79eb, type: 2}
-  - {fileID: 11400000, guid: 8e5f08be53f5c1c47ab1748274214e6c, type: 2}
-  - {fileID: 11400000, guid: 3071a8150f96bfd44a01c668aed8fc91, type: 2}
+  - {fileID: 11400000, guid: d3d68cae5b3a55f4482339ee07f2fc67, type: 2}
+  - {fileID: 11400000, guid: 5c7073438232fbd4098eea4cb7f0e95a, type: 2}
+  - {fileID: 11400000, guid: c9e33be1a39fe934487df0aaa52c216a, type: 2}
+  - {fileID: 11400000, guid: 9eca1ff648a21a94fb0065ed79a45f61, type: 2}
+  - {fileID: 11400000, guid: 095c95641d0fc554fb547d94c8c40c7a, type: 2}
   defaultQuickStartLoadout:
   - slotID: Fridge_5
-    ingredient: {fileID: 11400000, guid: 1306ad4e2f59af34583603f5988b79eb, type: 2}
+    ingredient: {fileID: 11400000, guid: c9e33be1a39fe934487df0aaa52c216a, type: 2}
   - slotID: Rack_1
-    ingredient: {fileID: 11400000, guid: 8e5f08be53f5c1c47ab1748274214e6c, type: 2}
+    ingredient: {fileID: 11400000, guid: 9eca1ff648a21a94fb0065ed79a45f61, type: 2}
   - slotID: RiceCooker
-    ingredient: {fileID: 11400000, guid: 3071a8150f96bfd44a01c668aed8fc91, type: 2}
+    ingredient: {fileID: 11400000, guid: 095c95641d0fc554fb547d94c8c40c7a, type: 2}
+  - slotID: Fridge_1
+    ingredient: {fileID: 11400000, guid: d3d68cae5b3a55f4482339ee07f2fc67, type: 2}
+  - slotID: Fridge_2
+    ingredient: {fileID: 11400000, guid: 5c7073438232fbd4098eea4cb7f0e95a, type: 2}
 --- !u!1 &430591161
 GameObject:
   m_ObjectHideFlags: 0
@@ -5251,7 +5292,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1934565221}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: TutorialOneManager, Assembly-CSharp
         m_MethodName: LoadNextTutorial
         m_Mode: 1
@@ -5770,6 +5811,126 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1176444071}
   m_Mesh: {fileID: -4545423930167495100, guid: 3f21ca2ff6b4f854398f1807de684a8f, type: 3}
+--- !u!1 &1181624058
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1181624062}
+  - component: {fileID: 1181624061}
+  - component: {fileID: 1181624060}
+  - component: {fileID: 1181624059}
+  - component: {fileID: 1181624063}
+  m_Layer: 0
+  m_Name: TrashCan
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!65 &1181624059
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1181624058}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.85, y: 0.025, z: 1}
+  m_Center: {x: 0, y: 0.5, z: 0}
+--- !u!23 &1181624060
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1181624058}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: ed1c3c6df9ffda14392d7bf369b5d2f8, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!33 &1181624061
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1181624058}
+  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!4 &1181624062
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1181624058}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -12.11, y: 2, z: 4.64}
+  m_LocalScale: {x: 4, y: 4, z: 3}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1181624063
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1181624058}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc2eec0077bcdbb4495124834c3206a9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1191404205
 GameObject:
   m_ObjectHideFlags: 0
@@ -8222,7 +8383,7 @@ GameObject:
   - component: {fileID: 1934565219}
   - component: {fileID: 1934565221}
   m_Layer: 0
-  m_Name: '[TutorialOneManager]'
+  m_Name: '[TutorialTwoManager]'
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8268,21 +8429,28 @@ MonoBehaviour:
   m_GameObject: {fileID: 1934565217}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aa307d5302d76f649b38a96193edc2df, type: 3}
+  m_Script: {fileID: 11500000, guid: b87c594437b4c3f499d79d2d69b121e6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tutSilogDish: {fileID: 11400000, guid: 62c99d8e93cac8a4db6101392f26992e, type: 2}
-  tutGarlic: {fileID: 11400000, guid: 8e5f08be53f5c1c47ab1748274214e6c, type: 2}
-  tutEgg: {fileID: 11400000, guid: 1306ad4e2f59af34583603f5988b79eb, type: 2}
-  tutRice: {fileID: 11400000, guid: 3071a8150f96bfd44a01c668aed8fc91, type: 2}
-  tutCookedEgg: {fileID: 11400000, guid: 943881f2119c2864d92071fd3d58c286, type: 2}
-  tutChoppedGarlic: {fileID: 11400000, guid: de0ca271318b34d429ca7072a71843c1, type: 2}
-  tutSauteedGarlic: {fileID: 11400000, guid: ef89690a8cbdea7418e49eee7880770d, type: 2}
-  tutFriedRice: {fileID: 11400000, guid: b38ffbf9106e7de439007c8553ad1de3, type: 2}
-  bouncingArrowPrefab: {fileID: 42491663612570409, guid: 634cee3823262d349ad5b49ce50d27c2, type: 3}
-  arrowYOffset: 255
+  hotsilogDish: {fileID: 11400000, guid: 14174591d2ac03e4685133f7adc2a6a0, type: 2}
+  tapsilogDish: {fileID: 11400000, guid: 54d0ef2783892ef4c936b24b439f91ef, type: 2}
+  silogDish: {fileID: 11400000, guid: d47acc4bcf93a234894d462dc218062f, type: 2}
+  tutGarlic: {fileID: 11400000, guid: 9eca1ff648a21a94fb0065ed79a45f61, type: 2}
+  tutEgg: {fileID: 11400000, guid: c9e33be1a39fe934487df0aaa52c216a, type: 2}
+  tutRice: {fileID: 11400000, guid: 095c95641d0fc554fb547d94c8c40c7a, type: 2}
+  tutHotdog: {fileID: 11400000, guid: 5c7073438232fbd4098eea4cb7f0e95a, type: 2}
+  tutBeef: {fileID: 11400000, guid: d3d68cae5b3a55f4482339ee07f2fc67, type: 2}
+  eggSpawnPoint: {fileID: 239896427}
+  gridLayerMask:
+    serializedVersion: 2
+    m_Bits: 128
+  cookedEggPrefab: {fileID: 721933441287932742, guid: ab1852171a987c94bad70eeea8df1cfa, type: 3}
+  bouncingArrowPrefab: {fileID: 3860630419282644396, guid: 29d8f200e4a9f3c4099ad156130f6339, type: 3}
+  arrowXOffset: 1
+  arrowYOffset: 1.05
+  arrowZOffset: 2.1
   tutorialCompletePanel: {fileID: 1344631658}
-  nextSceneName: 00b_Tutorial_Two
+  nextSceneName: 00c_Tutorial_Three
 --- !u!1 &1961363936
 GameObject:
   m_ObjectHideFlags: 0
@@ -9031,4 +9199,6 @@ SceneRoots:
   - {fileID: 76594140}
   - {fileID: 1969409113}
   - {fileID: 1359314997}
+  - {fileID: 1181624062}
   - {fileID: 1146636621}
+  - {fileID: 239896427}
