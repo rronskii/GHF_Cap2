@@ -8,6 +8,11 @@ public class OrderManager : MonoBehaviour
 {
     public static OrderManager Instance;
 
+    [Header("Tutorial Settings")]
+    public bool isTutorialMode = false;
+    public static event System.Action OnTutorialOrderTaken;
+    public static event System.Action OnTutorialTicketServed;
+
     [Header("Level Flow Settings")]
     public float shiftDuration = 360f; // 6 Minutes in seconds
     public int dailyQuota = 600;
@@ -79,7 +84,10 @@ public class OrderManager : MonoBehaviour
 
         if (closeEarlyButton != null) closeEarlyButton.SetActive(false);
 
-        StartCoroutine(CustomerSpawningRoutine());
+        if (!isTutorialMode)
+        {
+            StartCoroutine(CustomerSpawningRoutine());
+        }
 
         if (PlayerEconomyManager.Instance != null)
             PlayerEconomyManager.Instance.StartNewShift(dailyQuota);
@@ -232,6 +240,8 @@ public class OrderManager : MonoBehaviour
 
         activeTickets.Add(ticketScript);
         UpdateTicketLayout();
+
+        OnTutorialOrderTaken?.Invoke();
     }
 
     public DishData ValidateRecipe(List<IngredientData> foodOnPlate)
@@ -330,6 +340,8 @@ public class OrderManager : MonoBehaviour
             Vector3 exitPos = customerExitPoint != null ? customerExitPoint.position : transform.position + new Vector3(15f, 0, 0);
             customer.LeaveCounterAndDestroy(exitPos);
             CheckWinCondition();
+
+            OnTutorialTicketServed?.Invoke();
         }
     }
 
@@ -437,5 +449,20 @@ public class OrderManager : MonoBehaviour
     {
         // Make sure your shop scene is added to the Build Settings!
         SceneManager.LoadScene("02_DailyShop");
+    }
+
+    // --- NEW: Tutorial Helper Methods ---
+    public void StartTutorialSpawning()
+    {
+        StartCoroutine(CustomerSpawningRoutine());
+    }
+
+    public void SpawnSpecificCustomer(DishData specificDish)
+    {
+        GameObject newCustomer = Instantiate(customerPrefab, customerSpawnPoint.position, Quaternion.identity);
+        CustomerController script = newCustomer.GetComponent<CustomerController>();
+
+        script.orderedDishes.Add(specificDish);
+        physicalLine.Add(script);
     }
 }

@@ -84,4 +84,22 @@ public class ShopCameraController : MonoBehaviour
         transform.SetPositionAndRotation(targetView.position, targetView.rotation);
         activeTransition = null;
     }
+    // --- NEW: Called by the UI Manager to cancel a pan and get the destination ---
+    public Transform InterruptAndGetTargetView()
+    {
+        // Instantly kill the panning coroutine if it is running
+        if (activeTransition != null)
+        {
+            StopCoroutine(activeTransition);
+            activeTransition = null;
+        }
+
+        // Return the exact spot the camera WAS going to, so the UI Manager knows where "Home" is
+        if (sectionViews != null && sectionViews.Length > 0)
+        {
+            return sectionViews[currentSectionIndex];
+        }
+
+        return transform;
+    }
 }

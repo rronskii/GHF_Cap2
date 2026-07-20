@@ -273,6 +273,7 @@ public class InventorySetupManager : MonoBehaviour
 
     public void StartShift()
     {
+        Debug.Log("StartShift button was clicked! Attempting to load scene...");
         SceneManager.LoadScene("01_FoodTruckLevel");
     }
 }

@@ -22,7 +22,7 @@ public class StationCameraController : MonoBehaviour
     public int minStationIndex = 0;
     public int maxStationIndex = 2; // Default 2 allows all 3 stations
 
-    private int currentStationIndex = 0;
+    public int currentStationIndex = 0;
     private float nextTransitionTime = 0f;
     private Coroutine activeTransition;
 

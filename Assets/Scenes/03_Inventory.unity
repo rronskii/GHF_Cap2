@@ -285,7 +285,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   totalBankCash: 0
-  piggyBankUI: {fileID: 0}
+  cashRegister: {fileID: 0}
   currentDailyQuota: 100
   shiftCash: 0
   shiftPoints: 0
@@ -654,7 +654,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 2f113202c63a4ee49aee68ef539082b1, type: 2}
+  - {fileID: 2100000, guid: a6528fe03a7d5954da55b0092da06b4d, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1615,7 +1615,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 2f113202c63a4ee49aee68ef539082b1, type: 2}
+  - {fileID: 2100000, guid: a6528fe03a7d5954da55b0092da06b4d, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1797,7 +1797,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 2f113202c63a4ee49aee68ef539082b1, type: 2}
+  - {fileID: 2100000, guid: a6528fe03a7d5954da55b0092da06b4d, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1871,6 +1871,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f97aa41f5f886354591779178c1b190e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isInfiniteMode: 0
+  persistAcrossScenes: 1
   initialInventory:
   - ingredientData: {fileID: 11400000, guid: 9eca1ff648a21a94fb0065ed79a45f61, type: 2}
     amount: 15
@@ -2249,7 +2251,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 2f113202c63a4ee49aee68ef539082b1, type: 2}
+  - {fileID: 2100000, guid: a6528fe03a7d5954da55b0092da06b4d, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -3495,6 +3497,11 @@ MonoBehaviour:
   - {fileID: 0}
   transitionSpeed: 8
   transitionCooldown: 0.2
+  isLocked: 0
+  allowLooping: 1
+  minStationIndex: 0
+  maxStationIndex: 2
+  currentStationIndex: 0
 --- !u!114 &963194230
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4185,7 +4192,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 2f113202c63a4ee49aee68ef539082b1, type: 2}
+  - {fileID: 2100000, guid: a6528fe03a7d5954da55b0092da06b4d, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -4326,7 +4333,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 7c7ec07e136a4344585d04160b85dbea, type: 2}
+  - {fileID: 2100000, guid: a6528fe03a7d5954da55b0092da06b4d, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -5327,7 +5334,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 2f113202c63a4ee49aee68ef539082b1, type: 2}
+  - {fileID: 2100000, guid: 7c7ec07e136a4344585d04160b85dbea, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -5442,7 +5449,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1663434244}
         m_TargetAssemblyTypeName: InventorySetupManager, Assembly-CSharp
-        m_MethodName: OnStartShiftClicked
+        m_MethodName: StartShift
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -5816,67 +5823,6 @@ Transform:
   - {fileID: 511256100}
   m_Father: {fileID: 1260592225}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1934565217
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1934565220}
-  - component: {fileID: 1934565219}
-  - component: {fileID: 1934565218}
-  m_Layer: 0
-  m_Name: '[TutorialSystem]'
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!114 &1934565218
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1934565217}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 03ed4707ee05977428b06151f05d9a1a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &1934565219
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1934565217}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a1f88270df4719741a7859c881fbf28c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  dialoguePanel: {fileID: 318638039}
-  dialogueText: {fileID: 761430518}
-  continuePromptText: {fileID: 1054892782}
-  typingSpeed: 0.03
---- !u!4 &1934565220
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1934565217}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 807.919, y: 207.4665, z: 4.383148}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1969409112
 GameObject:
   m_ObjectHideFlags: 0
@@ -6060,7 +6006,6 @@ Transform:
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
-  - {fileID: 1934565220}
   - {fileID: 1547650300}
   - {fileID: 57245701}
   - {fileID: 423080711}

@@ -15,13 +15,19 @@ EditorBuildSettings:
     path: Assets/Scenes/00b_Tutorial_Two.unity
     guid: d15dec848f068304d995e0298438e98d
   - enabled: 1
+    path: Assets/Scenes/00c_Tutorial_Three.unity
+    guid: 4d64a53cb77062849b05788136e25fe7
+  - enabled: 1
     path: Assets/Scenes/01_FoodTruckLevel.unity
-    guid: 9fc0d4010bbf28b4594072e72b8655ab
+    guid: 38e0209b72b0f954d8c3b7555d91ac6c
   - enabled: 1
     path: Assets/Scenes/02_DailyShop.unity
     guid: 935f9542ccf412446bfdf7cb0b8b8daa
   - enabled: 1
     path: Assets/Scenes/03_Inventory.unity
     guid: f1e5752ba5fc52e4da02e950c84f06ee
+  - enabled: 0
+    path: Assets/Scenes/01_FoodTruckLevel Copy1.unity
+    guid: 9fc0d4010bbf28b4594072e72b8655ab
   m_configObjects: {}
   m_UseUCBPForAssetBundles: 0
