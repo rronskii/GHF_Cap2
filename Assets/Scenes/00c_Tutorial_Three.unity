@@ -2865,7 +2865,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isInfiniteMode: 0
-  persistAcrossScenes: 1
+  persistAcrossScenes: 0
   initialInventory:
   - ingredientData: {fileID: 11400000, guid: 9eca1ff648a21a94fb0065ed79a45f61, type: 2}
     amount: 15
@@ -9543,7 +9543,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1547650298
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -3,7 +3,6 @@ using UnityEngine.EventSystems;
 
 [RequireComponent(typeof(CardGridPlacer))]
 [RequireComponent(typeof(CanvasGroup))]
-// --- NEW: Added IBeginDragHandler and IEndDragHandler ---
 public class CardDragUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerUpHandler
 {
     [Header("UI Settings")]
@@ -49,11 +48,13 @@ public class CardDragUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
         if (Input.GetKeyDown(KeyCode.R))
         {
-            if (isHovering || isDragging)
+            // --- THE FIX: Disable 'R' while dragging! ---
+            // The player can ONLY refund the card when hovering over it in the UI.
+            // If they pick it up (isDragging = true) and the 3D model appears, 'R' will do nothing!
+            if (isHovering && !isDragging)
             {
                 if (HandManager.Instance != null && HandManager.Instance.currentStationIndex == inventoryStationIndex)
                 {
-                    if (isDragging) CancelDrag();
                     gridPlacer.TriggerRefund();
                     return;
                 }
@@ -107,13 +108,11 @@ public class CardDragUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
         StartDrag();
     }
 
-    // --- NEW: Engine-Level Drag Kill Switch ---
+    // --- Engine-Level Drag Kill Switch ---
     public void OnBeginDrag(PointerEventData eventData)
     {
         if (!isInteractable || !isDragging)
         {
-            // This tells Unity's internal Event System to completely drop the drag event.
-            // Without this, Unity will force OnDrag to fire anyway!
             eventData.pointerDrag = null;
             return;
         }
@@ -129,7 +128,7 @@ public class CardDragUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
         gridPlacer.ProcessDragUpdate();
     }
 
-    // --- NEW: Required Interface Completion ---
+    // --- Required Interface Completion ---
     public void OnEndDrag(PointerEventData eventData)
     {
         // Safe to leave empty, as your drop logic relies on OnPointerUp
