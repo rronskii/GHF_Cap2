@@ -7,7 +7,6 @@ public class ShopUIManager : MonoBehaviour
 {
     [Header("UI Panels")]
     public GameObject buyingPanel;
-    // Overlay background removed!
 
     [Header("Buying UI Elements")]
     public Transform cardContainer;
@@ -25,6 +24,7 @@ public class ShopUIManager : MonoBehaviour
 
     private int currentAmount = 1;
     private IngredientData currentIngredient;
+    private UpgradeData currentUpgrade;
     private ShopItemInteractable currentInteractable;
 
     private GameObject spawnedCardUI;
@@ -37,7 +37,7 @@ public class ShopUIManager : MonoBehaviour
 
     private bool isTransactionLocked = false;
     private bool isInfoCardVisible = false;
-    private bool isCurrentlyInspecting = false; // Prevents the 0,0,0 bug!
+    private bool isCurrentlyInspecting = false;
 
     private Vector3 originalCameraPos;
     private Quaternion originalCameraRot;
@@ -59,19 +59,21 @@ public class ShopUIManager : MonoBehaviour
 
     private void Start()
     {
-        // Only hide the UI on start, don't trigger camera movements!
         buyingPanel.SetActive(false);
         UpdateBankCashDisplay();
     }
 
-    private void OpenBuyingPanel(IngredientData ingredient, ShopItemInteractable interactable)
+    private void OpenBuyingPanel(ShopItemInteractable interactable)
     {
-        // Don't restart the sequence if we are already inspecting
         if (isCurrentlyInspecting || isTransitioning) return;
 
-        isTransitioning = true; // Lock the camera! 
-        currentIngredient = ingredient;
+        isTransitioning = true;
+
+        // Figure out what we just clicked!
         currentInteractable = interactable;
+        currentIngredient = interactable.ingredientData;
+        currentUpgrade = interactable.upgradeData;
+
         currentAmount = 1;
         isTransactionLocked = false;
         isInfoCardVisible = false;
@@ -80,45 +82,67 @@ public class ShopUIManager : MonoBehaviour
         ShopItemInteractable.isInteractionLocked = true;
         if (cameraController != null) cameraController.isCameraLocked = true;
 
-        bool showAmountControls = !interactable.isUpgrade;
-        if (increaseButton != null) increaseButton.SetActive(showAmountControls);
-        if (decreaseButton != null) decreaseButton.SetActive(showAmountControls);
-        if (amountTextObj != null) amountTextObj.SetActive(showAmountControls);
+        // Hide + / - buttons if it's an upgrade
+        bool isUpgrade = (currentUpgrade != null);
+        if (increaseButton != null) increaseButton.SetActive(!isUpgrade);
+        if (decreaseButton != null) decreaseButton.SetActive(!isUpgrade);
+        if (amountTextObj != null) amountTextObj.SetActive(!isUpgrade);
 
         if (interactable.showcaseSpotlight != null) interactable.showcaseSpotlight.enabled = true;
-
         buyingPanel.SetActive(true);
 
         // --- SPAWN 3D MODEL ---
         if (spawned3DModel != null) Destroy(spawned3DModel);
 
-        if (ingredient.worldPrefab != null && interactable.inspectSpawnPoint != null)
+        GameObject prefabToSpawn = isUpgrade ? currentUpgrade.worldPrefab : currentIngredient.worldPrefab;
+
+        if (prefabToSpawn != null && interactable.inspectSpawnPoint != null)
         {
-            spawned3DModel = Instantiate(ingredient.worldPrefab, interactable.inspectSpawnPoint.position, Quaternion.identity);
+            GameObject rawModel = Instantiate(prefabToSpawn, interactable.inspectSpawnPoint.position, Quaternion.identity);
 
-            // Aggressive stripping of physics, logic, AND animators so it doesn't snap!
-            if (spawned3DModel.GetComponent<Draggable3DItem>() != null) Destroy(spawned3DModel.GetComponent<Draggable3DItem>());
-            if (spawned3DModel.GetComponent<Rigidbody>() != null) Destroy(spawned3DModel.GetComponent<Rigidbody>());
-            if (spawned3DModel.GetComponent<Animator>() != null) Destroy(spawned3DModel.GetComponent<Animator>());
+            // Strip scripts
+            foreach (var dragScript in rawModel.GetComponentsInChildren<Draggable3DItem>(true))
+            {
+                dragScript.isLocked = true; dragScript.enabled = false; Destroy(dragScript);
+            }
+            foreach (var rb in rawModel.GetComponentsInChildren<Rigidbody>(true)) Destroy(rb);
+            foreach (var anim in rawModel.GetComponentsInChildren<Animator>(true)) Destroy(anim);
 
-            spawned3DModel.AddComponent<ItemRotator>();
+            // Auto-Center
+            Renderer[] renderers = rawModel.GetComponentsInChildren<Renderer>();
+            if (renderers.Length > 0)
+            {
+                Bounds bounds = renderers[0].bounds;
+                for (int i = 1; i < renderers.Length; i++) bounds.Encapsulate(renderers[i].bounds);
+
+                GameObject pivotContainer = new GameObject("ShopPreviewPivot");
+                pivotContainer.transform.position = bounds.center;
+
+                rawModel.transform.SetParent(pivotContainer.transform);
+                pivotContainer.transform.position = interactable.inspectSpawnPoint.position;
+                pivotContainer.AddComponent<ItemRotator>();
+                spawned3DModel = pivotContainer;
+            }
+            else
+            {
+                rawModel.AddComponent<ItemRotator>();
+                spawned3DModel = rawModel;
+            }
         }
 
-        // --- SPAWN 2D CARD ---
+        // --- SPAWN 2D CARD (Only if it's an ingredient!) ---
         if (spawnedCardUI != null) Destroy(spawnedCardUI);
 
-        if (ingredient.cardUIPrefab != null)
+        if (!isUpgrade && currentIngredient.cardUIPrefab != null)
         {
-            spawnedCardUI = Instantiate(ingredient.cardUIPrefab, cardContainer);
-
+            spawnedCardUI = Instantiate(currentIngredient.cardUIPrefab, cardContainer);
             foreach (var drag in spawnedCardUI.GetComponentsInChildren<CardDragUI>(true)) Destroy(drag);
             foreach (var placer in spawnedCardUI.GetComponentsInChildren<CardGridPlacer>(true)) Destroy(placer);
             foreach (var tile in spawnedCardUI.GetComponentsInChildren<GridTileVisual>(true)) Destroy(tile);
-
             spawnedCardUI.SetActive(false);
         }
 
-        // --- CAMERA TRANSITION ---
+        // Camera Transition
         if (cameraTransitionCoroutine != null) StopCoroutine(cameraTransitionCoroutine);
         cameraTransitionCoroutine = StartCoroutine(MoveCameraRoutine(interactable.inspectCameraTarget));
 
@@ -149,7 +173,6 @@ public class ShopUIManager : MonoBehaviour
             yield break;
         }
 
-        // --- NEW: Cancel any active station panning and get the true shelf destination ---
         if (cameraController != null)
         {
             Transform trueHome = cameraController.InterruptAndGetTargetView();
@@ -162,7 +185,6 @@ public class ShopUIManager : MonoBehaviour
             originalCameraRot = mainCam.transform.rotation;
         }
 
-        // Capture exactly where the camera physically is right now so the flight is smooth
         Vector3 flightStartPos = mainCam.transform.position;
         Quaternion flightStartRot = mainCam.transform.rotation;
 
@@ -170,8 +192,6 @@ public class ShopUIManager : MonoBehaviour
         while (t < 1f)
         {
             t += Time.deltaTime * 3f;
-
-            // Fly from our physical mid-air spot to the inspect target
             mainCam.transform.position = Vector3.Lerp(flightStartPos, target.position, Mathf.SmoothStep(0, 1, t));
             mainCam.transform.rotation = Quaternion.Lerp(flightStartRot, target.rotation, Mathf.SmoothStep(0, 1, t));
             yield return null;
@@ -182,10 +202,9 @@ public class ShopUIManager : MonoBehaviour
 
     public void CloseBuyingPanel()
     {
-        // Don't try to close if we aren't actually inspecting, or if we are mid-flight
         if (!isCurrentlyInspecting || isTransitioning) return;
 
-        isTransitioning = true; // Lock everything for the return flight
+        isTransitioning = true;
         buyingPanel.SetActive(false);
 
         if (spawnedCardUI != null) Destroy(spawnedCardUI);
@@ -197,6 +216,7 @@ public class ShopUIManager : MonoBehaviour
         }
 
         currentIngredient = null;
+        currentUpgrade = null; // --- FIXED: Make sure we clear the upgrade out too! ---
         currentInteractable = null;
         isTransactionLocked = false;
 
@@ -230,7 +250,6 @@ public class ShopUIManager : MonoBehaviour
 
     private void FinishReturnSequence()
     {
-        // Unlock shelf items ONLY when the camera has fully docked back at the shelf
         ShopItemInteractable.isInteractionLocked = false;
         isCurrentlyInspecting = false;
         isTransitioning = false;
@@ -240,14 +259,16 @@ public class ShopUIManager : MonoBehaviour
 
     public void IncreaseAmount()
     {
-        if (isTransactionLocked || (currentInteractable != null && currentInteractable.isUpgrade)) return;
+        // --- FIXED: Now checks the new currentUpgrade variable ---
+        if (isTransactionLocked || currentUpgrade != null) return;
         currentAmount++;
         UpdatePanelUI();
     }
 
     public void DecreaseAmount()
     {
-        if (isTransactionLocked || (currentInteractable != null && currentInteractable.isUpgrade)) return;
+        // --- FIXED: Now checks the new currentUpgrade variable ---
+        if (isTransactionLocked || currentUpgrade != null) return;
         if (currentAmount > 1)
         {
             currentAmount--;
@@ -257,12 +278,13 @@ public class ShopUIManager : MonoBehaviour
 
     private void UpdatePanelUI()
     {
-        if (currentIngredient != null)
-        {
-            amountText.text = currentAmount.ToString();
-            int totalCost = currentAmount * currentIngredient.purchasePrice;
-            priceText.text = "Cost: " + totalCost.ToString() + " P";
-        }
+        bool isUpgrade = (currentUpgrade != null);
+        amountText.text = currentAmount.ToString();
+
+        int unitPrice = isUpgrade ? currentUpgrade.purchasePrice : currentIngredient.purchasePrice;
+        int totalCost = currentAmount * unitPrice;
+
+        priceText.text = "Cost: " + totalCost.ToString() + " P";
     }
 
     private void UpdateBankCashDisplay()
@@ -276,16 +298,26 @@ public class ShopUIManager : MonoBehaviour
     public void ConfirmPurchase()
     {
         if (isTransactionLocked) return;
-        if (currentIngredient == null) return;
-        if (PlayerEconomyManager.Instance == null) return;
-        if (PlayerInventoryManager.Instance == null) return;
+        if (currentIngredient == null && currentUpgrade == null) return;
+        if (PlayerEconomyManager.Instance == null || PlayerInventoryManager.Instance == null) return;
 
-        int totalCost = currentAmount * currentIngredient.purchasePrice;
+        bool isUpgrade = (currentUpgrade != null);
+        int unitPrice = isUpgrade ? currentUpgrade.purchasePrice : currentIngredient.purchasePrice;
+        int totalCost = currentAmount * unitPrice;
 
         if (PlayerEconomyManager.Instance.totalBankCash >= totalCost)
         {
             PlayerEconomyManager.Instance.totalBankCash -= totalCost;
-            PlayerInventoryManager.Instance.AddStock(currentIngredient, currentAmount);
+
+            if (isUpgrade)
+            {
+                PlayerInventoryManager.Instance.UnlockUpgrade(currentUpgrade.uniqueUpgradeID);
+                if (currentInteractable != null) Destroy(currentInteractable.gameObject);
+            }
+            else
+            {
+                PlayerInventoryManager.Instance.AddStock(currentIngredient, currentAmount);
+            }
 
             UpdateBankCashDisplay();
             CloseBuyingPanel();

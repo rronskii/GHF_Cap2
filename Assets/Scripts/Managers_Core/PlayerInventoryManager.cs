@@ -33,6 +33,25 @@ public class PlayerInventoryManager : MonoBehaviour
     [Header("Meta Progression")]
     public List<IngredientData> unlockedIngredients;
 
+    [Header("Player Progression")]
+    public int currentPlayerLevel = 1; // You will increase this when a day ends
+    public List<string> purchasedUpgrades = new List<string>(); // Tracks the permanent stuff
+
+    // --- NEW: Helper Methods for the Shop & Gameplay ---
+    public bool HasPurchasedUpgrade(string upgradeID)
+    {
+        return purchasedUpgrades.Contains(upgradeID);
+    }
+
+    public void UnlockUpgrade(string upgradeID)
+    {
+        if (!purchasedUpgrades.Contains(upgradeID))
+        {
+            purchasedUpgrades.Add(upgradeID);
+            // In the future, this is where you'd call SaveSystem.SaveUpgrades()
+        }
+    }
+
     [Header("Default Quick-Start Loadout")]
     [Tooltip("If booting directly into Scene 01, these items will automatically be assigned to these slots.")]
     public List<DefaultSlotAssignment> defaultQuickStartLoadout;

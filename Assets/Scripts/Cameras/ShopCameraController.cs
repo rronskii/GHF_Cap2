@@ -15,8 +15,8 @@ public class ShopCameraController : MonoBehaviour
     private float nextTransitionTime = 0f;
     private Coroutine activeTransition;
 
-    // We will use this flag later to lock the camera when the UI overlay is open
     public bool isCameraLocked = false;
+    public bool disableRightPan = false; // --- NEW: Used by the tutorial to lock the 'D' key
 
     private void Start()
     {
@@ -41,7 +41,8 @@ public class ShopCameraController : MonoBehaviour
         {
             ChangeSection(-1);
         }
-        else if (Input.GetKeyDown(KeyCode.D))
+        // --- UPDATED: Now respects the disableRightPan lock ---
+        else if (Input.GetKeyDown(KeyCode.D) && !disableRightPan)
         {
             ChangeSection(1);
         }
@@ -84,17 +85,15 @@ public class ShopCameraController : MonoBehaviour
         transform.SetPositionAndRotation(targetView.position, targetView.rotation);
         activeTransition = null;
     }
-    // --- NEW: Called by the UI Manager to cancel a pan and get the destination ---
+
     public Transform InterruptAndGetTargetView()
     {
-        // Instantly kill the panning coroutine if it is running
         if (activeTransition != null)
         {
             StopCoroutine(activeTransition);
             activeTransition = null;
         }
 
-        // Return the exact spot the camera WAS going to, so the UI Manager knows where "Home" is
         if (sectionViews != null && sectionViews.Length > 0)
         {
             return sectionViews[currentSectionIndex];
@@ -102,4 +101,6 @@ public class ShopCameraController : MonoBehaviour
 
         return transform;
     }
+
+    public int GetCurrentSectionIndex() { return currentSectionIndex; }
 }

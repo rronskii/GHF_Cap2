@@ -10,6 +10,16 @@ public class DishData : ScriptableObject
     [Header("Economy")]
     public int basePrice = 0; // e.g., 50 for Silog, 100 for Tapsilog
 
+    [Header("Progression System")]
+    [Tooltip("The player level required to see/use this item")]
+    public int unlockLevel = 1;
+
+    [Header("Shop & Upgrades")]
+    [Tooltip("Check this for items like pans or knives so they disappear after purchase")]
+    public bool isOneTimeUpgrade = false;
+    [Tooltip("A unique string, e.g., 'frying_pan_2'. Must be unique for every upgrade!")]
+    public string uniqueUpgradeID = "";
+
     // Helper method to check if a plate's contents match this recipe perfectly
     public bool MatchesIngredients(List<IngredientData> plateIngredients)
     {

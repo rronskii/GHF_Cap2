@@ -1,22 +1,21 @@
 using System;
 using UnityEngine;
-using UnityEngine.EventSystems; // Required for UI overlap detection
+using UnityEngine.EventSystems;
 
 [RequireComponent(typeof(Collider))]
 public class ShopItemInteractable : MonoBehaviour
 {
-    // The UI Manager will listen to this event to know what to display
-    // UPDATED: Now passes the script itself so the UI knows where the camera targets are
-    public static event Action<IngredientData, ShopItemInteractable> OnShopItemClicked;
+    // --- UPDATED: We now pass the WHOLE interactable to the UI, so it can check what's inside! ---
+    public static event Action<ShopItemInteractable> OnShopItemClicked;
 
-    [Header("Item Data")]
+    [Header("Item Data (ASSIGN ONLY ONE)")]
     public IngredientData ingredientData;
-    public bool isUpgrade = false; // --- NEW: Tells the UI to hide the +/- buttons
+    public UpgradeData upgradeData; // --- NEW: Slot for appliances/decorations ---
 
     [Header("Inspect Showcase Settings")]
     public Transform inspectCameraTarget;
     public Transform inspectSpawnPoint;
-    public Light showcaseSpotlight;       // --- NEW: Optional dramatic lighting!
+    public Light showcaseSpotlight;
 
     [Header("Hover Settings")]
     public float hoverScaleMultiplier = 1.2f;
@@ -24,8 +23,6 @@ public class ShopItemInteractable : MonoBehaviour
 
     private Vector3 originalScale;
     private Vector3 targetScale;
-
-    // We will toggle this from the UI Manager to prevent clicking items through the UI
     public static bool isInteractionLocked = false;
 
     private void Awake()
@@ -36,9 +33,30 @@ public class ShopItemInteractable : MonoBehaviour
 
     private void Start()
     {
-        if (showcaseSpotlight != null)
+        if (showcaseSpotlight != null) showcaseSpotlight.enabled = false;
+
+        if (PlayerInventoryManager.Instance != null)
         {
-            showcaseSpotlight.enabled = false;
+            // --- UPGRADE FILTER ---
+            if (upgradeData != null)
+            {
+                if (PlayerInventoryManager.Instance.currentPlayerLevel < upgradeData.unlockLevel)
+                {
+                    gameObject.SetActive(false); return;
+                }
+                if (PlayerInventoryManager.Instance.HasPurchasedUpgrade(upgradeData.uniqueUpgradeID))
+                {
+                    Destroy(gameObject); return;
+                }
+            }
+            // --- INGREDIENT FILTER ---
+            else if (ingredientData != null)
+            {
+                if (PlayerInventoryManager.Instance.currentPlayerLevel < ingredientData.unlockLevel)
+                {
+                    gameObject.SetActive(false); return;
+                }
+            }
         }
     }
 
@@ -52,11 +70,7 @@ public class ShopItemInteractable : MonoBehaviour
 
     private void OnMouseEnter()
     {
-        if (isInteractionLocked) return;
-
-        // Prevent hover animation if mouse is over a UI element
-        if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject()) return;
-
+        if (isInteractionLocked || (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject())) return;
         targetScale = originalScale * hoverScaleMultiplier;
     }
 
@@ -67,16 +81,11 @@ public class ShopItemInteractable : MonoBehaviour
 
     private void OnMouseDown()
     {
-        if (isInteractionLocked) return;
+        if (isInteractionLocked || (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject())) return;
 
-        // Prevent clicking the item if the mouse is clicking a UI button
-        if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject()) return;
+        targetScale = originalScale;
 
-        targetScale = originalScale; // Reset scale on click
-
-        if (ingredientData != null)
-        {
-            OnShopItemClicked?.Invoke(ingredientData, this);
-        }
+        // Pass ourselves to the UI Manager
+        if (OnShopItemClicked != null) OnShopItemClicked(this);
     }
 }

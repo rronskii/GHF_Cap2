@@ -33,6 +33,10 @@ public class IngredientData : ScriptableObject
     public int purchasePrice = 10;
     public GameObject cardUIPrefab; // Drag your 2D UI Card prefab here
 
+    [Header("Progression System")]
+    [Tooltip("The player level required to see/use this item")]
+    public int unlockLevel = 1;
+
     // --- NEW ADDITIONS FOR COMPATIBILITY & COOKING ---
     [Header("Station Compatibility")]
     [Tooltip("Which stations can this item be placed on?")]

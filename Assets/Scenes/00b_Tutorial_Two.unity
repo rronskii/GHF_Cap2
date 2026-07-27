@@ -2170,6 +2170,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: c9e33be1a39fe934487df0aaa52c216a, type: 2}
   - {fileID: 11400000, guid: 9eca1ff648a21a94fb0065ed79a45f61, type: 2}
   - {fileID: 11400000, guid: 095c95641d0fc554fb547d94c8c40c7a, type: 2}
+  currentPlayerLevel: 1
+  purchasedUpgrades: []
   defaultQuickStartLoadout:
   - slotID: Fridge_5
     ingredient: {fileID: 11400000, guid: c9e33be1a39fe934487df0aaa52c216a, type: 2}
@@ -8101,7 +8103,7 @@ MonoBehaviour:
   arrowYOffset: 1.05
   arrowZOffset: 2.1
   tutorialCompletePanel: {fileID: 1344631658}
-  nextSceneName: 00c_Tutorial_Three
+  nextSceneName: 02a_Tutorial_Shop
 --- !u!1 &1961363936
 GameObject:
   m_ObjectHideFlags: 0
