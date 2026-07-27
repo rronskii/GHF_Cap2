@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PauseMenuController : MonoBehaviour
 {
@@ -87,5 +88,14 @@ public class PauseMenuController : MonoBehaviour
         isCookbookOpen = false;
         if (cookbookPanelPlaceholder != null) cookbookPanelPlaceholder.SetActive(false);
         if (mainPauseMenuPanel != null) mainPauseMenuPanel.SetActive(true);
+    }
+
+    public void RestartLevel()
+    {
+        // 1. Unpause the game so the new scene doesn't load frozen!
+        Time.timeScale = 1f;
+
+        // 2. Reload the exact scene we are currently in
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 }

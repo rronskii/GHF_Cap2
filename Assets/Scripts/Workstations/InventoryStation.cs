@@ -15,6 +15,10 @@ public class InventoryStation : MonoBehaviour
     public float scaleSpeed = 10f;
 
     public static event Action OnTutorialCardDrawn;
+    // --- NEW: Event fires when stock hits 0 ---
+    public static event Action OnTutorialStockEmpty;
+    // Add this near your other events at the top
+    public static event Action OnInventoryVisualsUpdate;
 
     private IngredientData myIngredientData;
     private GameObject currentVisualInstance;
@@ -23,11 +27,13 @@ public class InventoryStation : MonoBehaviour
     private bool isSetupScene = false;
     private Vector3 originalScale;
     private Vector3 targetScale;
+    private Collider myCollider;
 
     private void Awake()
     {
         originalScale = transform.localScale;
         targetScale = originalScale;
+        myCollider = GetComponent<Collider>();
     }
 
     private void Start()
@@ -51,7 +57,6 @@ public class InventoryStation : MonoBehaviour
             }
             else
             {
-                // If it's no longer in the dictionary, clear it out
                 myIngredientData = null;
                 stationCardPrefab = null;
             }
@@ -69,10 +74,7 @@ public class InventoryStation : MonoBehaviour
 
     private void OnMouseEnter()
     {
-        if (DialogueManager.Instance != null)
-        {
-            if (DialogueManager.Instance.IsDialogueActive) return;
-        }
+        if (DialogueManager.Instance != null && DialogueManager.Instance.IsDialogueActive) return;
         targetScale = originalScale * hoverScaleMultiplier;
     }
 
@@ -84,10 +86,7 @@ public class InventoryStation : MonoBehaviour
     private void OnMouseDown()
     {
         if (Time.timeScale == 0f) return;
-        if (DialogueManager.Instance != null)
-        {
-            if (DialogueManager.Instance.IsDialogueActive) return;
-        }
+        if (DialogueManager.Instance != null && DialogueManager.Instance.IsDialogueActive) return;
 
         if (isSetupScene)
         {
@@ -97,30 +96,24 @@ public class InventoryStation : MonoBehaviour
 
                 if (placementItem != null)
                 {
-                    // --- TWEAK 2: OCCUPIED ERROR ---
                     if (myIngredientData != null)
                     {
                         InventorySetupManager.Instance.ShowError("Slot is already occupied!");
                         return;
                     }
 
-                    // --- TWEAK 2: WRONG INVENTORY ERROR ---
                     if (placementItem.allowedStorageType != storageType)
                     {
                         InventorySetupManager.Instance.ShowError("Cannot place " + placementItem.displayName + " in " + storageType.ToString() + "!");
                         return;
                     }
 
-                    // --- TWEAK 1: UNIQUE PLACEMENT / MOVE LOGIC ---
                     if (PlayerInventoryManager.Instance != null)
                     {
-                        // Strip it from whatever slot it currently lives in
                         PlayerInventoryManager.Instance.RemoveIngredientFromAllSlots(placementItem);
-                        // Save it to this new slot
                         PlayerInventoryManager.Instance.SaveSlotAssignment(slotID, placementItem);
                     }
 
-                    // Tell all stations to update their visuals (this clears the old slot's physical prefab)
                     InventorySetupManager.Instance.ForceSyncAllStations();
                     InventorySetupManager.Instance.ClearPlacementItem();
                 }
@@ -137,9 +130,13 @@ public class InventoryStation : MonoBehaviour
             if (drawnSuccessfully)
             {
                 PlayerInventoryManager.Instance.ConsumeStock(myIngredientData);
-                if (OnTutorialCardDrawn != null)
+                if (OnTutorialCardDrawn != null) OnTutorialCardDrawn();
+
+                // --- NEW: If that was the last one, clear the model and fire the event! ---
+                if (!PlayerInventoryManager.Instance.HasStock(myIngredientData))
                 {
-                    OnTutorialCardDrawn();
+                    UpdateVisual();
+                    if (OnTutorialStockEmpty != null) OnTutorialStockEmpty();
                 }
             }
         }
@@ -151,19 +148,16 @@ public class InventoryStation : MonoBehaviour
         {
             if (Input.GetMouseButtonDown(1))
             {
-                if (InventorySetupManager.Instance != null)
+                if (InventorySetupManager.Instance != null && InventorySetupManager.Instance.GetPlacementItem() == null)
                 {
-                    if (InventorySetupManager.Instance.GetPlacementItem() == null)
+                    if (myIngredientData != null)
                     {
-                        if (myIngredientData != null)
+                        myIngredientData = null;
+                        if (PlayerInventoryManager.Instance != null)
                         {
-                            myIngredientData = null;
-                            if (PlayerInventoryManager.Instance != null)
-                            {
-                                PlayerInventoryManager.Instance.ClearSlotAssignment(slotID);
-                            }
-                            UpdateVisual();
+                            PlayerInventoryManager.Instance.ClearSlotAssignment(slotID);
                         }
+                        UpdateVisual();
                     }
                 }
             }
@@ -181,16 +175,43 @@ public class InventoryStation : MonoBehaviour
 
         if (myIngredientData != null)
         {
-            if (myIngredientData.storagePrefab != null)
+            // --- NEW: Hide the prefab if we are out of stock during gameplay ---
+            bool isOutOfStock = false;
+            if (!isSetupScene && PlayerInventoryManager.Instance != null)
+            {
+                isOutOfStock = !PlayerInventoryManager.Instance.HasStock(myIngredientData);
+            }
+
+            if (isOutOfStock)
+            {
+                prefabToSpawn = null;
+            }
+            else if (myIngredientData.storagePrefab != null)
             {
                 prefabToSpawn = myIngredientData.storagePrefab;
             }
+        }
+        // --- NEW: Hide the empty placeholder completely if we aren't in the setup scene ---
+        else if (!isSetupScene)
+        {
+            prefabToSpawn = null;
+            if (myCollider != null) myCollider.enabled = false; // Turn off interaction too!
         }
 
         if (prefabToSpawn != null)
         {
             currentVisualInstance = Instantiate(prefabToSpawn, transform.position, transform.rotation, transform);
         }
+    }
+
+    // Add these lifecycle methods anywhere in the class
+    private void OnEnable() { OnInventoryVisualsUpdate += UpdateVisual; }
+    private void OnDisable() { OnInventoryVisualsUpdate -= UpdateVisual; }
+
+    // Add this public method to easily trigger the refresh globally
+    public static void RefreshAllStations()
+    {
+        if (OnInventoryVisualsUpdate != null) OnInventoryVisualsUpdate();
     }
 
     public IngredientData GetStationIngredient()

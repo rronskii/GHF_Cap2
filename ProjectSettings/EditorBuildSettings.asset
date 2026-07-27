@@ -27,7 +27,7 @@ EditorBuildSettings:
     path: Assets/Scenes/03_Inventory.unity
     guid: f1e5752ba5fc52e4da02e950c84f06ee
   - enabled: 0
-    path: Assets/Scenes/01_FoodTruckLevel Copy1.unity
+    path: Assets/Scenes/Z_FoodTruckCopy.unity
     guid: 9fc0d4010bbf28b4594072e72b8655ab
   m_configObjects: {}
   m_UseUCBPForAssetBundles: 0

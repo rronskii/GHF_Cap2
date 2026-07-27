@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement; // --- NEW: Required for loading the next level
+using UnityEngine.SceneManagement;
 
 public class TutorialOneManager : MonoBehaviour
 {
@@ -19,21 +19,24 @@ public class TutorialOneManager : MonoBehaviour
     public IngredientData tutFriedRice;
 
     [Header("UI & Visuals")]
-    public GameObject bouncingArrowPrefab;
+    public GameObject bouncingArrowPrefab;     // For UI Cards
     [Tooltip("Increase this number to move the arrow higher up from the card")]
     public float arrowYOffset = 220f;
     public GameObject tutorialCompletePanel;
 
     [Header("Level Transition")]
-    [Tooltip("Type the exact name of your Tutorial 2 scene here")]
     public string nextSceneName = "00b_Tutorial_Two";
 
     private int practiceTicketsRemaining = 3;
     private bool isPracticePhase = false;
+    private bool hasExplainedStock = false;
 
     private void Start()
     {
         if (tutorialCompletePanel != null) tutorialCompletePanel.SetActive(false);
+
+        // Lock refunds so they can't soft-lock!
+        CardDragUI.canRefund = false;
 
         if (StationCameraController.Instance != null)
         {
@@ -44,7 +47,31 @@ public class TutorialOneManager : MonoBehaviour
 
         if (HandManager.Instance != null) HandManager.Instance.enforceSingleIngredientLimit = true;
 
+        InventoryStation.OnTutorialStockEmpty += HandleStockEmpty;
+
         Invoke("StartIntro", 1.5f);
+    }
+
+    private void OnDestroy()
+    {
+        InventoryStation.OnTutorialStockEmpty -= HandleStockEmpty;
+        CardDragUI.canRefund = true;
+    }
+
+    private void HandleStockEmpty()
+    {
+        if (hasExplainedStock) return;
+        hasExplainedStock = true;
+
+        if (DialogueManager.Instance != null)
+        {
+            DialogueManager.Instance.StartDialogue(new string[]
+            {
+                "Looks like you just grabbed the last of that ingredient!",
+                "Inventory is limited and has to be restocked every day.",
+                "Don't worry though, the tutorial guide will restock your truck for free tomorrow."
+            }, null);
+        }
     }
 
     private void StartIntro()
@@ -265,7 +292,6 @@ public class TutorialOneManager : MonoBehaviour
             {
                 ServiceBell.OnTutorialBellRung -= HandleFirstTutorialComplete;
 
-                // --- NEW: Immediately clear the hand while the dialogue plays ---
                 if (HandManager.Instance != null)
                 {
                     HandManager.Instance.RefundAllCards();
@@ -299,10 +325,9 @@ public class TutorialOneManager : MonoBehaviour
         }
     }
 
-    // --- NEW: Triggered by your Next button ---
     public void LoadNextTutorial()
     {
-        Time.timeScale = 1f; // Ensure the game isn't paused before transitioning
+        Time.timeScale = 1f;
         if (!string.IsNullOrEmpty(nextSceneName))
         {
             SceneManager.LoadScene(nextSceneName);

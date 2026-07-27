@@ -13,6 +13,7 @@ public class CardDragUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
     [HideInInspector] public bool isInteractable = true;
     [HideInInspector] public bool isDragging = false;
+    public static bool canRefund = true; // --- NEW: Global toggle for tutorials
 
     private RectTransform rectTransform;
     public CanvasGroup canvasGroup { get; private set; }
@@ -48,14 +49,15 @@ public class CardDragUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
         if (Input.GetKeyDown(KeyCode.R))
         {
-            // --- THE FIX: Disable 'R' while dragging! ---
-            // The player can ONLY refund the card when hovering over it in the UI.
-            // If they pick it up (isDragging = true) and the 3D model appears, 'R' will do nothing!
             if (isHovering && !isDragging)
             {
+                // --- NEW: Kills the refund if the tutorial locked it! ---
+                if (!canRefund) return;
+
                 if (HandManager.Instance != null && HandManager.Instance.currentStationIndex == inventoryStationIndex)
                 {
                     gridPlacer.TriggerRefund();
+                    InventoryStation.RefreshAllStations();
                     return;
                 }
             }
