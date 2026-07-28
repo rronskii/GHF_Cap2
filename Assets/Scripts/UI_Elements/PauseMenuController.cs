@@ -6,29 +6,26 @@ public class PauseMenuController : MonoBehaviour
     public static PauseMenuController Instance;
 
     [Header("UI Element References")]
-    // Notice we removed the pauseMenuRootCanvas variable!
     [SerializeField] private GameObject darkenOverlayPanel;
     [SerializeField] private GameObject mainPauseMenuPanel;
     [SerializeField] private GameObject cookbookPanelPlaceholder;
 
     private bool isPaused = false;
     private bool isCookbookOpen = false;
+    private bool openedFromTablet = false; // --- NEW: Tracks how the player opened the cookbook
 
     private void Awake()
     {
         if (Instance == null) Instance = this;
         else Destroy(gameObject);
 
-        // Ensure UI elements are initialized to closed states on launch
         InitializeUIState();
     }
 
     private void Update()
     {
-        // NEW: Do not allow pausing or unpausing if the level is officially cleared!
         if (OrderManager.Instance != null && OrderManager.Instance.isLevelCleared) return;
 
-        // UPDATED: Now listens for Escape OR the 'P' key
         if (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.P))
         {
             if (isCookbookOpen)
@@ -45,10 +42,10 @@ public class PauseMenuController : MonoBehaviour
 
     private void InitializeUIState()
     {
-        // Only turn off the child panels, NEVER the Canvas itself!
         if (darkenOverlayPanel != null) darkenOverlayPanel.SetActive(false);
         if (mainPauseMenuPanel != null) mainPauseMenuPanel.SetActive(false);
         if (cookbookPanelPlaceholder != null) cookbookPanelPlaceholder.SetActive(false);
+        openedFromTablet = false;
     }
 
     public void PauseGame()
@@ -56,27 +53,48 @@ public class PauseMenuController : MonoBehaviour
         if (DialogueManager.Instance != null && DialogueManager.Instance.IsDialogueActive) return;
 
         isPaused = true;
-        Time.timeScale = 0f; // Freezes physics, DeltaTime, and standard Coroutines
+        Time.timeScale = 0f;
 
         if (darkenOverlayPanel != null) darkenOverlayPanel.SetActive(true);
         if (mainPauseMenuPanel != null) mainPauseMenuPanel.SetActive(true);
         if (cookbookPanelPlaceholder != null) cookbookPanelPlaceholder.SetActive(false);
+
+        openedFromTablet = false;
     }
 
     public void ResumeGame()
     {
         isPaused = false;
         isCookbookOpen = false;
-        Time.timeScale = 1f; // Restores full simulation execution speed
+        openedFromTablet = false;
+        Time.timeScale = 1f;
 
         InitializeUIState();
     }
 
+    // --- NEW: Called when clicking the 3D Tablet ---
+    public void OpenCookbookDirectly()
+    {
+        if (DialogueManager.Instance != null && DialogueManager.Instance.IsDialogueActive) return;
+
+        isPaused = true;
+        isCookbookOpen = true;
+        openedFromTablet = true;
+        Time.timeScale = 0f; // Freeze the game in the background
+
+        if (darkenOverlayPanel != null) darkenOverlayPanel.SetActive(true);
+        if (mainPauseMenuPanel != null) mainPauseMenuPanel.SetActive(false); // Skip main menu
+        if (cookbookPanelPlaceholder != null) cookbookPanelPlaceholder.SetActive(true);
+    }
+
+    // Called when clicking "Cookbook" from the Pause Menu UI
     public void OpenCookbook()
     {
         if (!isPaused) return;
 
         isCookbookOpen = true;
+        openedFromTablet = false;
+
         if (mainPauseMenuPanel != null) mainPauseMenuPanel.SetActive(false);
         if (cookbookPanelPlaceholder != null) cookbookPanelPlaceholder.SetActive(true);
     }
@@ -87,15 +105,25 @@ public class PauseMenuController : MonoBehaviour
 
         isCookbookOpen = false;
         if (cookbookPanelPlaceholder != null) cookbookPanelPlaceholder.SetActive(false);
-        if (mainPauseMenuPanel != null) mainPauseMenuPanel.SetActive(true);
+
+        // --- NEW: Route them back to where they came from ---
+        if (openedFromTablet)
+        {
+            // They opened it from the 3D world, so closing it should unpause everything
+            ResumeGame();
+        }
+        else
+        {
+            // They opened it from the pause menu, so return them to the pause menu
+            if (mainPauseMenuPanel != null) mainPauseMenuPanel.SetActive(true);
+        }
     }
 
     public void RestartLevel()
     {
-        // 1. Unpause the game so the new scene doesn't load frozen!
+        if (darkenOverlayPanel != null) darkenOverlayPanel.SetActive(false);
+        if (mainPauseMenuPanel != null) mainPauseMenuPanel.SetActive(false);
         Time.timeScale = 1f;
-
-        // 2. Reload the exact scene we are currently in
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 }

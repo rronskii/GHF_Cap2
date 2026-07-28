@@ -11,13 +11,13 @@ public class InventorySetupManager : MonoBehaviour
     [Header("Shift Database")]
     public ShiftLevelData currentShiftData;
 
-    [Header("UI Panels - Cookbook")]
-    public GameObject cookbookPanel;
-    public Transform cookbookContentParent;
+    [Header("UI Panels - Pantry (Loadout Setup)")]
+    public GameObject pantryPanel; // Formerly cookbookPanel
+    public Transform pantryContentParent; // Where the draggable cards spawn
 
     [Header("UI Panels - Menu Board")]
     public GameObject menuBoardPanel;
-    public TextMeshProUGUI menuContentText; // A single text box to list the dishes and ingredients
+    public TextMeshProUGUI menuContentText;
 
     [Header("UI Panels - Warning Prompt")]
     public GameObject warningPanel;
@@ -39,7 +39,7 @@ public class InventorySetupManager : MonoBehaviour
 
     private void Start()
     {
-        if (cookbookPanel != null) cookbookPanel.SetActive(false);
+        if (pantryPanel != null) pantryPanel.SetActive(false);
         if (menuBoardPanel != null) menuBoardPanel.SetActive(false);
         if (warningPanel != null) warningPanel.SetActive(false);
 
@@ -54,24 +54,62 @@ public class InventorySetupManager : MonoBehaviour
         }
     }
 
-    // --- COOKBOOK LOGIC ---
-    public void OpenCookbook()
+    // ==========================================
+    // 3D INTERACTION LISTENER
+    // ==========================================
+    private void OnEnable()
     {
-        if (cookbookPanel != null) cookbookPanel.SetActive(true);
-        PopulateCookbook();
+        InventoryInteractable.OnItemClicked += Handle3DItemClicked;
     }
 
-    public void CloseCookbook()
+    private void OnDisable()
     {
-        if (cookbookPanel != null) cookbookPanel.SetActive(false);
+        InventoryInteractable.OnItemClicked -= Handle3DItemClicked;
     }
 
-    private void PopulateCookbook()
+    private void Handle3DItemClicked(InventoryInteractable interactable)
     {
-        foreach (Transform child in cookbookContentParent)
+        if (interactable.itemType == InventoryInteractable.InteractableType.Tablet)
         {
-            Destroy(child.gameObject);
+            if (PauseMenuController.Instance != null) PauseMenuController.Instance.OpenCookbookDirectly();
         }
+        else if (interactable.itemType == InventoryInteractable.InteractableType.BulletinBoard)
+        {
+            if (InventoryCameraController.Instance != null && interactable.cameraInspectTarget != null)
+            {
+                InventoryCameraController.Instance.MoveToTarget(interactable.cameraInspectTarget);
+            }
+            OpenMenuBoardUI();
+        }
+        else if (interactable.itemType == InventoryInteractable.InteractableType.Pantry)
+        {
+            // --- NEW: Clicking the physical pantry opens the loadout UI ---
+            if (InventoryCameraController.Instance != null && interactable.cameraInspectTarget != null)
+            {
+                InventoryCameraController.Instance.MoveToTarget(interactable.cameraInspectTarget);
+            }
+            OpenPantry();
+        }
+    }
+
+    // ==========================================
+    // PANTRY LOGIC (Formerly Cookbook)
+    // ==========================================
+    public void OpenPantry()
+    {
+        if (pantryPanel != null) pantryPanel.SetActive(true);
+        PopulatePantry();
+    }
+
+    public void ClosePantry()
+    {
+        if (pantryPanel != null) pantryPanel.SetActive(false);
+        if (InventoryCameraController.Instance != null) InventoryCameraController.Instance.ReturnHome();
+    }
+
+    private void PopulatePantry()
+    {
+        foreach (Transform child in pantryContentParent) Destroy(child.gameObject);
 
         if (PlayerInventoryManager.Instance != null)
         {
@@ -79,27 +117,13 @@ public class InventorySetupManager : MonoBehaviour
             {
                 if (ingredient.cardUIPrefab != null)
                 {
-                    GameObject cardObj = Instantiate(ingredient.cardUIPrefab, cookbookContentParent);
+                    GameObject cardObj = Instantiate(ingredient.cardUIPrefab, pantryContentParent);
 
                     CardDragUI[] dragScripts = cardObj.GetComponentsInChildren<CardDragUI>(true);
-                    foreach (CardDragUI drag in dragScripts)
-                    {
-                        if (drag != null)
-                        {
-                            drag.enabled = false;
-                            Destroy(drag);
-                        }
-                    }
+                    foreach (CardDragUI drag in dragScripts) { drag.enabled = false; Destroy(drag); }
 
                     CardGridPlacer[] placerScripts = cardObj.GetComponentsInChildren<CardGridPlacer>(true);
-                    foreach (CardGridPlacer placer in placerScripts)
-                    {
-                        if (placer != null)
-                        {
-                            placer.enabled = false;
-                            Destroy(placer);
-                        }
-                    }
+                    foreach (CardGridPlacer placer in placerScripts) { placer.enabled = false; Destroy(placer); }
 
                     CookbookCardUI interactiveScript = cardObj.AddComponent<CookbookCardUI>();
                     interactiveScript.myData = ingredient;
@@ -108,14 +132,13 @@ public class InventorySetupManager : MonoBehaviour
         }
     }
 
+    // ==========================================
+    // PLACEMENT & SYNC
+    // ==========================================
     public void SelectItemForPlacement(IngredientData ingredient)
     {
         currentPlacementItem = ingredient;
-
-        if (errorCoroutine != null)
-        {
-            StopCoroutine(errorCoroutine);
-        }
+        if (errorCoroutine != null) StopCoroutine(errorCoroutine);
 
         if (placeModeTextObj != null)
         {
@@ -127,15 +150,13 @@ public class InventorySetupManager : MonoBehaviour
             }
         }
 
-        CloseCookbook();
+        // Hide the pantry panel so they can click the 3D room slots!
+        ClosePantry();
     }
 
     public void ShowError(string message)
     {
-        if (errorCoroutine != null)
-        {
-            StopCoroutine(errorCoroutine);
-        }
+        if (errorCoroutine != null) StopCoroutine(errorCoroutine);
         errorCoroutine = StartCoroutine(ErrorRoutine(message));
     }
 
@@ -146,9 +167,7 @@ public class InventorySetupManager : MonoBehaviour
             placeModeText.text = message;
             placeModeText.color = Color.red;
         }
-
         yield return new WaitForSeconds(1.5f);
-
         if (currentPlacementItem != null && placeModeText != null)
         {
             placeModeText.text = defaultPlaceText;
@@ -156,19 +175,12 @@ public class InventorySetupManager : MonoBehaviour
         }
     }
 
-    public IngredientData GetPlacementItem()
-    {
-        return currentPlacementItem;
-    }
+    public IngredientData GetPlacementItem() { return currentPlacementItem; }
 
     public void ClearPlacementItem()
     {
         currentPlacementItem = null;
-
-        if (placeModeTextObj != null)
-        {
-            placeModeTextObj.SetActive(false);
-        }
+        if (placeModeTextObj != null) placeModeTextObj.SetActive(false);
     }
 
     public void ForceSyncAllStations()
@@ -176,14 +188,13 @@ public class InventorySetupManager : MonoBehaviour
         InventoryStation[] allStations = FindObjectsOfType<InventoryStation>();
         foreach (InventoryStation station in allStations)
         {
-            if (station != null)
-            {
-                station.SyncWithLoadout();
-            }
+            if (station != null) station.SyncWithLoadout();
         }
     }
 
-    // --- MENU BOARD LOGIC ---
+    // ==========================================
+    // MENU BOARD LOGIC
+    // ==========================================
     public void OpenMenuBoardUI()
     {
         if (currentShiftData == null) return;
@@ -192,7 +203,6 @@ public class InventorySetupManager : MonoBehaviour
         if (menuContentText != null)
         {
             string menuString = "<b>Today's Menu</b>\n\n";
-
             foreach (DishData dish in currentShiftData.activeDishes)
             {
                 menuString += $"<size=120%>{dish.dishName}</size>\n";
@@ -201,14 +211,10 @@ public class InventorySetupManager : MonoBehaviour
                 for (int i = 0; i < dish.requiredIngredients.Count; i++)
                 {
                     menuString += dish.requiredIngredients[i].displayName;
-                    if (i < dish.requiredIngredients.Count - 1)
-                    {
-                        menuString += ", ";
-                    }
+                    if (i < dish.requiredIngredients.Count - 1) menuString += ", ";
                 }
                 menuString += "</color></size>\n\n";
             }
-
             menuContentText.text = menuString;
         }
     }
@@ -216,9 +222,12 @@ public class InventorySetupManager : MonoBehaviour
     public void CloseMenuBoardUI()
     {
         if (menuBoardPanel != null) menuBoardPanel.SetActive(false);
+        if (InventoryCameraController.Instance != null) InventoryCameraController.Instance.ReturnHome();
     }
 
-    // --- SHIFT VALIDATION LOGIC ---
+    // ==========================================
+    // SHIFT VALIDATION LOGIC
+    // ==========================================
     public void OnStartShiftClicked()
     {
         if (currentShiftData == null || PlayerInventoryManager.Instance == null)
@@ -229,7 +238,6 @@ public class InventorySetupManager : MonoBehaviour
 
         List<string> missingIngredientNames = new List<string>();
 
-        // Check if every required base ingredient is equipped somewhere in the active loadout
         foreach (IngredientData requiredData in currentShiftData.requiredBaseIngredients)
         {
             bool isEquipped = false;
@@ -241,18 +249,12 @@ public class InventorySetupManager : MonoBehaviour
                     break;
                 }
             }
-
-            if (!isEquipped)
-            {
-                missingIngredientNames.Add(requiredData.displayName);
-            }
+            if (!isEquipped) missingIngredientNames.Add(requiredData.displayName);
         }
 
         if (missingIngredientNames.Count > 0)
         {
-            // Player is missing ingredients! Show the warning prompt.
             if (warningPanel != null) warningPanel.SetActive(true);
-
             if (warningMessageText != null)
             {
                 string missingList = string.Join(", ", missingIngredientNames);
@@ -261,7 +263,6 @@ public class InventorySetupManager : MonoBehaviour
         }
         else
         {
-            // Loadout is perfect, start the shift immediately
             StartShift();
         }
     }
@@ -273,7 +274,6 @@ public class InventorySetupManager : MonoBehaviour
 
     public void StartShift()
     {
-        Debug.Log("StartShift button was clicked! Attempting to load scene...");
         SceneManager.LoadScene("01_FoodTruckLevel");
     }
 }
