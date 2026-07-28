@@ -877,6 +877,57 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 728261861}
   m_CullTransparentMesh: 1
+--- !u!1 &744958155
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 744958157}
+  - component: {fileID: 744958156}
+  m_Layer: 0
+  m_Name: '[PlayerInventoryManager]'
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &744958156
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 744958155}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f97aa41f5f886354591779178c1b190e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isInfiniteMode: 0
+  persistAcrossScenes: 1
+  initialInventory: []
+  unlockedIngredients: []
+  currentPlayerLevel: 1
+  purchasedUpgrades: []
+  defaultQuickStartLoadout: []
+--- !u!4 &744958157
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 744958155}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 200, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &804932360
 GameObject:
   m_ObjectHideFlags: 0
@@ -1300,6 +1351,54 @@ MonoBehaviour:
   m_LightCookieSize: {x: 1, y: 1}
   m_LightCookieOffset: {x: 0, y: 0}
   m_SoftShadowQuality: 0
+--- !u!1 &861468814
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 861468816}
+  - component: {fileID: 861468815}
+  m_Layer: 0
+  m_Name: '[PlayerEconomyManager]'
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &861468815
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 861468814}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 19dc0177cd779d548ab0d0056cea2d59, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  totalBankCash: 0
+  currentDailyQuota: 250
+  shiftCash: 0
+  shiftPoints: 0
+--- !u!4 &861468816
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 861468814}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1162.8574, y: 245.36551, z: 7.1544633}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &888724304
 GameObject:
   m_ObjectHideFlags: 0
@@ -1730,7 +1829,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c1483ed922436f443b1b42b8a9dfae5b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  InitialScene: 03_Inventory
+  InitialScene: 00a_Tutorial_Basics
 --- !u!1 &1172863821
 GameObject:
   m_ObjectHideFlags: 0
@@ -3020,3 +3119,5 @@ SceneRoots:
   - {fileID: 893366966}
   - {fileID: 844271535}
   - {fileID: 1169146090}
+  - {fileID: 744958157}
+  - {fileID: 861468816}

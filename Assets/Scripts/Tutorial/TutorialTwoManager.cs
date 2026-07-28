@@ -165,7 +165,8 @@ public class TutorialTwoManager : MonoBehaviour
         DialogueManager.Instance.StartDialogue(new string[] {
             "Good job! You've got the hang of the new ingredients.",
             "Let's finish up the day. I'm sending in 3 more orders.",
-            "Clear these to finish this tutorial!"
+            "If you get stuck, you can restart this level by going to the pause menu",
+            "Clear these to finish this tutorial! Goodluck!"
         }, () => dialogueDone = true);
         while (!dialogueDone) yield return null;
 

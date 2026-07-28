@@ -21,6 +21,7 @@ public class ShopUIManager : MonoBehaviour
 
     [Header("System References")]
     public ShopCameraController cameraController;
+    public string nextSceneName = "03_Inventory";
 
     private int currentAmount = 1;
     private IngredientData currentIngredient;
@@ -350,6 +351,6 @@ public class ShopUIManager : MonoBehaviour
     public void ProceedToInventoryPhase()
     {
         ShopItemInteractable.isInteractionLocked = false;
-        SceneManager.LoadScene("03_Inventory");
+        SceneManager.LoadScene(nextSceneName);
     }
 }

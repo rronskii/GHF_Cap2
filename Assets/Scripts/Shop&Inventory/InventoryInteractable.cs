@@ -5,7 +5,7 @@ using UnityEngine.EventSystems;
 [RequireComponent(typeof(Collider))]
 public class InventoryInteractable : MonoBehaviour
 {
-    public enum InteractableType { Tablet, BulletinBoard, Pantry }
+    public enum InteractableType { Tablet, BulletinBoard }
 
     [Header("Item Settings")]
     public InteractableType itemType;

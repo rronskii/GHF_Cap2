@@ -789,6 +789,132 @@ Transform:
   - {fileID: 1291814462}
   m_Father: {fileID: 1359314997}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &124019955
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 124019956}
+  - component: {fileID: 124019960}
+  - component: {fileID: 124019959}
+  - component: {fileID: 124019958}
+  - component: {fileID: 124019957}
+  m_Layer: 7
+  m_Name: RiceCooker
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &124019956
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 124019955}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -30, y: 6, z: 16}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 786877760}
+  m_Father: {fileID: 1359314997}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &124019957
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 124019955}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ccd09910110d015468ac6b3f6ac7ff0e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  slotID: RiceCooker
+  storageType: 2
+  emptyPrefab: {fileID: 3096914684865143445, guid: 805534078de98a34a8821e690aa1b9fa, type: 3}
+  hoverScaleMultiplier: 1.15
+  scaleSpeed: 10
+--- !u!65 &124019958
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 124019955}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 4.5, y: 3, z: 4.5}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!23 &124019959
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 124019955}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 0}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!33 &124019960
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 124019955}
+  m_Mesh: {fileID: 0}
 --- !u!1001 &154354554
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2277,72 +2403,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 411260343}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!1 &423080710
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 423080711}
-  - component: {fileID: 423080712}
-  m_Layer: 0
-  m_Name: '[PlayerInventoryManager]'
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &423080711
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 423080710}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 200, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &423080712
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 423080710}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f97aa41f5f886354591779178c1b190e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  isInfiniteMode: 0
-  persistAcrossScenes: 0
-  initialInventory:
-  - ingredientData: {fileID: 11400000, guid: 1306ad4e2f59af34583603f5988b79eb, type: 2}
-    amount: 4
-  - ingredientData: {fileID: 11400000, guid: 8e5f08be53f5c1c47ab1748274214e6c, type: 2}
-    amount: 4
-  - ingredientData: {fileID: 11400000, guid: 3071a8150f96bfd44a01c668aed8fc91, type: 2}
-    amount: 4
-  unlockedIngredients:
-  - {fileID: 11400000, guid: 1306ad4e2f59af34583603f5988b79eb, type: 2}
-  - {fileID: 11400000, guid: 8e5f08be53f5c1c47ab1748274214e6c, type: 2}
-  - {fileID: 11400000, guid: 3071a8150f96bfd44a01c668aed8fc91, type: 2}
-  currentPlayerLevel: 1
-  purchasedUpgrades: []
-  defaultQuickStartLoadout:
-  - slotID: Fridge_5
-    ingredient: {fileID: 11400000, guid: 1306ad4e2f59af34583603f5988b79eb, type: 2}
-  - slotID: Rack_1
-    ingredient: {fileID: 11400000, guid: 8e5f08be53f5c1c47ab1748274214e6c, type: 2}
-  - slotID: RiceCooker
-    ingredient: {fileID: 11400000, guid: 3071a8150f96bfd44a01c668aed8fc91, type: 2}
 --- !u!1 &430591161
 GameObject:
   m_ObjectHideFlags: 0
@@ -4057,6 +4117,84 @@ Transform:
   m_Children: []
   m_Father: {fileID: 2127604575}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 90}
+--- !u!1001 &786877759
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 124019956}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: 324e139a7c758284ab62332604eec6fc, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 324e139a7c758284ab62332604eec6fc, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 324e139a7c758284ab62332604eec6fc, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 324e139a7c758284ab62332604eec6fc, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.025693893
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 324e139a7c758284ab62332604eec6fc, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 324e139a7c758284ab62332604eec6fc, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.010061264
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 324e139a7c758284ab62332604eec6fc, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: -0.3676701
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 324e139a7c758284ab62332604eec6fc, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 324e139a7c758284ab62332604eec6fc, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0.92995626
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 324e139a7c758284ab62332604eec6fc, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 324e139a7c758284ab62332604eec6fc, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 324e139a7c758284ab62332604eec6fc, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: -223.144
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 324e139a7c758284ab62332604eec6fc, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -7511558181221131132, guid: 324e139a7c758284ab62332604eec6fc, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 7c7ec07e136a4344585d04160b85dbea, type: 2}
+    - target: {fileID: 919132149155446097, guid: 324e139a7c758284ab62332604eec6fc, type: 3}
+      propertyPath: m_Name
+      value: rice cooker open
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 324e139a7c758284ab62332604eec6fc, type: 3}
+--- !u!4 &786877760 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 324e139a7c758284ab62332604eec6fc, type: 3}
+  m_PrefabInstance: {fileID: 786877759}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &792081410
 GameObject:
   m_ObjectHideFlags: 0
@@ -4556,131 +4694,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 5865663635908040354, guid: 8fad2b01082b2cc4cb88c0a60f3c82fc, type: 3}
   m_PrefabInstance: {fileID: 925420802}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &936151734
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 936151739}
-  - component: {fileID: 936151738}
-  - component: {fileID: 936151737}
-  - component: {fileID: 936151736}
-  - component: {fileID: 936151735}
-  m_Layer: 7
-  m_Name: Rice Cooker
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &936151735
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 936151734}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ccd09910110d015468ac6b3f6ac7ff0e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  slotID: RiceCooker
-  storageType: 2
-  emptyPrefab: {fileID: 3096914684865143445, guid: 805534078de98a34a8821e690aa1b9fa, type: 3}
-  hoverScaleMultiplier: 1.15
-  scaleSpeed: 10
---- !u!65 &936151736
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 936151734}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
---- !u!23 &936151737
-MeshRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 936151734}
-  m_Enabled: 1
-  m_CastShadows: 1
-  m_ReceiveShadows: 1
-  m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
-  m_MotionVectors: 1
-  m_LightProbeUsage: 1
-  m_ReflectionProbeUsage: 1
-  m_RayTracingMode: 2
-  m_RayTraceProcedural: 0
-  m_RayTracingAccelStructBuildFlagsOverride: 0
-  m_RayTracingAccelStructBuildFlags: 1
-  m_RenderingLayerMask: 1
-  m_RendererPriority: 0
-  m_Materials:
-  - {fileID: 2100000, guid: 7c7ec07e136a4344585d04160b85dbea, type: 2}
-  m_StaticBatchInfo:
-    firstSubMesh: 0
-    subMeshCount: 0
-  m_StaticBatchRoot: {fileID: 0}
-  m_ProbeAnchor: {fileID: 0}
-  m_LightProbeVolumeOverride: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_ReceiveGI: 1
-  m_PreserveUVs: 0
-  m_IgnoreNormalsForChartDetection: 0
-  m_ImportantGI: 0
-  m_StitchLightmapSeams: 1
-  m_SelectedEditorRenderState: 3
-  m_MinimumChartSize: 4
-  m_AutoUVMaxDistance: 0.5
-  m_AutoUVMaxAngle: 89
-  m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
-  m_AdditionalVertexStreams: {fileID: 0}
---- !u!33 &936151738
-MeshFilter:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 936151734}
-  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!4 &936151739
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 936151734}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -30, y: 6, z: 16}
-  m_LocalScale: {x: 4.5, y: 3, z: 4.5}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1359314997}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0
@@ -6839,7 +6852,7 @@ Transform:
   m_Children:
   - {fileID: 1159721334}
   - {fileID: 1243535673}
-  - {fileID: 936151739}
+  - {fileID: 124019956}
   - {fileID: 65433491}
   - {fileID: 430591162}
   - {fileID: 85594953}
@@ -8347,6 +8360,7 @@ GameObject:
   - component: {fileID: 1934565220}
   - component: {fileID: 1934565219}
   - component: {fileID: 1934565221}
+  - component: {fileID: 1934565222}
   m_Layer: 0
   m_Name: '[TutorialOneManager]'
   m_TagString: Untagged
@@ -8409,6 +8423,29 @@ MonoBehaviour:
   arrowYOffset: 255
   tutorialCompletePanel: {fileID: 1344631658}
   nextSceneName: 00b_Tutorial_Two
+--- !u!114 &1934565222
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1934565217}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dab01eaa8b2b7ca468a4557e3d8f9c1b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  wipePreviousData: 1
+  itemsToInject:
+  - ingredient: {fileID: 11400000, guid: 1306ad4e2f59af34583603f5988b79eb, type: 2}
+    amount: 4
+    slotID: Fridge_5
+  - ingredient: {fileID: 11400000, guid: 8e5f08be53f5c1c47ab1748274214e6c, type: 2}
+    amount: 4
+    slotID: Rack_1
+  - ingredient: {fileID: 11400000, guid: 3071a8150f96bfd44a01c668aed8fc91, type: 2}
+    amount: 4
+    slotID: RiceCooker
 --- !u!1 &1961363936
 GameObject:
   m_ObjectHideFlags: 0
@@ -9149,11 +9186,10 @@ SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 1547650300}
-  - {fileID: 1316649423}
   - {fileID: 321679049}
+  - {fileID: 1316649423}
   - {fileID: 1934565220}
   - {fileID: 1507613463}
-  - {fileID: 423080711}
   - {fileID: 1806814172}
   - {fileID: 963194228}
   - {fileID: 76594140}

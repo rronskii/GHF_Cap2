@@ -529,7 +529,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &124051258
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -542,7 +542,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 19dc0177cd779d548ab0d0056cea2d59, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  totalBankCash: 200
+  totalBankCash: 0
   cashRegister: {fileID: 0}
   currentDailyQuota: 100
   shiftCash: 0
@@ -1077,6 +1077,7 @@ MonoBehaviour:
   decreaseButton: {fileID: 1491539685}
   amountTextObj: {fileID: 1716494011}
   cameraController: {fileID: 2013774032}
+  nextSceneName: 03a_Tutorial_Inventory
 --- !u!1001 &324131455
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1302,7 +1303,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &387043128
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3898,7 +3899,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1092502381
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9514,8 +9515,8 @@ Transform:
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
-  - {fileID: 124051259}
   - {fileID: 1092502382}
+  - {fileID: 124051259}
   - {fileID: 387043130}
   - {fileID: 276984716}
   - {fileID: 1175994753}

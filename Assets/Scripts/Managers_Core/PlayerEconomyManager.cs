@@ -1,4 +1,5 @@
 using UnityEngine;
+using System; // Required for Actions/Events
 
 public class PlayerEconomyManager : MonoBehaviour
 {
@@ -7,17 +8,17 @@ public class PlayerEconomyManager : MonoBehaviour
     [Header("Global Currency")]
     public int totalBankCash = 0; // This carries over to your Meta Shop!
 
-    [Header("UI References")]
-    public CashRegisterInteractable cashRegister;
-
     [Header("Current Shift Stats")]
-    public int currentDailyQuota = 100; // NEW: The finish line for the piggy bank
+    public int currentDailyQuota = 100;
     public int shiftCash = 0;
     public int shiftPoints = 0;
 
+    // --- NEW: The Decoupled Event System ---
+    // Any script in any scene can listen to this to know when money changes!
+    public event Action<int, int> OnRegisterUpdated;
+
     private void Awake()
     {
-        // Persistent Singleton Pattern
         if (Instance == null)
         {
             Instance = this;
@@ -30,19 +31,14 @@ public class PlayerEconomyManager : MonoBehaviour
         }
     }
 
-    // Called at the start of every day/level
-    // NEW: Pass in the quota for the day so the piggy bank knows the goal!
     public void StartNewShift(int dailyQuotaTarget)
     {
         shiftCash = 0;
         shiftPoints = 0;
         currentDailyQuota = dailyQuotaTarget;
 
-        // Reset the piggy bank visual to zero at the start of the day
-        if (cashRegister != null)
-        {
-            cashRegister.UpdateRegister(shiftCash, currentDailyQuota);
-        }
+        // Shout to the world that the register reset
+        OnRegisterUpdated?.Invoke(shiftCash, currentDailyQuota);
     }
 
     public void AddShiftRevenue(int cash, int points)
@@ -50,20 +46,16 @@ public class PlayerEconomyManager : MonoBehaviour
         shiftCash += cash;
         shiftPoints += points;
 
-        // NEW: Tell the piggy bank to fill up a little bit more!
-        if (cashRegister != null)
-        {
-            cashRegister.UpdateRegister(shiftCash, currentDailyQuota);
-        }
+        // Shout to the world that money was added
+        OnRegisterUpdated?.Invoke(shiftCash, currentDailyQuota);
     }
 
     public int CalculateTotalShiftEarnings(out int tips)
     {
-        tips = shiftPoints / 100; // Integer division automatically drops decimals
+        tips = shiftPoints / 100;
         return shiftCash + tips;
     }
 
-    // Called when the win condition is met
     public void DepositShiftEarnings()
     {
         int totalEarnings = CalculateTotalShiftEarnings(out _);

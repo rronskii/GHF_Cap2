@@ -195,4 +195,11 @@ public class PlayerInventoryManager : MonoBehaviour
             activeLoadout.Remove(key);
         }
     }
+
+    public void ClearAllData()
+    {
+        activeLoadout.Clear();
+        unlockedIngredients.Clear();
+        currentStock.Clear();
+    }
 }

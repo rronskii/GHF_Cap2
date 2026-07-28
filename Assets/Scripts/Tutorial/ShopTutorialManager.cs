@@ -132,7 +132,8 @@ public class ShopTutorialManager : MonoBehaviour
         dialogueDone = false;
         DialogueManager.Instance.StartDialogue(new string[] {
             "Awesome! That pan is permanently yours.",
-            "Feel free to look around the shop. When you are ready, click the Proceed button to head to the kitchen and set up your loadout!"
+            "Feel free to look around the shop. When you are ready, click the Proceed button to head to the kitchen and set up your loadout!",
+            "Don't worry about your ingredients for tomorrow, I'll cover that for you one last time."
         }, () => dialogueDone = true);
         while (!dialogueDone) yield return null;
 

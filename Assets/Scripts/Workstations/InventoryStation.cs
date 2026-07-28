@@ -38,7 +38,10 @@ public class InventoryStation : MonoBehaviour
 
     private void Start()
     {
-        isSetupScene = SceneManager.GetActiveScene().name == "03_Inventory";
+        // Now it will return true for both "03_Inventory" AND "03a_TutorialInventory"
+        string currentScene = SceneManager.GetActiveScene().name;
+        isSetupScene = currentScene == "03_Inventory" || currentScene == "03a_Tutorial_Inventory";
+
         SyncWithLoadout();
     }
 

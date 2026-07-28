@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
 using System.Collections;
-using TMPro; // --- NEW: Required for TextMeshPro elements!
+using TMPro;
 
 [RequireComponent(typeof(Collider))]
 public class CashRegisterInteractable : MonoBehaviour
@@ -59,11 +59,34 @@ public class CashRegisterInteractable : MonoBehaviour
         }
     }
 
-    public void UpdateRegister(float currentCash, float dailyQuota)
+    // --- NEW: Subscribe to the global economy manager ---
+    private void OnEnable()
+    {
+        if (PlayerEconomyManager.Instance != null)
+        {
+            PlayerEconomyManager.Instance.OnRegisterUpdated += UpdateRegister;
+
+            // Force an immediate sync just in case it spawned mid-shift
+            UpdateRegister(PlayerEconomyManager.Instance.shiftCash, PlayerEconomyManager.Instance.currentDailyQuota);
+        }
+    }
+
+    // --- NEW: Unsubscribe to prevent memory leaks ---
+    private void OnDisable()
+    {
+        if (PlayerEconomyManager.Instance != null)
+        {
+            PlayerEconomyManager.Instance.OnRegisterUpdated -= UpdateRegister;
+        }
+    }
+
+    // UPDATED: Now takes integers to match the Action<int, int> event signature
+    public void UpdateRegister(int currentCash, int dailyQuota)
     {
         if (dailyQuota > 0)
         {
-            currentFillRatio = Mathf.Clamp01(currentCash / dailyQuota);
+            // Cast to float to prevent integer division (e.g., 50/100 becoming 0)
+            currentFillRatio = Mathf.Clamp01((float)currentCash / (float)dailyQuota);
         }
         else
         {
@@ -72,7 +95,7 @@ public class CashRegisterInteractable : MonoBehaviour
 
         canCloseEarly = currentFillRatio >= twoStarThreshold;
 
-        // --- NEW: Check for new milestones to trigger the Pop! ---
+        // Check for new milestones to trigger the Pop!
         bool triggeredPop = false;
 
         if (!reachedOneStar && currentFillRatio >= oneStarThreshold)
@@ -139,7 +162,6 @@ public class CashRegisterInteractable : MonoBehaviour
         float targetFill = currentFillRatio;
         Color targetColor = defaultBarColor;
 
-        // --- NEW: Calculate if we should show the "Close Early" state ---
         bool shouldShowCloseEarly = (isHovering && canCloseEarly && Time.timeScale > 0f);
 
         if (shouldShowCloseEarly)
@@ -149,7 +171,6 @@ public class CashRegisterInteractable : MonoBehaviour
             targetColor = hoverBarColor;
         }
 
-        // --- NEW: Manage the Sign Text ---
         if (orderLineSignText != null)
         {
             orderLineSignText.text = shouldShowCloseEarly ? closeEarlyString : originalSignText;
