@@ -12,11 +12,42 @@ public class ShopTutorialManager : MonoBehaviour
     public string panUpgradeID = "upgrade_pan_2";
     public int bonusCashAmount = 250;
 
+    [Header("Tutorial Targets")]
+    [Tooltip("Drag your Frying Pan UpgradeData here so the script knows what to look for.")]
+    public UpgradeData targetFryingPan;
+
     [Header("Section Indices")]
     public int veggiesIndex = 0;
     public int proteinsIndex = 1;
     public int aromaticsIndex = 2;
     public int appliancesIndex = 3;
+
+    private void OnEnable()
+    {
+        // Listen to the exact same event the UI uses!
+        ShopItemInteractable.OnShopItemClicked += CheckItemClicked;
+    }
+
+    private void OnDisable()
+    {
+        ShopItemInteractable.OnShopItemClicked -= CheckItemClicked;
+    }
+
+    private void CheckItemClicked(ShopItemInteractable clickedItem)
+    {
+        if (shopUIManager == null || shopUIManager.backButton == null) return;
+
+        // If they clicked the Frying Pan, hide the back button. Otherwise, make sure it is active.
+        if (clickedItem.upgradeData == targetFryingPan)
+        {
+            shopUIManager.backButton.SetActive(false);
+            Debug.Log("[Tutorial] Frying pan clicked! Hiding the back button.");
+        }
+        else
+        {
+            shopUIManager.backButton.SetActive(true);
+        }
+    }
 
     private void Start()
     {
@@ -82,7 +113,7 @@ public class ShopTutorialManager : MonoBehaviour
         dialogueDone = false;
 
         DialogueManager.Instance.StartDialogue(new string[] {
-            "Garlic, onions, and side dishes live here.",
+            "Coconut products, sour bases, and other ingredients live here.",
             "Let's move to the final stop. Press 'A' one more time to view the Appliances!"
         }, () => dialogueDone = true);
         while (!dialogueDone) yield return null;

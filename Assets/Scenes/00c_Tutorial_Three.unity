@@ -6434,7 +6434,6 @@ GameObject:
   - component: {fileID: 1107332999}
   - component: {fileID: 1107333000}
   - component: {fileID: 1107333001}
-  - component: {fileID: 1107333002}
   m_Layer: 0
   m_Name: '[TutorialThreeManager]'
   m_TagString: Untagged
@@ -6488,35 +6487,6 @@ MonoBehaviour:
   dialogueText: {fileID: 761430518}
   continuePromptText: {fileID: 1054892782}
   typingSpeed: 0.03
---- !u!114 &1107333002
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1107332997}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dab01eaa8b2b7ca468a4557e3d8f9c1b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  wipePreviousData: 1
-  itemsToInject:
-  - ingredient: {fileID: 11400000, guid: c9e33be1a39fe934487df0aaa52c216a, type: 2}
-    amount: 15
-    slotID: Fridge_5
-  - ingredient: {fileID: 11400000, guid: 095c95641d0fc554fb547d94c8c40c7a, type: 2}
-    amount: 15
-    slotID: RiceCooker
-  - ingredient: {fileID: 11400000, guid: 9eca1ff648a21a94fb0065ed79a45f61, type: 2}
-    amount: 15
-    slotID: Rack_1
-  - ingredient: {fileID: 11400000, guid: d3d68cae5b3a55f4482339ee07f2fc67, type: 2}
-    amount: 10
-    slotID: Fridge_1
-  - ingredient: {fileID: 11400000, guid: 5c7073438232fbd4098eea4cb7f0e95a, type: 2}
-    amount: 10
-    slotID: Fridge_2
 --- !u!1 &1111049136
 GameObject:
   m_ObjectHideFlags: 0

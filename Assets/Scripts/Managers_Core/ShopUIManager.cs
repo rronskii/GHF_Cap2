@@ -7,12 +7,14 @@ public class ShopUIManager : MonoBehaviour
 {
     [Header("UI Panels")]
     public GameObject buyingPanel;
+    public GameObject backButton;
 
     [Header("Buying UI Elements")]
     public Transform cardContainer;
     public TextMeshProUGUI priceText;
     public TextMeshProUGUI amountText;
     public TextMeshProUGUI bankCashText;
+    public TextMeshProUGUI yieldIndicatorText; // --- NEW: To show bulk yield amounts! ---
 
     [Header("Amount Controls")]
     public GameObject increaseButton;
@@ -95,7 +97,14 @@ public class ShopUIManager : MonoBehaviour
         // --- SPAWN 3D MODEL ---
         if (spawned3DModel != null) Destroy(spawned3DModel);
 
-        GameObject prefabToSpawn = isUpgrade ? currentUpgrade.worldPrefab : currentIngredient.worldPrefab;
+        // NEW: Prioritize the custom prefab (like an egg carton) from the interactable!
+        GameObject prefabToSpawn = interactable.customShopPrefab;
+
+        // If the designer left it blank, fallback to the standard ingredient/upgrade model
+        if (prefabToSpawn == null)
+        {
+            prefabToSpawn = isUpgrade ? currentUpgrade.worldPrefab : currentIngredient.worldPrefab;
+        }
 
         if (prefabToSpawn != null && interactable.inspectSpawnPoint != null)
         {
@@ -204,6 +213,7 @@ public class ShopUIManager : MonoBehaviour
     public void CloseBuyingPanel()
     {
         if (!isCurrentlyInspecting || isTransitioning) return;
+        if (backButton != null) backButton.SetActive(true);
 
         isTransitioning = true;
         buyingPanel.SetActive(false);
@@ -217,7 +227,7 @@ public class ShopUIManager : MonoBehaviour
         }
 
         currentIngredient = null;
-        currentUpgrade = null; // --- FIXED: Make sure we clear the upgrade out too! ---
+        currentUpgrade = null;
         currentInteractable = null;
         isTransactionLocked = false;
 
@@ -260,7 +270,6 @@ public class ShopUIManager : MonoBehaviour
 
     public void IncreaseAmount()
     {
-        // --- FIXED: Now checks the new currentUpgrade variable ---
         if (isTransactionLocked || currentUpgrade != null) return;
         currentAmount++;
         UpdatePanelUI();
@@ -268,7 +277,6 @@ public class ShopUIManager : MonoBehaviour
 
     public void DecreaseAmount()
     {
-        // --- FIXED: Now checks the new currentUpgrade variable ---
         if (isTransactionLocked || currentUpgrade != null) return;
         if (currentAmount > 1)
         {
@@ -286,6 +294,21 @@ public class ShopUIManager : MonoBehaviour
         int totalCost = currentAmount * unitPrice;
 
         priceText.text = "Cost: " + totalCost.ToString() + " P";
+
+        // --- NEW: Dynamic Yield Text Updates ---
+        if (yieldIndicatorText != null)
+        {
+            if (isUpgrade || currentInteractable == null)
+            {
+                yieldIndicatorText.gameObject.SetActive(false); // Hide yield text for upgrades
+            }
+            else
+            {
+                yieldIndicatorText.gameObject.SetActive(true);
+                int totalYield = currentAmount * currentInteractable.yieldAmount;
+                yieldIndicatorText.text = $"x {totalYield}";
+            }
+        }
     }
 
     private void UpdateBankCashDisplay()
@@ -317,7 +340,9 @@ public class ShopUIManager : MonoBehaviour
             }
             else
             {
-                PlayerInventoryManager.Instance.AddStock(currentIngredient, currentAmount);
+                // --- NEW: Calculate the bulk yield and give that to the player ---
+                int totalYield = currentAmount * currentInteractable.yieldAmount;
+                PlayerInventoryManager.Instance.AddStock(currentIngredient, totalYield);
             }
 
             UpdateBankCashDisplay();

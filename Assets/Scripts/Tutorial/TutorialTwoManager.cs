@@ -244,7 +244,7 @@ public class TutorialTwoManager : MonoBehaviour
             DialogueManager.Instance.StartDialogue(new string[]
             {
                 "You're getting the hang of this!",
-                "I think you're finally ready to serve some real customers."
+                "Let's head to the market, I'll show you around."
             }, () => { if (tutorialCompletePanel != null) tutorialCompletePanel.SetActive(true); });
         }
     }

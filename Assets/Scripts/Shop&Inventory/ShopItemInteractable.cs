@@ -5,12 +5,19 @@ using UnityEngine.EventSystems;
 [RequireComponent(typeof(Collider))]
 public class ShopItemInteractable : MonoBehaviour
 {
-    // --- UPDATED: We now pass the WHOLE interactable to the UI, so it can check what's inside! ---
     public static event Action<ShopItemInteractable> OnShopItemClicked;
 
     [Header("Item Data (ASSIGN ONLY ONE)")]
     public IngredientData ingredientData;
-    public UpgradeData upgradeData; // --- NEW: Slot for appliances/decorations ---
+    public UpgradeData upgradeData;
+
+    [Header("Bulk Purchase Settings")]
+    [Tooltip("How many cards this single purchase gives (e.g., 6 for an egg carton).")]
+    public int yieldAmount = 1;
+
+    [Header("UI Inspect Override")]
+    [Tooltip("The prefab to show in the 3D UI. If empty, defaults to the ingredient's standard model.")]
+    public GameObject customShopPrefab;
 
     [Header("Inspect Showcase Settings")]
     public Transform inspectCameraTarget;
@@ -84,8 +91,6 @@ public class ShopItemInteractable : MonoBehaviour
         if (isInteractionLocked || (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject())) return;
 
         targetScale = originalScale;
-
-        // Pass ourselves to the UI Manager
         if (OnShopItemClicked != null) OnShopItemClicked(this);
     }
 }

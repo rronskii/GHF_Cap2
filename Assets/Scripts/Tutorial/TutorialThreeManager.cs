@@ -49,7 +49,7 @@ public class TutorialThreeManager : MonoBehaviour
         // UPDATED: Changed dialogue to Left (A) since looping backwards from 0 goes to 2 (Window)
         DialogueManager.Instance.StartDialogue(new string[] {
             "Alright, it's time to open shop!",
-            "Look to the LEFT (Press A) to move to the Window Station."
+            "Look to the RIGHT (Press D) to move to the Window Station."
         }, () => dialogueDone = true);
         while (!dialogueDone) yield return null;
 

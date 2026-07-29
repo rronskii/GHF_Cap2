@@ -21,8 +21,9 @@ MonoBehaviour:
   - {x: 1, y: 0}
   worldPrefab: {fileID: 5400080113653799669, guid: d0aab7cfdd2755e438e6c431fe77a939, type: 3}
   basePoints: 0
-  purchasePrice: 45
+  purchasePrice: 80
   cardUIPrefab: {fileID: 7663734427134479993, guid: 9f6e4ce380bde154ba86506ced39d347, type: 3}
+  unlockLevel: 1
   validStations: 01000000
   isCookable: 0
   cookTime: 5
