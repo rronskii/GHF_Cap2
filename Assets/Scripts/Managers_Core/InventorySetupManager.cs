@@ -29,6 +29,7 @@ public class InventorySetupManager : MonoBehaviour
 
     [Header("Scene Routing")]
     public string nextSceneName = "01_FoodTruckLevel";
+    public string shopSceneName = "02_DailyShop";
 
     public bool isTabletLocked = false; // Used by the Tutorial Manager
 
@@ -69,9 +70,20 @@ public class InventorySetupManager : MonoBehaviour
 
     private void PopulateWorldBulletinBoard()
     {
-        if (currentShiftData == null) return;
+        // 1. Fetch today's level data from the global Progression Manager first!
+        if (LevelProgressionManager.Instance != null)
+        {
+            currentShiftData = LevelProgressionManager.Instance.GetCurrentLevelData();
+        }
 
-        // 1. Populate Dishes
+        // Safety check to ensure we actually got the data
+        if (currentShiftData == null)
+        {
+            Debug.LogWarning("[InventorySetupManager] No ShiftLevelData found for today!");
+            return;
+        }
+
+        // 2. Populate Dishes
         if (worldDishListText != null)
         {
             string dishString = "<b>Today's Menu</b>\n\n";
@@ -82,15 +94,17 @@ public class InventorySetupManager : MonoBehaviour
             worldDishListText.text = dishString;
         }
 
-        // 2. Populate Ingredients (No duplicates)
+        // 3. Populate Ingredients (Reading purely from the RAW base requirements)
         if (worldIngredientListText != null)
         {
             string ingString = "<b>Required Ingredients</b>\n\n";
+
+            // HashSet ensures no duplicates are shown, even if they were accidentally added twice in the inspector
             HashSet<IngredientData> uniqueIngredients = new HashSet<IngredientData>();
 
-            foreach (DishData dish in currentShiftData.activeDishes)
+            foreach (IngredientData ingredient in currentShiftData.requiredBaseIngredients)
             {
-                foreach (IngredientData ingredient in dish.requiredIngredients)
+                if (ingredient != null)
                 {
                     uniqueIngredients.Add(ingredient);
                 }
@@ -100,6 +114,7 @@ public class InventorySetupManager : MonoBehaviour
             {
                 ingString += $"- {ing.displayName}\n";
             }
+
             worldIngredientListText.text = ingString;
         }
     }
@@ -202,4 +217,9 @@ public class InventorySetupManager : MonoBehaviour
 
     public void CloseWarningPrompt() { if (warningPanel != null) warningPanel.SetActive(false); }
     public void StartShift() { SceneManager.LoadScene(nextSceneName); }
+
+    public void ReturnToShop()
+    {
+        SceneManager.LoadScene(shopSceneName);
+    }
 }

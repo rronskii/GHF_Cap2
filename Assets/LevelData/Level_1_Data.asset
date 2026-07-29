@@ -13,6 +13,8 @@ MonoBehaviour:
   m_Name: Level_1_Data
   m_EditorClassIdentifier: 
   shiftName: Tutorial Day 1
+  dailyQuota: 100
+  customerSpawnRate: 5
   activeDishes:
   - {fileID: 11400000, guid: 14174591d2ac03e4685133f7adc2a6a0, type: 2}
   - {fileID: 11400000, guid: d47acc4bcf93a234894d462dc218062f, type: 2}

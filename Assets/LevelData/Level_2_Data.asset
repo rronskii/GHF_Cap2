@@ -13,13 +13,19 @@ MonoBehaviour:
   m_Name: Level_2_Data
   m_EditorClassIdentifier: 
   shiftName: Tutorial Day 2
+  dailyQuota: 100
+  customerSpawnRate: 5
   activeDishes:
   - {fileID: 11400000, guid: 14174591d2ac03e4685133f7adc2a6a0, type: 2}
   - {fileID: 11400000, guid: d47acc4bcf93a234894d462dc218062f, type: 2}
+  - {fileID: 11400000, guid: 54d0ef2783892ef4c936b24b439f91ef, type: 2}
+  - {fileID: 11400000, guid: 54d0ef2783892ef4c936b24b439f91ef, type: 2}
   - {fileID: 11400000, guid: 54d0ef2783892ef4c936b24b439f91ef, type: 2}
   requiredBaseIngredients:
   - {fileID: 11400000, guid: d3d68cae5b3a55f4482339ee07f2fc67, type: 2}
   - {fileID: 11400000, guid: 5c7073438232fbd4098eea4cb7f0e95a, type: 2}
   - {fileID: 11400000, guid: c9e33be1a39fe934487df0aaa52c216a, type: 2}
   - {fileID: 11400000, guid: 9eca1ff648a21a94fb0065ed79a45f61, type: 2}
+  - {fileID: 11400000, guid: 095c95641d0fc554fb547d94c8c40c7a, type: 2}
+  - {fileID: 11400000, guid: 095c95641d0fc554fb547d94c8c40c7a, type: 2}
   - {fileID: 11400000, guid: 095c95641d0fc554fb547d94c8c40c7a, type: 2}

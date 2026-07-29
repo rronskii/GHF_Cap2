@@ -100,4 +100,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bounceSpeed: 4.5
-  bounceDistance: 0.5
+  bounceDistance: 0.25
